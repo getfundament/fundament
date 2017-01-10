@@ -1,0 +1,47 @@
+.dialog-dimmer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: $z-dialog;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: $dialog-dimmer-background;
+}
+.dialog {
+    display: none;
+    position: relative;
+    max-width: $dialog-max-width;
+    max-height: $dialog-max-height;
+    min-width: 320px - $grid-gutter-width;
+    overflow: auto;
+    background-color: $dialog-background;
+    border-radius: $dialog-border-radius;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.15);
+}
+.dialog__block {
+    width: $dialog-block-width;
+    max-width: 100%;
+    padding: $dialog-block-padding;
+}
+.dialog__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+}
+
+// Sizes
+.dialog--sm {
+    .dialog__block {
+        width: $dialog-block-width-sm;
+    }
+}
+.dialog--lg {
+    .dialog__block {
+        width: $dialog-block-width-lg;
+    }
+}

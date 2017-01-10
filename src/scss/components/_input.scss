@@ -1,0 +1,112 @@
+.input {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: spacing($input-padding);
+    border: 1px solid $input-border-color;
+    border-radius: $input-border-radius;
+    outline: 0;
+    background-color: $input-background;
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+    line-height: $input-line-height;
+    color: $input-color;
+    @include transition(all 0.3s ease-out);
+
+    &:hover {
+        color: $input-color-focus;
+        background-color: $input-background-hover;
+        border-color: $input-border-hover;
+    }
+    &:focus {
+        color: $input-color-focus;
+        background-color: $input-background-focus;
+        border-color: $input-border-focus;
+    }
+}
+
+select.input,
+input[type="time"].input,
+input[type="date"].input,
+input[type="datetime"].input {
+    padding: (spacing($input-padding, y) * 0.8) (spacing($input-padding, x) * 0.8); // decrease padding
+}
+textarea.input {
+    resize: vertical;
+}
+
+// Placeholder
+::-webkit-input-placeholder {
+    color: $input-placeholder;
+}
+:-moz-placeholder {
+    color: $input-placeholder;
+}
+::-moz-placeholder {
+    color: $input-placeholder;
+}
+:-ms-input-placeholder {
+    color: $input-placeholder;
+}
+
+// Size
+.input--sm {
+    padding: spacing($input-padding-sm);
+    font-size: $font-size-sm;
+}
+.input--lg {
+    padding: spacing($input-padding-lg);
+    font-size: $font-size-lg;
+}
+
+// Inline
+.input--inline {
+    display: inline-block;
+    width: auto;
+}
+
+// Grouped
+.input-group {
+    display: flex;
+    width: 100%;
+
+    > .input,
+    > .label,
+    > .btn {
+        border-radius: 0;
+
+        &:first-child {
+            border-radius: $input-border-radius 0 0 $input-border-radius;
+        }
+        &:last-child {
+            border-radius: 0 $input-border-radius $input-border-radius 0;
+        }
+        &:not(:first-child) {
+            margin-left: -1px; // overlap borders
+        }
+    }
+    > .input {
+        flex: 1;
+    }
+    > .label,
+    > .btn {
+        flex: 0 0 auto;
+    }
+    > .label {
+        padding: spacing($input-padding);
+        border: 1px solid $input-border-color;
+        font-size: 1rem;
+        line-height: $input-line-height;
+    }
+    > .input,
+    > .btn {
+        &:focus {
+            position: relative; // bring to foreground
+            z-index: 1;
+        }
+    }
+}
+.input-group--inline {
+    display: inline-flex;
+    width: auto;
+}

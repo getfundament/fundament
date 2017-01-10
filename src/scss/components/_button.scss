@@ -1,0 +1,119 @@
+.btn {
+    display: inline-block;
+    padding: spacing($button-padding);
+    border: 1px solid transparent;
+    border-radius: $button-border-radius;
+    outline: 0;
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+    line-height: $button-line-height;
+    font-weight: $button-font-weight;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    @include make-button($button-color, $button-background);
+    @include transition(all 0.25s ease-out);
+
+    &:disabled,
+    &.btn--disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+}
+
+// Variations
+.btn--primary {
+    @include make-button(#FFF, $color-primary);
+}
+.btn--inverse {
+    @include make-button(#FFF, $color-inverse);
+}
+.btn--positive {
+    @include make-button(#FFF, $color-positive);
+}
+.btn--warning {
+    @include make-button(#FFF, $color-warning);
+}
+.btn--negative {
+    @include make-button(#FFF, $color-negative);
+}
+
+// Hollow
+.btn--hollow {
+    @include make-hollow-button($color-gray-dark, $color-gray-light, transparent);
+
+    // Combinations
+    &.btn--primary {
+        @include make-hollow-button($color-primary);
+    }
+    &.btn--positive {
+        @include make-hollow-button($color-positive);
+    }
+    &.btn--warning {
+        @include make-hollow-button($color-warning);
+    }
+    &.btn--negative {
+        @include make-hollow-button($color-negative);
+    }
+    &.btn--inverse {
+        @include make-hollow-button($color-inverse);
+    }
+}
+
+// Sizes
+.btn--sm {
+    padding: spacing($button-padding-sm);
+    font-size: $font-size-sm;
+}
+.btn--lg {
+    padding: spacing($button-padding-lg);
+    font-size: $font-size-lg;
+}
+.btn--fluid {
+    display: block;
+    width: 100%;
+}
+
+// Icon
+.btn--icon .icon {
+    margin-right: 0.5rem;
+    line-height: 1;
+
+    &.icon--right {
+        margin-right: 0;
+        margin-left: 0.5rem;
+    }
+}
+
+// Grouped
+.btn-group {
+    display: inline-flex;
+
+    > .btn {
+        border-radius: 0;
+
+        &:first-child {
+            border-radius: $button-border-radius 0 0 $button-border-radius;
+        }
+        &:last-child {
+            border-radius: 0 $button-border-radius $button-border-radius 0;
+        }
+        &:not(:first-child) {
+            margin-left: -1px; // overlap borders
+        }
+        &:hover, &:focus {
+            position: relative; // bring to foreground
+            z-index: 1;
+        }
+    }
+}
+.btn-group--fluid {
+    display: flex;
+    width: 100%;
+
+    > .btn {
+        flex: 1;
+    }
+}

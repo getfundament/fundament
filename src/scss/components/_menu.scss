@@ -1,0 +1,77 @@
+.menu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    &:not(.menu--inline):not(.menu--tabs) a.menu__item {
+        display: block;
+    }
+}
+.menu__item {
+    vertical-align: middle;
+
+    .icon {
+        margin-right: 0.5rem;
+
+        &.icon--right {
+            float: right;
+            margin-right: 0;
+            margin-left: .5rem;
+        }
+    }
+}
+
+// Inline
+.menu--inline .menu__item {
+    display: inline-block;
+}
+
+// Pills
+.menu--pills .menu__item {
+    padding: 0.5rem 1.125rem;
+    border-radius: $border-radius-base;
+
+    a {
+        color: inherit;
+    }
+    &.active {
+        color: #FFF;
+        background-color: $color-primary;
+    }
+}
+
+// Tabs
+.menu--tabs {
+    border-bottom: 1px solid $input-border-color;
+    @extend .clear;
+
+    .menu__item {
+        display: block;
+        float: left;
+        margin-bottom: -1px;
+    }
+    .menu__link {
+        display: block;
+        padding: 0.5rem 1.125rem;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: $border-radius-base $border-radius-base 0 0;
+
+        a {
+            color: inherit;
+        }
+        &.active {
+            color: $color-base;
+            background-color: #fff;
+            border-color: $input-border-color $input-border-color transparent;
+        }
+    }
+}
+.menu--fluid {
+    display: flex;
+
+    .menu__item {
+        flex: 1;
+        text-align: center;
+    }
+}

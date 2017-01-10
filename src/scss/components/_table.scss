@@ -1,0 +1,64 @@
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border: 0 $table-border-style $table-border-color;
+    border-collapse: collapse;
+
+    th {
+        text-align: left;
+    }
+    th,
+    td {
+        padding: $table-col-padding;
+        border-bottom: $table-border-width $table-border-style;
+        border-color: inherit;
+        vertical-align: top;
+    }
+}
+
+// Styles
+.table--primary {
+    color: #FFF;
+    background-color: $color-primary;
+    border-color: lighten($color-primary, 8%);
+}
+.table--inverse {
+    color: #FFF;
+    background-color: $color-inverse;
+    border-color: lighten($color-inverse, 8%);
+}
+
+// Sizes
+.table--sm {
+    th,
+    td {
+        padding: ($table-col-padding * 0.6);
+    }
+}
+.table--lg {
+    th,
+    td {
+        padding: ($table-col-padding * 1.4);
+    }
+}
+
+// Variations
+.table--striped {
+    tbody tr:nth-child(odd) {
+        background-color: rgba(0,0,0,0.025);
+    }
+}
+.table--bordered {
+    border-width: $table-border-width;
+
+    th,
+    td {
+        border-right-width: $table-border-width;
+        border-right-style: $table-border-style;
+    }
+}
+.table--interactive {
+    tbody tr:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+}

@@ -1,0 +1,45 @@
+.grid > .row {
+    padding-top: $grid-gutter-width/2;
+    padding-bottom: $grid-gutter-width/2;
+}
+
+// Rows
+.row {
+    display: flex;
+    flex-flow: row wrap;
+    margin-left: -($grid-gutter-width/2);
+    margin-right: -($grid-gutter-width/2);
+    justify-content: flex-start;
+}
+.row--stacking {
+    @include breakpoint-down(md) {
+        display: block;
+    }
+}
+
+// Columns
+.col {
+    width: 100%;
+    min-height: 1px;
+    padding-left: $grid-gutter-width/2;
+    padding-right: $grid-gutter-width/2;
+}
+
+@each $size, $breakpoint in $grid-breakpoints {
+
+    @include breakpoint-up($size) {
+
+        @for $i from 1 through $grid-columns {
+            $width: #{(100/$grid-columns) * $i + '%'};
+
+            .col--#{$size}-#{$i} {
+                width: $width;
+                //flex: 0 0 $width;
+                //-webkit-flex: 0 0 $width;
+                //max-width: $width;
+            }
+        }
+
+    }
+
+}

@@ -1,0 +1,225 @@
+/**
+ * The default Fundament theme.
+ *
+ * Override these variables to make it yours.
+ */
+
+/*---------------------*
+ * Colors
+ *---------------------*/
+$color-primary:    #0288D1      !default; // #3F51B5 (indigo) #8E22A9 (purple)
+$color-base:       #222         !default;
+$color-heading:    inherit      !default;
+$color-inverse:    #333         !default;
+$color-background: #fff         !default;
+
+$color-positive: #4CAF50    !default;
+$color-warning:  #FFA000    !default;
+$color-negative: #D84315    !default;
+$color-info:     #0288D1    !default;
+
+$color-gray-darkest:  #666      !default;
+$color-gray-dark:     #888      !default;
+$color-gray:          #AAA      !default;
+$color-gray-light:    #DDD      !default;
+$color-gray-lightest: #E8E8E8   !default;
+
+/*---------------------*
+ * Typography
+ *---------------------*/
+$font-size-base: 16px       !default;
+$font-size-sm:   0.875rem   !default;
+$font-size-lg:   1.25rem    !default;
+
+$font-family-base:    'Source Sans Pro', sans-serif !default;
+$font-family-heading: $font-family-base             !default;
+$font-sizes-heading:  (
+    h1: 2.625rem, // 42px
+    h2: 2.25rem,  // 36px
+    h3: 1.875rem, // 30px
+    h4: 1.5rem,   // 24px
+    h5: 1.25rem,  // 20px
+    h6: 1rem,     // 16px
+) !default;
+
+$line-height-base: 1.5 !default;
+
+// Links
+$link-color:            $color-primary              !default;
+$link-decoration:       none                        !default;
+$link-hover-color:      darken($link-color, 12%)    !default;
+$link-hover-decoration: none                        !default;
+
+/*---------------------*
+ * Grid
+ *---------------------*/
+$grid-columns:      12      !default;
+$grid-gutter-width: 30px    !default;
+$grid-breakpoints:  (
+    xs: 0,
+    sm: 540px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px
+) !default;
+
+/*---------------------*
+ * Container
+ *---------------------*/
+$container-widths: (
+    sm: 600px,
+    md: 720px,
+    lg: 940px,
+    xl: 1140px
+) !default;
+
+/*---------------------*
+ * Global
+ *---------------------*/
+$border-radius-base: 0.25rem !default;
+
+// Z-indexes
+$z-popup:    10     !default;
+$z-dropdown: 100    !default;
+$z-dialog:   1000   !default;
+
+/*---------------------*
+ * Input
+ *---------------------*/
+$input-padding:       0.625rem, 0.8125rem   !default;
+$input-line-height:   1.125                 !default;
+$input-color:         $color-base           !default;
+$input-placeholder:   #999                  !default;
+$input-background:    #fff                  !default;
+$input-border-color:  $color-gray-light     !default;
+$input-border-radius: $border-radius-base   !default;
+
+// Sizes
+$input-padding-sm:    0.5rem, 0.625rem      !default;
+$input-padding-lg:    0.75rem, 1rem         !default;
+
+// States
+$input-color-hover:      $input-color                       !default;
+$input-border-hover:     darken($input-border-color, 8%)    !default;
+$input-background-hover: $input-background                  !default;
+
+$input-color-focus:      $input-color       !default;
+$input-border-focus:     $color-primary     !default;
+$input-background-focus: $input-background  !default;
+
+/*---------------------*
+ * Label
+ *---------------------*/
+$label-padding:       0.35em, 0.625em       !default;
+$label-font-size:     0.875em               !default;
+$label-font-weight:   normal                !default;
+$label-color:         $color-base           !default;
+$label-background:    $color-gray-lightest  !default;
+$label-border-radius: $border-radius-base   !default;
+
+/*---------------------*
+ * Button
+ *---------------------*/
+$button-padding:       0.625rem, 1.125rem   !default;
+$button-padding-sm:    0.375rem, 0.6875rem  !default;
+$button-padding-lg:    0.8125rem, 1.5rem    !default;
+$button-line-height:   1.125                !default;
+$button-font-weight:   normal               !default;
+$button-color:         $color-base          !default;
+$button-background:    $color-gray-lightest !default;
+$button-border-radius: $border-radius-base  !default;
+
+/*---------------------*
+ * Table
+ *---------------------*/
+$table-col-padding:  0.625rem               !default;
+$table-border-width: 1px                    !default;
+$table-border-style: solid                  !default;
+$table-border-color: $color-gray-lightest   !default;
+
+/*---------------------*
+ * Card
+ *---------------------*/
+$card-padding:       1rem                       !default;
+$card-background:    #FFF                       !default;
+$card-border-color:  $color-gray-light          !default;
+$card-border-radius: $border-radius-base        !default;
+$card-box-shadow:    0 1px 3px rgba(0,0,0,0.06) !default;
+
+// Block
+$card-block-border-color: $color-gray-lightest !default;
+
+/*---------------------*
+ * Dropdown
+ *---------------------*/
+$dropdown-margin:        0.5rem, -1px               !default;
+$dropdown-background:    #FFF                       !default;
+$dropdown-border-color:  $color-gray-light          !default;
+$dropdown-border-radius: $border-radius-base        !default;
+$dropdown-box-shadow:    0 2px 6px rgba(0,0,0,0.1)  !default;
+
+// Item
+$dropdown-item-padding: 0.625rem, 0.8125rem !default;
+
+// Select
+$dropdown-select: '';
+
+/*---------------------*
+ * Dialog
+ *---------------------*/
+$dialog-max-width:     80%                  !default;
+$dialog-max-height:    80%                  !default;
+$dialog-background:    #FFF                 !default;
+$dialog-border-radius: $border-radius-base  !default;
+
+// Block
+$dialog-block-width:    40rem !default;
+$dialog-block-width-sm: ($dialog-block-width * 0.6) !default;
+$dialog-block-width-lg: ($dialog-block-width * 1.4) !default;
+$dialog-block-padding:  1rem  !default;
+
+// Dimmer
+$dialog-dimmer-background: rgba(0,0,0,0.3) !default;
+
+/*---------------------*
+ * Form
+ *---------------------*/
+$form-label-font-size:     0.9375rem    !default;
+$form-label-font-weight:   bolder       !default;
+$form-field-margin-bottom: 1rem         !default;
+$form-info-font-size:      0.9375rem    !default;
+
+/*---------------------*
+ * Menu
+ *---------------------*/
+$menu-tabs: '';
+
+/*---------------------*
+ * Message
+ *---------------------*/
+$msg-margin-bottom: 1rem                    !default;
+$msg-padding:       0.75rem 1rem            !default;
+$msg-background:    #FFF                    !default;
+$msg-border-color:  $color-gray-light       !default;
+$msg-border-radius: $border-radius-base     !default;
+
+// Styles
+$msg-positive-color: $color-positive    !default;
+$msg-warning-color:  $color-warning     !default;
+$msg-negative-color: $color-negative    !default;
+$msg-info-color:     $color-info        !default;
+
+// Sizes
+$msg-padding-sm: 0.5rem, 0.75rem    !default;
+$msg-padding-lg: 1rem, 1.25rem      !default;
+
+/*---------------------*
+ * Popup
+ *---------------------*/
+$popup-max-width:    20rem                      !default;
+$popup-padding:      0.5rem, 0.875rem           !default;
+$popup-font-size:    0.9375rem                  !default;
+$popup-background:   #FFF                       !default;
+$popup-border-color: $color-gray-light          !default;
+$popup-box-shadow:   0 2px 6px rgba(0,0,0,0.1)  !default;
+$popup-arrow-size:   6px                        !default;

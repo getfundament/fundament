@@ -1,0 +1,32 @@
+{
+  "name": "fundament",
+  "version": "0.1.0",
+  "description": "The modern and lightweight front-end framework built on the shoulders of giants.",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "framework",
+    "front-end",
+    "lightweight",
+    "responsive",
+    "mobile-first",
+    "user-experience",
+    "javascript",
+    "css"
+  ],
+  "ignore": [
+    "node_modules",
+    "bower_components"
+  ],
+  "homepage": "https://getfundament.com",
+  "author": [
+    "Jason Koolman",
+    "The Fundament Authors"
+  ],
+  "license": "MIT",
+  "main": [
+    "src/scss/build.scss",
+    "dist/fundament.js"
+  ]
+}

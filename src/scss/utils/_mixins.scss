@@ -1,0 +1,81 @@
+// Toggles
+//@mixin box-shadow($shadow...) {
+//    @if $enable-shadows {
+//        box-shadow: $shadow;
+//    }
+//}
+//
+@mixin transition($transition) {
+    @if false {
+        transition: $transition;
+    }
+}
+
+// Media queries
+@mixin breakpoint-up($size) {
+    @media (min-width: map-get($grid-breakpoints, $size)) {
+        @content;
+    }
+}
+@mixin breakpoint-down($size) {
+    @media (max-width: #{map-get($grid-breakpoints, $size) - 1px}) {
+        @content;
+    }
+}
+
+// Button
+@mixin make-button($color, $background-color, $border-color: null, $increments: 5%, $hollow: false) {
+    border-color: $border-color;
+    color: $color;
+    background-color: $background-color;
+
+    &:hover {
+        border-color: $border-color and darken($border-color, $increments);
+        color: if($hollow, darken($color, $increments), $color);
+        background-color: $background-color and darken($background-color, $increments);
+    }
+    &:active {
+        border-color: $border-color and darken($border-color, $increments*2);
+        color: if($hollow, darken($color, $increments*2), $color);
+        background-color: $background-color and darken($background-color, $increments*2);
+    }
+}
+@mixin make-hollow-button($color, $border-color: $color, $background-color: null, $increments: 6%) {
+    @include make-button($color, $background-color, $border-color, $increments, true);
+}
+
+// Card
+@mixin make-card($color, $background-color, $border-color: null) {
+    border-color: $border-color;
+    color: $color;
+    background-color: $background-color;
+}
+
+// Arrow
+@mixin make-arrow($color, $direction, $size, $tip-size: $size, $set-size: true) {
+    @if $set-size {
+        width: 0;
+        height: 0;
+    }
+    @if $direction == up {
+        border-left: $size solid transparent;
+        border-right: $size solid transparent;
+        border-bottom: $tip-size solid;
+        border-bottom-color: $color; // inherit doesn't work for shorthands
+    } @else if $direction == down {
+        border-left: $size solid transparent;
+        border-right: $size solid transparent;
+        border-top: $tip-size solid;
+        border-top-color: $color;
+    } @else if $direction == left {
+        border-top: $size solid transparent;
+        border-bottom: $size solid transparent;
+        border-right: $tip-size solid;
+        border-right-color: $color;
+    } @else if $direction == right {
+        border-top: $size solid transparent;
+        border-bottom: $size solid transparent;
+        border-left: $tip-size solid;
+        border-left-color: $color;
+    }
+}

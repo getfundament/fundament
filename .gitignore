@@ -1,0 +1,32 @@
+node_modules
+bower_components
+
+# Always-ignore extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.zip
+*.vi
+*.sass-cache
+*.ruby-version
+*~
+
+# OS and editor folders
+.idea
+.cache
+.project
+.settings
+.tmproj
+.DS_Store
+.docpad.db
+Thumbs.db
+nbproject
+*.esproj
+*.sublime-project
+*.sublime-workspace
+.build*
+._*

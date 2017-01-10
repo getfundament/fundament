@@ -1,0 +1,42 @@
+// Heading
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-family: $font-family-heading;
+    color: $color-heading;
+    line-height: 1;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+h1 { font-size: map_get($font-sizes-heading, 'h1') }
+h2 { font-size: map_get($font-sizes-heading, 'h2') }
+h3 { font-size: map_get($font-sizes-heading, 'h3') }
+h4 { font-size: map_get($font-sizes-heading, 'h4') }
+h5 { font-size: map_get($font-sizes-heading, 'h5') }
+h6 { font-size: map_get($font-sizes-heading, 'h6') }
+
+// Link
+a {
+    color: $link-color;
+    text-decoration: $link-decoration;
+
+    &:hover {
+        color: $link-hover-color;
+        text-decoration: $link-hover-decoration;
+    }
+}
+
+// Paragraph
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+
+    &.lead {
+        font-size: 1.25rem;
+    }
+    &:last-child {
+        margin-bottom: 0;
+    }
+}

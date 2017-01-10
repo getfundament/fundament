@@ -1,0 +1,70 @@
+ .label {
+    display: inline-block;
+    padding: spacing($label-padding);
+    border-radius: $label-border-radius;
+    overflow: hidden;
+    font-size: $label-font-size;
+    font-weight: $label-font-weight;
+    line-height: 1;
+    vertical-align: middle;
+    color: $label-color;
+    background-color: $label-background;
+
+    > span {
+        display: inline-block;
+        margin: -#{first($label-padding)} -#{last($label-padding)} -#{first($label-padding)} #{last($label-padding)};
+        padding: spacing($label-padding);
+        font-weight: lighter;
+        vertical-align: top;
+        background-color: rgba(0,0,0,0.08);
+    }
+}
+
+// Styles
+.label--primary {
+    color: #FFF;
+    background-color: $color-primary;
+}
+.label--positive {
+    color: #FFF;
+    background-color: $color-positive;
+}
+.label--warning {
+    color: #FFF;
+    background-color: $color-warning;
+}
+.label--negative {
+    color: #FFF;
+    background-color: $color-negative;
+}
+.label--inverse {
+    color: #FFF;
+    background-color: $color-inverse;
+}
+
+// Hollow
+.label--hollow {
+    border: 1px solid $label-background;
+    background-color: transparent;
+
+    &.label--primary {
+        border-color: $color-primary;
+        color: $color-primary;
+    }
+    &.label--positive {
+        border-color: $color-positive;
+        color: $color-positive;
+    }
+    &.label--warning {
+        border-color: $color-warning;
+        color: $color-warning;
+    }
+    &.label--negative {
+        border-color: $color-negative;
+        color: $color-negative;
+    }
+    &.label--inverse {
+        border-color: $color-inverse;
+        color: $color-inverse;
+    }
+}

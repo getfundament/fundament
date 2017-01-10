@@ -1,0 +1,37 @@
+{
+  "name": "fundament",
+  "version": "0.1.0",
+  "description": "The modern and lightweight front-end framework built on the shoulders of giants.",
+  "keywords": [
+    "framework",
+    "front-end",
+    "lightweight",
+    "responsive",
+    "mobile-first",
+    "user-experience",
+    "javascript",
+    "css"
+  ],
+  "homepage": "https://getfundament.com",
+  "author": "Jason Koolman and The Fundament Authors",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-watch": "^4.3.10"
+  },
+  "scripts": {
+    "test": "exit 1"
+  },
+  "main": "dist/js/fundament.js",
+  "style": "dist/css/fundament.css",
+  "sass": "src/scss/build.scss"
+}
