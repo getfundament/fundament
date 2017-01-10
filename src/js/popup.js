@@ -46,8 +46,6 @@
 
         /**
          * Create and append a new popup element.
-         *
-         * @return $popup;
          */
         create: function() {
             var $popup = $('<div/>', {
@@ -119,7 +117,7 @@
         },
 
         /**
-         * Make cached calculations when needed.
+         * Make cached calculations if needed.
          *
          * @return boolean
          */
@@ -235,16 +233,15 @@
             var self  = this,
                 delay = self.config.delay;
 
-            clearTimeout(self.timer);
-
-            if (this.$popup.is(':visible')) // TODO: reconsider this implementation
-                return false;
-
             self.position();
 
+            clearTimeout(self.timer);
+
             self.timer = setTimeout(function() {
-                self.config.onShow.call(self.elem);
-                self.$popup.transition(self.config.transition + 'In', {queue: false});
+                if (self.$popup.is(':hidden')) {
+                    self.$popup.transition(self.config.transition + 'In', {queue: false});
+                    self.config.onShow.call(self.elem);
+                }
             }, delay.hasOwnProperty('show') ? delay.show : delay);
         },
 
@@ -254,15 +251,14 @@
         hide: function() {
             var self  = this,
                 delay = self.config.delay;
-            
+
             clearTimeout(self.timer);
 
-            if (this.$popup.is(':hidden'))
-                return false;
-
             self.timer = setTimeout(function() {
-                self.config.onHide.call(self.elem);
-                self.$popup.transition(self.config.transition + 'Out', {queue: false});
+                if (self.$popup.is(':visible')) {
+                    self.$popup.transition(self.config.transition + 'Out', {queue: false});
+                    self.config.onHide.call(self.elem);
+                }
             }, delay.hasOwnProperty('hide') ? delay.hide : delay);
         },
 
