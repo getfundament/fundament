@@ -225,26 +225,25 @@
      * @param element
      */
     function transform(element) {
-        var $select  = $(element),
-            defaults = $.fn[plugin].defaults;
-
+        var $select  = $(element);
         if ( ! $select.is('select')) {
             return element;
         }
 
-        var $options  = $select.find('option'),
-            $selected = $options.filter(':selected'),
-            $dropdown = $('<div/>', {
-                class: defaults.classNames.dropdown + ' ' + defaults.classNames.select,
+        var classNames = $.fn[plugin].defaults.classNames,
+            $options   = $select.find('option'),
+            $selected  = $options.filter(':selected'),
+            $dropdown  = $('<div/>', {
+                class: classNames.dropdown + ' ' + classNames.select,
                 tabindex: 0
             }),
+            $menu  = $('<ul/>', {
+                class: classNames.menu
+            }),
+            $label = $('<span/>'),
             $input = $('<input/>', {
                 type: 'hidden',
                 name: $select.attr('name')
-            }),
-            $label = $('<span/>', {}),
-            $menu  = $('<ul/>', {
-                class: defaults.classNames.menu
             });
 
         // Create menu
@@ -268,16 +267,15 @@
         }
 
         // Generate HTML
-        $select.wrap($dropdown)
-            .after($menu)
-            .after($label)
-            .after($input)
-            .removeClass(defaults.classNames.dropdown);
+        $select
+            .wrap($dropdown)
+            .after($menu, $label, $input);
 
-        $dropdown = $select.parents('.' + defaults.classNames.dropdown)[0];
+        $dropdown = $select.parents('.' + classNames.dropdown);
+
         $select.remove();
 
-        return $dropdown;
+        return $dropdown[0];
     }
 
     // Plugin definition
