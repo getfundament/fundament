@@ -29,6 +29,7 @@
     color: $color;
     background-color: $background-color;
 
+    &:focus,
     &:hover {
         border-color: $border-color and darken($border-color, $increments);
         color: if($hollow, darken($color, $increments), $color);
