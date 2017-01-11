@@ -19,7 +19,7 @@ A modern and lightweight front-end framework built on the shoulders of giants an
 Installation
 
 - Bower: `bower install fundament`
-- NPM: `bower install fundament-npm`
+- NPM: `npm install fundament-npm`
 
 ## Documentation
 
