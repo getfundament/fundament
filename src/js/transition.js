@@ -216,16 +216,16 @@
 
         // scale
         scale: {
-            start : { 'opacity': 0, 'transform': 'scale(0.8)' },
+            start : { 'opacity': 0, 'transform': 'scale(0.6)' },
             end   : { 'opacity': 1, 'transform': 'scale(1.0)' }
         },
         scaleUp: {
-            start : { 'opacity': 0, 'transform': 'scale(0.8) translateY(10%)' },
-            end   : { 'opacity': 1, 'transform': 'scale(1.0) translateY(0)' }
+            start : { 'opacity': 0, 'transform': 'scale(0.6)', 'transform-origin': 'bottom' },
+            end   : { 'opacity': 1, 'transform': 'scale(1.0)', 'transform-origin': 'bottom' }
         },
         scaleDown: {
-            start : { 'opacity': 0, 'transform': 'scale(0.8) translateY(-10%)' },
-            end   : { 'opacity': 1, 'transform': 'scale(1.0) translateY(0)' }
+            start : { 'opacity': 0, 'transform': 'scale(0.6)', 'transform-origin': 'top' },
+            end   : { 'opacity': 1, 'transform': 'scale(1.0)', 'transform-origin': 'top' }
         },
 
         // slide
