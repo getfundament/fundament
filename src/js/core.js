@@ -20,7 +20,7 @@ window.requestAnimationFrame = window.requestAnimationFrame
  *
  * @package Fundament
  */
-var Fm = (function(document, window) {
+var Fm = (function(document) {
 
     var cssPrefixes = ['-webkit-', '-moz-', '-ms-', '-o-'],
         cssDeclaration = document.createElement('div').style;
@@ -74,8 +74,8 @@ var Fm = (function(document, window) {
      */
     var prefixAttr = function(attr) {
         if (cssDeclaration[attr] === undefined) {
-            for (var prefix in cssPrefixes) {
-                var prefixed = cssPrefixes[prefix] + attr;
+            for (var i = 0; i < cssPrefixes.length; i++) {
+                var prefixed = cssPrefixes[i] + attr;
                 if (cssDeclaration[prefixed] !== undefined) {
                     attr = prefixed;
                 }
@@ -114,4 +114,4 @@ var Fm = (function(document, window) {
         transitionEnd  : transitionEnd
     };
 
-})(document, window);
+})(document);
