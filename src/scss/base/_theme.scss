@@ -140,7 +140,7 @@ $table-border-color: $color-gray-lightest   !default;
 /*---------------------*
  * Card
  *---------------------*/
-$card-padding:       1rem                       !default;
+$card-padding:       1rem, 1rem                 !default;
 $card-background:    #FFF                       !default;
 $card-border-color:  $color-gray-light          !default;
 $card-border-radius: $border-radius-base        !default;
@@ -216,8 +216,8 @@ $msg-padding-lg: 1rem, 1.25rem      !default;
 /*---------------------*
  * Popup
  *---------------------*/
-$popup-max-width:    20rem                      !default;
-$popup-padding:      0.5rem, 0.875rem           !default;
+$popup-max-width:    18rem                      !default;
+$popup-padding:      0.5rem, 0.75rem            !default;
 $popup-font-size:    0.9375rem                  !default;
 $popup-background:   #FFF                       !default;
 $popup-border-color: $color-gray-light          !default;

@@ -16,7 +16,7 @@
 .bg-negative { background-color: $color-negative; color: #FFF; }
 
 // Images
-.img-responsive {
+.img-responsive { // TODO: reconsider
     max-width: 100%;
     height: auto;
     display: block;

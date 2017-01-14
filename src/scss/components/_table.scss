@@ -53,7 +53,7 @@
 
     th,
     td {
-        border-right-width: $table-border-width;
+        border-right-width: $table-border-width; // TODO: merge these? otherwise explain
         border-right-style: $table-border-style;
     }
 }

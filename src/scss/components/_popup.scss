@@ -27,27 +27,21 @@
     background-color: #222;
     border-color: transparent;
     box-shadow: none;
-
-    //&:before {
-    //    border-bottom-color: #222;
-    //}
-    //&:before {
-    //    content: none;
-    //}
 }
 
 // Directions
+// TODO: check out margins and theme variables
 .popup--north {
     &:before {
         top: 100%;
         left: 50%;
-        margin-left: -7px;
+        margin-left: -#{$popup-arrow-size + 1px};
         @include make-arrow($popup-border-color, 'down', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
     }
     &:after {
         top: 100%;
         left: 50%;
-        margin-left: -6px;
+        margin-left: -$popup-arrow-size;
         @include make-arrow($popup-background, 'down', $popup-arrow-size, $popup-arrow-size, false);
     }
 }

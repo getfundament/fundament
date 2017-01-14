@@ -12,7 +12,7 @@
 
     > span {
         display: inline-block;
-        margin: -#{first($label-padding)} -#{last($label-padding)} -#{first($label-padding)} #{last($label-padding)};
+        margin: -#{spacing($label-padding, y)} -#{spacing($label-padding, x)} -#{spacing($label-padding, y)} #{spacing($label-padding, x)};
         padding: spacing($label-padding);
         font-weight: lighter;
         vertical-align: top;

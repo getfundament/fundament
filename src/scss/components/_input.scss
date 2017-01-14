@@ -25,30 +25,6 @@
     }
 }
 
-select.input,
-input[type="time"].input,
-input[type="date"].input,
-input[type="datetime"].input {
-    padding: (spacing($input-padding, y) * 0.8) (spacing($input-padding, x) * 0.8); // decrease padding
-}
-textarea.input {
-    resize: vertical;
-}
-
-// Placeholder
-::-webkit-input-placeholder {
-    color: $input-placeholder;
-}
-:-moz-placeholder {
-    color: $input-placeholder;
-}
-::-moz-placeholder {
-    color: $input-placeholder;
-}
-:-ms-input-placeholder {
-    color: $input-placeholder;
-}
-
 // Size
 .input--sm {
     padding: spacing($input-padding-sm);
@@ -109,4 +85,29 @@ textarea.input {
 .input-group--inline {
     display: inline-flex;
     width: auto;
+}
+
+// Specific
+select.input,
+input[type="time"].input,
+input[type="date"].input,
+input[type="datetime"].input {
+    padding: (spacing($input-padding, y) * 0.8) (spacing($input-padding, x) * 0.8); // decrease padding
+}
+textarea.input {
+    resize: vertical;
+}
+
+// Placeholder
+::-webkit-input-placeholder {
+    color: $input-placeholder;
+}
+:-moz-placeholder {
+    color: $input-placeholder;
+}
+::-moz-placeholder {
+    color: $input-placeholder;
+}
+:-ms-input-placeholder {
+    color: $input-placeholder;
 }
