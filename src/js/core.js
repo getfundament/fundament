@@ -16,22 +16,35 @@ window.requestAnimationFrame = window.requestAnimationFrame
     || function(callback){ setTimeout(callback, 0) };
 
 /**
- * Fundament global variables and utility functions.
+ * Fundament utility functions.
  *
  * @package Fundament
  */
-var Fm = (function(document) {
+var fm = (function(document) {
 
     var cssPrefixes = ['-webkit-', '-moz-', '-ms-', '-o-'],
         cssDeclaration = document.createElement('div').style;
 
     /**
-     * Generate a fairly random unique identifier.
+     * Shorthand function to rapidly iterate over arrays and objects.
      *
-     * @returns {string}
+     * @param iteratable
+     * @param callback
      */
-    var createID = function() {
-        return (Math.random().toString(16) + '000000000').substr(2,8);
+    var each = function(iteratable, callback) {
+        var i = 0;
+        if (iteratable.constructor === Array) {
+            for (i; i < iteratable.length; i++) {
+                callback(iteratable[i], i);
+            }
+        } else if (iteratable === Object(iteratable)) {
+            for (var key in iteratable) {
+                if (iteratable.hasOwnProperty(key)) {
+                    callback(key, iteratable[key], i);
+                    i++;
+                }
+            }
+        }
     };
 
     /**
@@ -39,9 +52,9 @@ var Fm = (function(document) {
      * called for x milliseconds. If 'immediate' is passed, trigger
      * the function on the leading edge, instead of the trailing.
      *
-     * @param func
-     * @param wait
-     * @param immediate
+     * @param {Function} func
+     * @param {int} wait
+     * @param {boolean} immediate
      */
     var debounce = function(func, wait, immediate) {
         var timeout;
@@ -67,22 +80,117 @@ var Fm = (function(document) {
     };
 
     /**
-     * Returns a prefixed CSS attribute.
+     * Determine whether the node contains a certain class.
      *
-     * @param attr
+     * @param {HTMLElement} elem
+     * @param {string} className
+     * @return {boolean}
+     */
+    var hasClass = function(elem, className) {
+        return elem.classList.contains(className);
+    };
+
+    /**
+     * Toggles a class on the node.
+     *
+     * @param {HTMLElement} element
+     * @param {string} className
+     */
+    var toggleClass = function(element, className) {
+        element.classList.toggle(className);
+    };
+
+    /**
+     * Add a class to the node.
+     *
+     * @param {HTMLElement} element
+     * @param {string} className
+     */
+    var addClass = function(element, className) {
+        element.classList.add(className);
+    };
+
+    /**
+     * Remove a class from the node.
+     *
+     * @param {HTMLElement} element
+     * @param {string} className
+     */
+    var removeClass = function(element, className) {
+        element.classList.remove(className);
+    };
+
+    /**
+     * Returns a prefixed css property.
+     *
+     * @param {string} prop
      * @returns {string}
      */
-    var prefixAttr = function(attr) {
-        if (cssDeclaration[attr] === undefined) {
-            for (var i = 0; i < cssPrefixes.length; i++) {
-                var prefixed = cssPrefixes[i] + attr;
+    var prefix = function(prop) {
+        if (cssDeclaration[prop] === undefined) {
+            each(cssPrefixes, function(key, value) {
+                var prefixed = value + prop;
                 if (cssDeclaration[prefixed] !== undefined) {
-                    attr = prefixed;
+                    prop = prefixed;
                 }
-            }
+            });
         }
 
-        return attr;
+        return prop;
+    };
+
+    /**
+     * Add an event listener that fires just once.
+     *
+     * @param {HTMLElement} elem
+     * @param {string} type
+     * @param {EventListener|Function} listener
+     */
+    var once = function(elem, type, listener) {
+        elem.addEventListener(type, function func(event) {
+            elem.removeEventListener(type, func);
+            listener(event);
+        });
+    };
+
+    /**
+     * Add or remove css properties from a node.
+     *
+     * @param {HTMLElement} elem
+     * @param {Object} css
+     */
+    var css = function(elem, css) {
+        if (css === Object(css)) {
+            each(css, function(prop, value) {
+                elem.style[prop] = value;
+            });
+        }
+    };
+
+    /**
+     * Determine whether the element matches a certain selector.
+     *
+     * @param {HTMLElement} elem
+     * @param {string} selector
+     * @return {boolean}
+     */
+    var is = function(elem, selector) {
+        return (elem.matches
+            || elem.matchesSelector
+            || elem.msMatchesSelector
+            || elem.mozMatchesSelector
+            || elem.webkitMatchesSelector
+            || elem.oMatchesSelector
+        ).call(elem, selector);
+    };
+
+    /**
+     * Generate a fairly random unique identifier.
+     *
+     * @returns {string}
+     */
+    var createID = function() {
+        return (Math.random().toString(16) + '000000000').substr(2,8);
     };
 
     /**
@@ -107,11 +215,17 @@ var Fm = (function(document) {
         return false;
     };
 
+    // Publicly accessible
     return {
-        createID       : createID,
-        debounce       : debounce,
-        prefixAttr     : prefixAttr,
-        transitionEnd  : transitionEnd
+        each: each,
+        debounce: debounce,
+        prefix: prefix,
+        hasClass: hasClass,
+        once: once,
+        css: css,
+        is: is,
+        createID: createID,
+        transitionEnd: transitionEnd
     };
 
 })(document);
