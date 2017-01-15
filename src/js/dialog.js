@@ -8,7 +8,7 @@
 
     var plugin    = 'dialog',
         namespace = '.' + plugin,
-        methods   = ['open', 'close'];
+        methods   = ['open', 'close', 'setting'];
 
     var $window   = $(window),
         $document = $(document),
@@ -157,7 +157,19 @@
                     }
                 }
             }
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            for (var setting in settings) {
+                this.config[setting] = settings[setting];
+            }
         }
+
     });
 
     // Plugin definition

@@ -7,7 +7,7 @@
     'use strict';
 
     var plugin    = 'dropdown',
-        methods   = ['open', 'close', 'toggle', 'setting'];
+        methods   = ['toggle', 'open', 'close', 'setting'];
 
     // Constructor
     function Dropdown(element, settings) {
@@ -58,17 +58,6 @@
                 .focusout(function() {
                     self.close();
                 });
-        },
-
-        /**
-         * Override the instance's settings.
-         *
-         * @param {Object} settings
-         */
-        setting: function(settings) {
-            for (var setting in settings) {
-                this.config[setting] = settings[setting];
-            }
         },
 
         /**
@@ -215,6 +204,17 @@
             });
 
             self.$elem.removeClass(self.config.classNames.open);
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            for (var setting in settings) {
+                this.config[setting] = settings[setting];
+            }
         }
 
     });

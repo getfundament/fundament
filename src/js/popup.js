@@ -8,7 +8,7 @@
 
     var plugin    = 'popup',
         namespace = '.' + plugin,
-        methods   = ['toggle', 'show', 'hide', 'destroy'];
+        methods   = ['toggle', 'show', 'hide', 'setting', 'destroy'];
 
     var $window = $(window),
         $body   = $(document.body);
@@ -260,6 +260,17 @@
                     self.config.onHide.call(self.elem);
                 }
             }, delay.hasOwnProperty('hide') ? delay.hide : delay);
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            for (var setting in settings) {
+                this.config[setting] = settings[setting];
+            }
         },
 
         /**

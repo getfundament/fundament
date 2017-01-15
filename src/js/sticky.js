@@ -7,7 +7,7 @@
     'use strict';
 
     var plugin    = 'sticky',
-        methods   = ['calculate', 'destroy'],
+        methods   = ['calculate', 'setting', 'destroy'],
         namespace = '.' + plugin;
 
     var $window = $(window),
@@ -249,6 +249,17 @@
                     childList : true,
                     subtree   : true
                 });
+            }
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            for (var setting in settings) {
+                this.config[setting] = settings[setting];
             }
         },
 
