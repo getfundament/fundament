@@ -39,9 +39,9 @@ var Fm = (function(document) {
      * called for x milliseconds. If 'immediate' is passed, trigger
      * the function on the leading edge, instead of the trailing.
      *
-     * @param func
-     * @param wait
-     * @param immediate
+     * @param {function} func
+     * @param {int} wait
+     * @param {boolean} immediate
      */
     var debounce = function(func, wait, immediate) {
         var timeout;
@@ -69,7 +69,7 @@ var Fm = (function(document) {
     /**
      * Returns a prefixed CSS attribute.
      *
-     * @param attr
+     * @param {string} attr
      * @returns {string}
      */
     var prefixAttr = function(attr) {
@@ -86,9 +86,9 @@ var Fm = (function(document) {
     };
 
     /**
-     * Returns the supported transitionEnd event or false.
+     * Returns the supported transitionEnd event.
      *
-     * @returns {string|boolean}
+     * @returns {string|null}
      */
     var transitionEnd = function() {
         var events = {
@@ -104,14 +104,14 @@ var Fm = (function(document) {
             }
         }
 
-        return false;
+        return null;
     };
 
     return {
-        createID       : createID,
-        debounce       : debounce,
-        prefixAttr     : prefixAttr,
-        transitionEnd  : transitionEnd
+        createID: createID,
+        debounce: debounce,
+        prefixAttr: prefixAttr,
+        transitionEnd: transitionEnd
     };
 
 })(document);

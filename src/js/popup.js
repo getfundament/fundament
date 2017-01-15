@@ -119,7 +119,7 @@
         /**
          * Make cached calculations if needed.
          *
-         * @return boolean
+         * @return {boolean}
          */
         calculate: function() {
             var offset = this.$elem.offset();

@@ -139,7 +139,7 @@
         /**
          * Set the state of the sticky element.
          *
-         * @param state
+         * @param {string} state
          */
         make: function(state) {
             var self = this,
@@ -208,7 +208,7 @@
         /**
          * Get or show the mask for the sticky element.
          *
-         * @param show
+         * @param {boolean} show
          */
         mask: function(show) {
             var $mask = this.$elem.next('.' + this.config.classNames.mask);

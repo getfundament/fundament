@@ -63,7 +63,7 @@
         /**
          * Override the instance's settings.
          *
-         * @param settings
+         * @param {Object} settings
          */
         setting: function(settings) {
             for (var setting in settings) {
@@ -74,7 +74,7 @@
         /**
          * Check the state of the dropdown.
          *
-         * @param state
+         * @param {string} state
          */
         is: function(state) {
             var self = this;
@@ -95,7 +95,7 @@
         /**
          * Select a dropdown item.
          *
-         * @param target
+         * @param {jQuery|string} target
          */
         select: function(target) {
             var self      = this,
@@ -139,7 +139,7 @@
         /**
          * Select an item by pressing it's first character.
          *
-         * @param keyCode
+         * @param {int} keyCode
          */
         selectByKey: function(keyCode) {
             var self = this,
@@ -222,7 +222,7 @@
     /**
      * Transform a ordinary <select> into a dropdown.
      *
-     * @param element
+     * @param {HTMLElement} element
      */
     function transform(element) {
         var $select  = $(element);

@@ -10,7 +10,7 @@
 
     var transitionEndEvent = Fm.transitionEnd();
 
-    // Constructors
+    // Constructor
     function Transition(element, animation, settings, onEnd) {
         var self = this;
 
@@ -73,7 +73,7 @@
          * Parses the animation and determines the transition direction.
          * Returns the base name of the animation.
          *
-         * @param animation
+         * @param {string} animation
          * @return {string}
          */
         parse: function(animation) {
@@ -148,7 +148,7 @@
         /**
          * Get the inline style for the transition.
          *
-         * @param state
+         * @param {string} state
          */
         style: function(state) {
             var self      = this,
