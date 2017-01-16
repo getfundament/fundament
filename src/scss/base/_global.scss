@@ -2,16 +2,11 @@
     box-sizing: border-box;
 }
 html {
-    height: 100%;
-    overflow-y: auto;
     font-size: $font-size-base;
     font-family: $font-family-base;
     line-height: $line-height-base;
     color: $color-base;
 }
 body {
-    min-width: 320px;
-    min-height: 100%;
-    overflow-x: hidden;
     background-color: $color-background;
 }
