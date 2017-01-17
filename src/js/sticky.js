@@ -19,6 +19,7 @@
         this.config    = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
+        this.$context  = this.config.context ? this.$elem.closest(this.config.context) : null;
         this.calc      = {};
         this.isStick   = false;
         this.isBound   = false;
@@ -30,12 +31,12 @@
     $.extend(Sticky.prototype, {
 
         init: function() {
-            this.calculate();
-            this.bind();
-
             if (this.config.observe) {
                 this.observe();
             }
+
+            this.bind();
+            this.calculate();
         },
 
         /**
@@ -45,8 +46,8 @@
          */
         calculate: function() {
             var self = this,
-                calc = this.calc,
-                $context = self.config.context;
+                calc = self.calc,
+                $context = self.$context;
 
             windowHeight = $window.height();
 
@@ -60,13 +61,29 @@
                 height : self.$elem.outerHeight()
             };
 
-            calc.boundaries = {
-                top    : calc.elemOffset.top - self.config.topOffset,
-                bottom : ($context.is(document) ?
-                    $context.height() :
-                    $context.offset().top + $context.outerHeight()
-                ) - self.config.bottomOffset
-            };
+            if ($context) {
+                calc.contextOffset = $context.offset();
+
+                calc.bounds = {
+                    top    : calc.elemOffset.top - self.config.topOffset,
+                    bottom : calc.contextOffset.top + $context.outerHeight() - self.config.bottomOffset
+                };
+
+                if (calc.elemSize.height >= $context.height()) {
+                    console.warn(plugin + ': The sticky element is too large for its context');
+                    return this.destroy();
+                }
+            } else {
+                calc.bounds = {
+                    top    : 0,
+                    bottom : 99999
+                };
+            }
+
+            if (calc.elemSize.height > windowHeight) { // oversized content
+                calc.overSized = calc.elemSize.height - windowHeight;
+                calc.bounds.top += calc.overSized; // add difference in height to top boundary
+            }
 
             requestAnimationFrame(self.update.bind(self));
         },
@@ -89,48 +106,50 @@
          */
         unbind: function() {
             $window
-                .off('scroll' + this.namespace)
-                .off('resize' + this.namespace);
+                .off('resize' + this.namespace)
+                .off('scroll' + this.namespace);
         },
 
         /**
          * Check if the sticky element's state needs to be changed.
          */
         update: function() {
-            var self       = this,
+            var self = this,
+                calc = self.calc,
                 scrollTop  = window.pageYOffset,
                 elemBottom = scrollTop
                     + self.config.topOffset
-                    + self.calc.elemSize.height;
+                    + calc.elemSize.height
+                    - (calc.overSized || 0);
 
             if (
-                ! self.isStick                                    // is not sticky
-                && scrollTop >= self.calc.boundaries.top          // passed top boundary
+                ! self.isStick                            // is not sticky
+                && scrollTop >= calc.bounds.top          // passed top boundary
             ) {
                 self.make('stick');
 
                 if (
-                    self.isBound                                  // is bound
-                    && elemBottom >= self.calc.boundaries.bottom  // passed bottom boundary
+                    self.isBound                         // is bound
+                    && elemBottom >= calc.bounds.bottom  // passed bottom boundary
                 ) {
                     self.make('bound'); // fail-safe when recalculating
                 }
             }
             else if (
-                self.isStick                                      // is sticky
-                && scrollTop < self.calc.boundaries.top           // didn't pass top boundary
+                self.isStick                             // is sticky
+                && scrollTop < calc.bounds.top           // didn't pass top boundary
             ) {
                 self.make('unStick');
             }
             else if (
-                ! self.isBound                                    // is not bound
-                && elemBottom >= self.calc.boundaries.bottom      // passed bottom boundary
+                ! self.isBound                           // is not bound
+                && elemBottom >= calc.bounds.bottom      // passed bottom boundary
             ) {
                 self.make('bound');
             }
             else if (
-                self.isBound                                      // is bound
-                && elemBottom < self.calc.boundaries.bottom       // didn't pass bottom boundary
+                self.isBound                             // is bound
+                && elemBottom < calc.bounds.bottom       // didn't pass bottom boundary
             ) {
                 self.make('unBound');
             }
@@ -149,7 +168,7 @@
                 fixed: function() {
                     self.$elem.css({
                         position  : 'fixed',
-                        top       : calc.elemOffset.top > self.config.topOffset ? self.config.topOffset : calc.elemOffset.top,
+                        top       : calc.overSized ? -calc.overSized : self.config.topOffset, // oversized content has a negative top
                         left      : calc.elemOffset.left,
                         width     : calc.elemSize.width,
                         transform : 'translateZ(0)'
@@ -167,16 +186,7 @@
                 },
 
                 unStick: function() {
-                    self.$elem
-                        .css({
-                            position  : '',
-                            top       : '',
-                            left      : '',
-                            width     : '',
-                            transform : ''
-                        })
-                        .removeClass(self.config.classNames.stick);
-
+                    self.clear();
                     self.mask().hide();
 
                     self.isStick = false;
@@ -187,7 +197,8 @@
                     self.$elem
                         .css({
                             position : 'absolute',
-                            top      : calc.boundaries.bottom - calc.elemSize.height + 'px'
+                            top      : (calc.bounds.bottom - calc.elemSize.height) - calc.contextOffset.top, // subtract context top offset (relative-absolute positioning)
+                            left     : 0
                         })
                         .addClass(self.config.classNames.bound);
 
@@ -234,6 +245,24 @@
         },
 
         /**
+         * Clear sticky styles and classes.
+         */
+        clear: function() {
+            this.$elem
+                .css({
+                    position  : '',
+                    top       : '',
+                    left      : '',
+                    width     : '',
+                    transform : ''
+                })
+                .removeClass(
+                    this.config.classNames.stick + ' ' +
+                    this.config.classNames.bound
+                );
+        },
+
+        /**
          * Observe DOM changes.
          */
         observe: function() {
@@ -267,30 +296,16 @@
          * Destroy the instance.
          */
         destroy: function() {
-            var self = this;
-
-            if (self.hasOwnProperty('observer')) {
-                self.observer.disconnect();
-                self.contextObserver.disconnect();
+            if (this.hasOwnProperty('observer')) {
+                this.observer.disconnect();
+                this.contextObserver.disconnect();
             }
 
-            self.unbind(); // unbind event handlers
+            this.unbind();
+            this.clear();
+            this.mask().remove();
 
-            self.$elem // clear styling
-                .css({
-                    position : '',
-                    top      : '',
-                    left     : '',
-                    width    : ''
-                })
-                .removeClass(
-                    self.config.classNames.stick + ' ' +
-                    self.config.classNames.bound
-                );
-
-            self.mask().remove(); // remove mask
-
-            $.data(self.elem, plugin, null); // unset data
+            $.data(this.elem, plugin, null); // unset data
         }
 
     });
@@ -302,8 +317,7 @@
 
             if ( ! data) {
                 $.data(this, plugin, new Sticky(this, settings));
-            }
-            else if (typeof settings === 'string') {
+            } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
                     data[settings].apply(data, $.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
@@ -313,7 +327,7 @@
 
     // Default settings
     $.fn[plugin].defaults = {
-        context      : $(document),
+        context      : null,
         mask         : true,
         observe      : false,
         topOffset    : 0,
