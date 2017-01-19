@@ -238,10 +238,8 @@
             clearTimeout(self.timer);
 
             self.timer = setTimeout(function() {
-                if (self.$popup.is(':hidden')) {
-                    self.$popup.transition(self.config.transition + 'In', {queue: false});
-                    self.config.onShow.call(self.elem);
-                }
+                self.$popup.transition(self.config.transition + 'In', {queue: false});
+                self.config.onShow.call(self.elem);
             }, delay.hasOwnProperty('show') ? delay.show : delay);
         },
 
@@ -255,10 +253,8 @@
             clearTimeout(self.timer);
 
             self.timer = setTimeout(function() {
-                if (self.$popup.is(':visible')) {
-                    self.$popup.transition(self.config.transition + 'Out', {queue: false});
-                    self.config.onHide.call(self.elem);
-                }
+                self.$popup.transition(self.config.transition + 'Out', {queue: false});
+                self.config.onHide.call(self.elem);
             }, delay.hasOwnProperty('hide') ? delay.hide : delay);
         },
 
