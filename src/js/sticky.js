@@ -232,8 +232,7 @@
                     width  : this.calc.elemSize.width,
                     height : this.calc.elemSize.height
                 }).show();
-            }
-            else {
+            } else {
                 $('<div/>', { // create new
                     class : this.config.classNames.mask,
                     css   : {
