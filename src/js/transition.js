@@ -47,10 +47,12 @@
             }
 
             if (transitionEndEvent) {
-                self.$elem.one(transitionEndEvent, function(e) {
-                    e.stopPropagation(); // prevent event bubbling
-                    self.end();
-                });
+                self.$elem
+                    .off(transitionEndEvent) // prevent any interruptions
+                    .one(transitionEndEvent, function(e) {
+                        e.stopPropagation(); // prevent event bubbling
+                        self.end();
+                    });
             } else {
                 // Set a timer which functions as a fallback for the
                 // unsupported transitionEnd event.
