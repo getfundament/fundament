@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.1.0
+ * Fundament framework v0.1.2
  *
  * https://getfundament.com
  *
@@ -20,7 +20,7 @@ window.requestAnimationFrame = window.requestAnimationFrame
  *
  * @package Fundament
  */
-var Fm = (function(document, window) {
+var Fm = (function(document) {
 
     var cssPrefixes = ['-webkit-', '-moz-', '-ms-', '-o-'],
         cssDeclaration = document.createElement('div').style;
@@ -39,9 +39,9 @@ var Fm = (function(document, window) {
      * called for x milliseconds. If 'immediate' is passed, trigger
      * the function on the leading edge, instead of the trailing.
      *
-     * @param func
-     * @param wait
-     * @param immediate
+     * @param {function} func
+     * @param {int} wait
+     * @param {boolean} immediate
      */
     var debounce = function(func, wait, immediate) {
         var timeout;
@@ -69,13 +69,13 @@ var Fm = (function(document, window) {
     /**
      * Returns a prefixed CSS attribute.
      *
-     * @param attr
+     * @param {string} attr
      * @returns {string}
      */
     var prefixAttr = function(attr) {
         if (cssDeclaration[attr] === undefined) {
-            for (var prefix in cssPrefixes) {
-                var prefixed = cssPrefixes[prefix] + attr;
+            for (var i = 0; i < cssPrefixes.length; i++) {
+                var prefixed = cssPrefixes[i] + attr;
                 if (cssDeclaration[prefixed] !== undefined) {
                     attr = prefixed;
                 }
@@ -86,9 +86,9 @@ var Fm = (function(document, window) {
     };
 
     /**
-     * Returns the supported transitionEnd event or false.
+     * Returns the supported transitionEnd event.
      *
-     * @returns {string|boolean}
+     * @returns {string|null}
      */
     var transitionEnd = function() {
         var events = {
@@ -104,17 +104,17 @@ var Fm = (function(document, window) {
             }
         }
 
-        return false;
+        return null;
     };
 
     return {
-        createID       : createID,
-        debounce       : debounce,
-        prefixAttr     : prefixAttr,
-        transitionEnd  : transitionEnd
+        createID: createID,
+        debounce: debounce,
+        prefixAttr: prefixAttr,
+        transitionEnd: transitionEnd
     };
 
-})(document, window);
+})(document);
 
 /**
  * Dialog plugin.
@@ -126,7 +126,7 @@ var Fm = (function(document, window) {
 
     var plugin    = 'dialog',
         namespace = '.' + plugin,
-        methods   = ['open', 'close'];
+        methods   = ['open', 'close', 'setting'];
 
     var $window   = $(window),
         $document = $(document),
@@ -275,7 +275,19 @@ var Fm = (function(document, window) {
                     }
                 }
             }
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            for (var setting in settings) {
+                this.config[setting] = settings[setting];
+            }
         }
+
     });
 
     // Plugin definition
@@ -321,7 +333,7 @@ var Fm = (function(document, window) {
     'use strict';
 
     var plugin    = 'dropdown',
-        methods   = ['open', 'close', 'toggle', 'setting'];
+        methods   = ['toggle', 'open', 'close', 'setting'];
 
     // Constructor
     function Dropdown(element, settings) {
@@ -375,20 +387,9 @@ var Fm = (function(document, window) {
         },
 
         /**
-         * Override the instance's settings.
-         *
-         * @param settings
-         */
-        setting: function(settings) {
-            for (var setting in settings) {
-                this.config[setting] = settings[setting];
-            }
-        },
-
-        /**
          * Check the state of the dropdown.
          *
-         * @param state
+         * @param {string} state
          */
         is: function(state) {
             var self = this;
@@ -409,7 +410,7 @@ var Fm = (function(document, window) {
         /**
          * Select a dropdown item.
          *
-         * @param target
+         * @param {jQuery|string} target
          */
         select: function(target) {
             var self      = this,
@@ -453,7 +454,7 @@ var Fm = (function(document, window) {
         /**
          * Select an item by pressing it's first character.
          *
-         * @param keyCode
+         * @param {int} keyCode
          */
         selectByKey: function(keyCode) {
             var self = this,
@@ -529,6 +530,17 @@ var Fm = (function(document, window) {
             });
 
             self.$elem.removeClass(self.config.classNames.open);
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            for (var setting in settings) {
+                this.config[setting] = settings[setting];
+            }
         }
 
     });
@@ -536,29 +548,28 @@ var Fm = (function(document, window) {
     /**
      * Transform a ordinary <select> into a dropdown.
      *
-     * @param element
+     * @param {HTMLElement} element
      */
     function transform(element) {
-        var $select  = $(element),
-            defaults = $.fn[plugin].defaults;
-
+        var $select  = $(element);
         if ( ! $select.is('select')) {
             return element;
         }
 
-        var $options  = $select.find('option'),
-            $selected = $options.filter(':selected'),
-            $dropdown = $('<div/>', {
-                class: defaults.classNames.dropdown + ' ' + defaults.classNames.select,
+        var classNames = $.fn[plugin].defaults.classNames,
+            $options   = $select.find('option'),
+            $selected  = $options.filter(':selected'),
+            $dropdown  = $('<div/>', {
+                class: classNames.dropdown + ' ' + classNames.select,
                 tabindex: 0
             }),
+            $menu  = $('<ul/>', {
+                class: classNames.menu
+            }),
+            $label = $('<span/>'),
             $input = $('<input/>', {
                 type: 'hidden',
                 name: $select.attr('name')
-            }),
-            $label = $('<span/>', {}),
-            $menu  = $('<ul/>', {
-                class: defaults.classNames.menu
             });
 
         // Create menu
@@ -582,16 +593,15 @@ var Fm = (function(document, window) {
         }
 
         // Generate HTML
-        $select.wrap($dropdown)
-            .after($menu)
-            .after($label)
-            .after($input)
-            .removeClass(defaults.classNames.dropdown);
+        $select
+            .wrap($dropdown)
+            .after($menu, $label, $input);
 
-        $dropdown = $select.parents('.' + defaults.classNames.dropdown)[0];
+        $dropdown = $select.parents('.' + classNames.dropdown);
+
         $select.remove();
 
-        return $dropdown;
+        return $dropdown[0];
     }
 
     // Plugin definition
@@ -642,7 +652,7 @@ var Fm = (function(document, window) {
 
     var plugin    = 'popup',
         namespace = '.' + plugin,
-        methods   = ['toggle', 'show', 'hide', 'destroy'];
+        methods   = ['toggle', 'show', 'hide', 'setting', 'destroy'];
 
     var $window = $(window),
         $body   = $(document.body);
@@ -680,8 +690,6 @@ var Fm = (function(document, window) {
 
         /**
          * Create and append a new popup element.
-         *
-         * @return $popup;
          */
         create: function() {
             var $popup = $('<div/>', {
@@ -753,9 +761,9 @@ var Fm = (function(document, window) {
         },
 
         /**
-         * Make cached calculations when needed.
+         * Make cached calculations if needed.
          *
-         * @return boolean
+         * @return {boolean}
          */
         calculate: function() {
             var offset = this.$elem.offset();
@@ -869,16 +877,13 @@ var Fm = (function(document, window) {
             var self  = this,
                 delay = self.config.delay;
 
-            clearTimeout(self.timer);
-
-            if (this.$popup.is(':visible')) // TODO: reconsider this implementation
-                return false;
-
             self.position();
 
+            clearTimeout(self.timer);
+
             self.timer = setTimeout(function() {
-                self.config.onShow.call(self.elem);
                 self.$popup.transition(self.config.transition + 'In', {queue: false});
+                self.config.onShow.call(self.elem);
             }, delay.hasOwnProperty('show') ? delay.show : delay);
         },
 
@@ -888,16 +893,24 @@ var Fm = (function(document, window) {
         hide: function() {
             var self  = this,
                 delay = self.config.delay;
-            
+
             clearTimeout(self.timer);
 
-            if (this.$popup.is(':hidden'))
-                return false;
-
             self.timer = setTimeout(function() {
-                self.config.onHide.call(self.elem);
                 self.$popup.transition(self.config.transition + 'Out', {queue: false});
+                self.config.onHide.call(self.elem);
             }, delay.hasOwnProperty('hide') ? delay.hide : delay);
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            for (var setting in settings) {
+                this.config[setting] = settings[setting];
+            }
         },
 
         /**
@@ -952,7 +965,7 @@ var Fm = (function(document, window) {
     'use strict';
 
     var plugin    = 'sticky',
-        methods   = ['calculate', 'destroy'],
+        methods   = ['calculate', 'setting', 'destroy'],
         namespace = '.' + plugin;
 
     var $window = $(window),
@@ -964,6 +977,7 @@ var Fm = (function(document, window) {
         this.config    = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
+        this.$context  = this.config.context ? this.$elem.closest(this.config.context) : null;
         this.calc      = {};
         this.isStick   = false;
         this.isBound   = false;
@@ -975,12 +989,12 @@ var Fm = (function(document, window) {
     $.extend(Sticky.prototype, {
 
         init: function() {
-            this.calculate();
-            this.bind();
-
             if (this.config.observe) {
                 this.observe();
             }
+
+            this.bind();
+            this.calculate();
         },
 
         /**
@@ -990,8 +1004,8 @@ var Fm = (function(document, window) {
          */
         calculate: function() {
             var self = this,
-                calc = this.calc,
-                $context = self.config.context;
+                calc = self.calc,
+                $context = self.$context;
 
             windowHeight = $window.height();
 
@@ -1005,13 +1019,29 @@ var Fm = (function(document, window) {
                 height : self.$elem.outerHeight()
             };
 
-            calc.boundaries = {
-                top    : calc.elemOffset.top - self.config.topOffset,
-                bottom : ($context.is(document) ?
-                    $context.height() :
-                    $context.offset().top + $context.outerHeight()
-                ) - self.config.bottomOffset
-            };
+            if ($context) {
+                calc.contextOffset = $context.offset();
+
+                calc.bounds = {
+                    top    : calc.elemOffset.top - self.config.topOffset,
+                    bottom : calc.contextOffset.top + $context.outerHeight() - self.config.bottomOffset
+                };
+
+                if (calc.elemSize.height >= $context.height()) {
+                    console.warn(plugin + ': The sticky element is too large for its context');
+                    return this.destroy();
+                }
+            } else {
+                calc.bounds = {
+                    top    : 0,
+                    bottom : 99999
+                };
+            }
+
+            if (calc.elemSize.height > windowHeight) { // oversized content
+                calc.overSized = calc.elemSize.height - windowHeight;
+                calc.bounds.top += calc.overSized; // add difference in height to top boundary
+            }
 
             requestAnimationFrame(self.update.bind(self));
         },
@@ -1034,48 +1064,50 @@ var Fm = (function(document, window) {
          */
         unbind: function() {
             $window
-                .off('scroll' + this.namespace)
-                .off('resize' + this.namespace);
+                .off('resize' + this.namespace)
+                .off('scroll' + this.namespace);
         },
 
         /**
          * Check if the sticky element's state needs to be changed.
          */
         update: function() {
-            var self       = this,
+            var self = this,
+                calc = self.calc,
                 scrollTop  = window.pageYOffset,
                 elemBottom = scrollTop
                     + self.config.topOffset
-                    + self.calc.elemSize.height;
+                    + calc.elemSize.height
+                    - (calc.overSized || 0);
 
             if (
-                ! self.isStick                                    // is not sticky
-                && scrollTop >= self.calc.boundaries.top          // passed top boundary
+                ! self.isStick                            // is not sticky
+                && scrollTop >= calc.bounds.top          // passed top boundary
             ) {
                 self.make('stick');
 
                 if (
-                    self.isBound                                  // is bound
-                    && elemBottom >= self.calc.boundaries.bottom  // passed bottom boundary
+                    self.isBound                         // is bound
+                    && elemBottom >= calc.bounds.bottom  // passed bottom boundary
                 ) {
                     self.make('bound'); // fail-safe when recalculating
                 }
             }
             else if (
-                self.isStick                                      // is sticky
-                && scrollTop < self.calc.boundaries.top           // didn't pass top boundary
+                self.isStick                             // is sticky
+                && scrollTop < calc.bounds.top           // didn't pass top boundary
             ) {
                 self.make('unStick');
             }
             else if (
-                ! self.isBound                                    // is not bound
-                && elemBottom >= self.calc.boundaries.bottom      // passed bottom boundary
+                ! self.isBound                           // is not bound
+                && elemBottom >= calc.bounds.bottom      // passed bottom boundary
             ) {
                 self.make('bound');
             }
             else if (
-                self.isBound                                      // is bound
-                && elemBottom < self.calc.boundaries.bottom       // didn't pass bottom boundary
+                self.isBound                             // is bound
+                && elemBottom < calc.bounds.bottom       // didn't pass bottom boundary
             ) {
                 self.make('unBound');
             }
@@ -1084,7 +1116,7 @@ var Fm = (function(document, window) {
         /**
          * Set the state of the sticky element.
          *
-         * @param state
+         * @param {string} state
          */
         make: function(state) {
             var self = this,
@@ -1094,7 +1126,7 @@ var Fm = (function(document, window) {
                 fixed: function() {
                     self.$elem.css({
                         position  : 'fixed',
-                        top       : calc.elemOffset.top > self.config.topOffset ? self.config.topOffset : calc.elemOffset.top,
+                        top       : calc.overSized ? -calc.overSized : self.config.topOffset, // oversized content has a negative top
                         left      : calc.elemOffset.left,
                         width     : calc.elemSize.width,
                         transform : 'translateZ(0)'
@@ -1112,16 +1144,7 @@ var Fm = (function(document, window) {
                 },
 
                 unStick: function() {
-                    self.$elem
-                        .css({
-                            position  : '',
-                            top       : '',
-                            left      : '',
-                            width     : '',
-                            transform : ''
-                        })
-                        .removeClass(self.config.classNames.stick);
-
+                    self.clear();
                     self.mask().hide();
 
                     self.isStick = false;
@@ -1132,7 +1155,8 @@ var Fm = (function(document, window) {
                     self.$elem
                         .css({
                             position : 'absolute',
-                            top      : calc.boundaries.bottom - calc.elemSize.height + 'px'
+                            top      : (calc.bounds.bottom - calc.elemSize.height) - calc.contextOffset.top, // subtract context top offset (relative-absolute positioning)
+                            left     : 0
                         })
                         .addClass(self.config.classNames.bound);
 
@@ -1153,7 +1177,7 @@ var Fm = (function(document, window) {
         /**
          * Get or show the mask for the sticky element.
          *
-         * @param show
+         * @param {boolean} show
          */
         mask: function(show) {
             var $mask = this.$elem.next('.' + this.config.classNames.mask);
@@ -1166,8 +1190,7 @@ var Fm = (function(document, window) {
                     width  : this.calc.elemSize.width,
                     height : this.calc.elemSize.height
                 }).show();
-            }
-            else {
+            } else {
                 $('<div/>', { // create new
                     class : this.config.classNames.mask,
                     css   : {
@@ -1176,6 +1199,24 @@ var Fm = (function(document, window) {
                     }
                 }).insertAfter(this.$elem);
             }
+        },
+
+        /**
+         * Clear sticky styles and classes.
+         */
+        clear: function() {
+            this.$elem
+                .css({
+                    position  : '',
+                    top       : '',
+                    left      : '',
+                    width     : '',
+                    transform : ''
+                })
+                .removeClass(
+                    this.config.classNames.stick + ' ' +
+                    this.config.classNames.bound
+                );
         },
 
         /**
@@ -1198,33 +1239,30 @@ var Fm = (function(document, window) {
         },
 
         /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            for (var setting in settings) {
+                this.config[setting] = settings[setting];
+            }
+        },
+
+        /**
          * Destroy the instance.
          */
         destroy: function() {
-            var self = this;
-
-            if (self.hasOwnProperty('observer')) {
-                self.observer.disconnect();
-                self.contextObserver.disconnect();
+            if (this.hasOwnProperty('observer')) {
+                this.observer.disconnect();
+                this.contextObserver.disconnect();
             }
 
-            self.unbind(); // unbind event handlers
+            this.unbind();
+            this.clear();
+            this.mask().remove();
 
-            self.$elem // clear styling
-                .css({
-                    position : '',
-                    top      : '',
-                    left     : '',
-                    width    : ''
-                })
-                .removeClass(
-                    self.config.classNames.stick + ' ' +
-                    self.config.classNames.bound
-                );
-
-            self.mask().remove(); // remove mask
-
-            $.data(self.elem, plugin, null); // unset data
+            $.data(this.elem, plugin, null); // unset data
         }
 
     });
@@ -1236,8 +1274,7 @@ var Fm = (function(document, window) {
 
             if ( ! data) {
                 $.data(this, plugin, new Sticky(this, settings));
-            }
-            else if (typeof settings === 'string') {
+            } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
                     data[settings].apply(data, $.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
@@ -1247,7 +1284,7 @@ var Fm = (function(document, window) {
 
     // Default settings
     $.fn[plugin].defaults = {
-        context      : $(document),
+        context      : null,
         mask         : true,
         observe      : false,
         topOffset    : 0,
@@ -1335,7 +1372,7 @@ var Fm = (function(document, window) {
 
     var transitionEndEvent = Fm.transitionEnd();
 
-    // Constructors
+    // Constructor
     function Transition(element, animation, settings, onEnd) {
         var self = this;
 
@@ -1372,10 +1409,12 @@ var Fm = (function(document, window) {
             }
 
             if (transitionEndEvent) {
-                self.$elem.one(transitionEndEvent, function(e) {
-                    e.stopPropagation(); // prevent event bubbling
-                    self.end();
-                });
+                self.$elem
+                    .off(transitionEndEvent) // prevent any interruptions
+                    .one(transitionEndEvent, function(e) {
+                        e.stopPropagation(); // prevent event bubbling
+                        self.end();
+                    });
             } else {
                 // Set a timer which functions as a fallback for the
                 // unsupported transitionEnd event.
@@ -1398,7 +1437,7 @@ var Fm = (function(document, window) {
          * Parses the animation and determines the transition direction.
          * Returns the base name of the animation.
          *
-         * @param animation
+         * @param {string} animation
          * @return {string}
          */
         parse: function(animation) {
@@ -1473,7 +1512,7 @@ var Fm = (function(document, window) {
         /**
          * Get the inline style for the transition.
          *
-         * @param state
+         * @param {string} state
          */
         style: function(state) {
             var self      = this,
@@ -1541,16 +1580,16 @@ var Fm = (function(document, window) {
 
         // scale
         scale: {
-            start : { 'opacity': 0, 'transform': 'scale(0.8)' },
+            start : { 'opacity': 0, 'transform': 'scale(0.6)' },
             end   : { 'opacity': 1, 'transform': 'scale(1.0)' }
         },
         scaleUp: {
-            start : { 'opacity': 0, 'transform': 'scale(0.8) translateY(10%)' },
-            end   : { 'opacity': 1, 'transform': 'scale(1.0) translateY(0)' }
+            start : { 'opacity': 0, 'transform': 'scale(0.6)', 'transform-origin': 'bottom' },
+            end   : { 'opacity': 1, 'transform': 'scale(1.0)', 'transform-origin': 'bottom' }
         },
         scaleDown: {
-            start : { 'opacity': 0, 'transform': 'scale(0.8) translateY(-10%)' },
-            end   : { 'opacity': 1, 'transform': 'scale(1.0) translateY(0)' }
+            start : { 'opacity': 0, 'transform': 'scale(0.6)', 'transform-origin': 'top' },
+            end   : { 'opacity': 1, 'transform': 'scale(1.0)', 'transform-origin': 'top' }
         },
 
         // slide
