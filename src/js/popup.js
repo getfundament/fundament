@@ -85,7 +85,11 @@
             }
 
             $window.on('resize' + namespace,
-                Fm.debounce(self.hide.bind(self), 200, true)
+                Fm.debounce(function() {
+                    if (self.$elem.is(':visible')) {
+                        self.hide(); // hide to force recalculation
+                    }
+                }, 200, true)
             );
         },
 
@@ -126,8 +130,8 @@
 
             if (
                 this.calc
-                && offset.top  === this.calc.elem.top
-                && offset.left === this.calc.elem.left
+                && this.calc.elem.top === offset.top
+                && this.calc.elem.left === offset.left
             ) {
                 return false; // no need to position
             }

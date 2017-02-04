@@ -59,16 +59,15 @@
                 setTimeout(self.end.bind(self), config.duration + config.delay);
             }
 
-            if (config.delay == 0) {
-                // Create a separate queue entry to make sure previous
-                // re-draw events are finished. This also notifies the
-                // browser that the element is soon going to be animated.
+
+            // Create a separate queue entry to make sure previous
+            // re-draw events are finished. This also notifies the
+            // browser that the element is soon going to be animated.
+            var fire = function() {
                 requestAnimationFrame(self.start.bind(self));
-            } else {
-                setTimeout(function() {
-                    requestAnimationFrame(self.start.bind(self));
-                }, config.delay);
-            }
+            };
+
+            config.delay == 0 ? fire() : setTimeout(fire, config.delay);
         },
 
         /**
