@@ -1,13 +1,23 @@
 // Textual
-.text-center { text-align: center; }
-.text-left   { text-align: left; }
-.text-right  { text-align: right; }
-
 .text-primary  { color: $color-primary; }
 .text-positive { color: $color-positive; }
 .text-warning  { color: $color-warning; }
 .text-negative { color: $color-negative; }
 .text-muted    { color: $color-gray-dark; }
+
+@each $size, $breakpoint in $grid-breakpoints {
+    @include breakpoint-up($size) {
+
+        @each $align in (left, center, right) {
+            $name: if($size == xs, $align, #{$size}-#{$align}); // xs shorthand
+
+            .text-#{$name} {
+                text-align: $align;
+            }
+        }
+
+    }
+}
 
 // Backgrounds
 .bg-primary  { background-color: $color-primary; color: #FFF; }
@@ -36,6 +46,26 @@
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+}
+
+// Spacing
+@each $size, $breakpoint in $grid-breakpoints {
+    @include breakpoint-up($size) {
+
+        @each $dir, $abbr in (top: t, right: r, bottom: b, left: l) {
+            @for $i from 1 through 5 {
+                $name: if($size == xs, #{$abbr}-#{$i}, #{$abbr}-#{$size}-#{$i}); // xs shorthand
+
+                .m#{$name} { // margin
+                    margin-#{$dir}: $i * 0.5rem;
+                }
+                .p#{$name} { // padding
+                    padding-#{$dir}: $i * 0.5rem;
+                }
+            }
+        }
+
+    }
 }
 
 // Clearfix
