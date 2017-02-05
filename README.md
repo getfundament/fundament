@@ -16,14 +16,13 @@ A modern and lightweight front-end framework built on the shoulders of giants an
    
 ## Installation
 
-Installation
-
-- Bower: `bower install fundament`
-- NPM: `npm install fundament-npm`
+- Using [Bower](https://bower.io): `bower install fundament`
+- Using [NPM](https://www.npmjs.com): `npm install fundament-npm`
+- Using [Yarn](https://yarnpkg.com): `yarn add fundament-npm`
 
 ## Documentation
 
-Visit https://getfundament.com
+The [Fundament Documentation](https://getfundament.com/docs) makes it a breeze to start using the framework.
 
 ## Contributing
 
