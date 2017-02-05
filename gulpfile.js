@@ -60,7 +60,9 @@ const tasks = {
     watch: function() {
         gulp.watch(Fundament.js.src, ['js']);
         gulp.watch(Fundament.sass.watch, ['sass']);
-    }
+    },
+
+    default: ['js', 'sass']
 
 };
 
