@@ -26,17 +26,16 @@
 }
 
 @each $size, $breakpoint in $grid-breakpoints {
-
     @include breakpoint-up($size) {
 
         @for $i from 1 through $grid-columns {
+            $name: if($size == xs, $i, #{$size}-#{$i}); // xs shorthand: col--xs-6 -> col--6
             $width: #{(100/$grid-columns) * $i + '%'};
 
-            .col--#{$size}-#{$i} {
+            .col--#{$name} {
                 width: $width;
             }
         }
 
     }
-
 }
