@@ -7,7 +7,8 @@ const gulp       = require('gulp'),
       prefixer   = require('gulp-autoprefixer'),
       sourcemaps = require('gulp-sourcemaps'),
       sass       = require('gulp-sass'),
-      cssnano    = require('gulp-cssnano');
+      cssnano    = require('gulp-cssnano'),
+      filter     = require('gulp-filter');
 
 /**
  * Fundament source and dist paths.
@@ -34,12 +35,13 @@ const tasks = {
             .pipe(plumber())
             .pipe(sourcemaps.init())
             .pipe(concat('fundament.js'))
-            // .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest(Fundament.js.dist))
-            .pipe(rename('fundament.min.js'))
+            .pipe(sourcemaps.write('.'))
+            .pipe(gulp.dest(Fundament.js.dist)) // compressed
+            .pipe(filter('**/*.js'))
+            .pipe(rename({suffix: '.min'}))
             .pipe(uglify({preserveComments: 'license'}))
             .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest(Fundament.js.dist));
+            .pipe(gulp.dest(Fundament.js.dist)); // minified
     },
 
     sass: function() {
@@ -47,14 +49,15 @@ const tasks = {
             .pipe(plumber())
             .pipe(sourcemaps.init())
             .pipe(sass())
-            .pipe(concat('fundament.css'))
             .pipe(prefixer())
-            // .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest(Fundament.sass.dist))
-            .pipe(rename('fundament.min.css'))
+            .pipe(concat('fundament.css'))
+            .pipe(sourcemaps.write('.'))
+            .pipe(gulp.dest(Fundament.sass.dist)) // compressed
+            .pipe(filter('**/*.css'))
+            .pipe(rename({suffix: '.min'}))
             .pipe(cssnano())
             .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest(Fundament.sass.dist));
+            .pipe(gulp.dest(Fundament.sass.dist)); // minified
     },
 
     watch: function() {
