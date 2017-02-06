@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.1.2
+ * Fundament framework v0.1.3
  *
  * https://getfundament.com
  *
@@ -729,7 +729,11 @@ var Fm = (function(document) {
             }
 
             $window.on('resize' + namespace,
-                Fm.debounce(self.hide.bind(self), 200, true)
+                Fm.debounce(function() {
+                    if (self.$elem.is(':visible')) {
+                        self.hide(); // hide to force recalculation
+                    }
+                }, 200, true)
             );
         },
 
@@ -770,8 +774,8 @@ var Fm = (function(document) {
 
             if (
                 this.calc
-                && offset.top  === this.calc.elem.top
-                && offset.left === this.calc.elem.left
+                && this.calc.elem.top === offset.top
+                && this.calc.elem.left === offset.left
             ) {
                 return false; // no need to position
             }
@@ -1421,16 +1425,15 @@ var Fm = (function(document) {
                 setTimeout(self.end.bind(self), config.duration + config.delay);
             }
 
-            if (config.delay == 0) {
-                // Create a separate queue entry to make sure previous
-                // re-draw events are finished. This also notifies the
-                // browser that the element is soon going to be animated.
+
+            // Create a separate queue entry to make sure previous
+            // re-draw events are finished. This also notifies the
+            // browser that the element is soon going to be animated.
+            var fire = function() {
                 requestAnimationFrame(self.start.bind(self));
-            } else {
-                setTimeout(function() {
-                    requestAnimationFrame(self.start.bind(self));
-                }, config.delay);
-            }
+            };
+
+            config.delay == 0 ? fire() : setTimeout(fire, config.delay);
         },
 
         /**
@@ -1610,3 +1613,5 @@ var Fm = (function(document) {
     };
 
 })(jQuery);
+
+//# sourceMappingURL=fundament.js.map
