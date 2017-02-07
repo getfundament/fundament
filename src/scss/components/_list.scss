@@ -1,0 +1,38 @@
+.list {
+    display: block;
+    line-height: $list-line-height;
+}
+ul.list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+// Item
+.list__item {
+    display: flex;
+    padding: spacing($list-item-padding);
+    justify-content: flex-start;
+    border-bottom: 1px solid $list-item-border-color;
+    background-color: $list-item-background;
+
+    &:first-child {
+        border-top: 1px solid $list-item-border-color;
+    }
+
+    > *:not(:last-child) {
+        margin-right: $list-spacing;
+    }
+}
+.list__item--center {
+    align-items: center;
+}
+
+// Content
+.list__content {
+    flex: 1 1 auto;
+
+    > .list {
+        margin-top: $list-spacing;
+    }
+}

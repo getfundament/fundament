@@ -118,6 +118,17 @@ $label-background:    $color-gray-lightest  !default;
 $label-border-radius: $border-radius-base   !default;
 
 /*---------------------*
+ * List
+ *---------------------*/
+$list-line-height:    1.25                  !default;
+$list-spacing:        0.75rem               !default;
+
+// Item
+$list-item-padding:      0.75rem 1rem          !default;
+$list-item-border-color: $color-gray-lightest  !default;
+$list-item-background:   transparent           !default;
+
+/*---------------------*
  * Button
  *---------------------*/
 $button-padding:       0.625rem, 1.125rem   !default;
