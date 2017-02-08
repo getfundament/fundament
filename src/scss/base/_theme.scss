@@ -170,10 +170,8 @@ $dropdown-border-radius: $border-radius-base        !default;
 $dropdown-box-shadow:    0 2px 6px rgba(0,0,0,0.1)  !default;
 
 // Item
-$dropdown-item-padding: 0.625rem, 0.8125rem !default;
-
-// Select
-$dropdown-select: '';
+$dropdown-item-padding:      0.625rem, 0.8125rem    !default;
+$dropdown-item-border-color: rgba(0,0,0,0.04)       !default;
 
 /*---------------------*
  * Dialog

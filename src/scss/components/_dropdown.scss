@@ -4,7 +4,6 @@
     outline: 0;
     cursor: pointer;
     user-select: none;
-    text-align: left; // buttons have centered text
 
     &:after {
         content: " ";
@@ -23,6 +22,7 @@
         z-index: $z-dropdown;
         outline: 0;
         line-height: 1;
+        text-align: left;
         white-space: nowrap;
         background-color: $dropdown-background;
         border: 1px solid $dropdown-border-color;
@@ -32,7 +32,7 @@
     .menu__item {
         padding: spacing($dropdown-item-padding);
         color: $input-color;
-        border-bottom: 1px solid rgba(0,0,0,0.04);
+        border-bottom: 1px solid $dropdown-item-border-color;
 
         &:last-child {
             border-bottom-width: 0;
@@ -46,7 +46,7 @@
         }
     }
 
-    // States
+    // Reversed (upward)
     &.dropdown--reversed {
         .menu {
             top: auto;
@@ -58,72 +58,58 @@
     }
 }
 
-// Select
+// Select input
 .dropdown--select {
-    display: block;
-    padding: spacing($input-padding);
-    padding-right: spacing($input-padding, x) + 1rem;
-    color: $input-color;
-    line-height: $input-line-height;
-    border-radius: $input-border-radius;
-    border: 1px solid $input-border-color;
-    background-color: $input-background;
-    transition: all 0.3s ease-out;
+    @extend .input;
 
-    > span {
+    &:after { // dropdown arrow
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+    }
+    > span { // input placeholder
         pointer-events: none;
     }
     .menu {
         left: -1px;
         right: -1px;
         max-height: 275px;
-        overflow-y: auto;
         margin: 0;
+        overflow-y: auto;
         border: 1px solid $input-border-focus;
-        border-top-width: 0;
-        border-radius: 0 0 $input-border-radius $input-border-radius;
+        box-shadow: none;
     }
 
-    &.dropdown--empty span {
-        color: $input-placeholder;
-    }
-    &:focus {
-        border-color: $input-border-focus;
-    }
-    &:after {
-        position: absolute;
-        top: 50%;
-        right: 1rem;
-        border-top-width: 0.35em;
+    // Default (downward)
+    &:not(.dropdown--reversed) {
+        .menu {
+            border-top-width: 0;
+            border-radius: 0 0 $input-border-radius $input-border-radius;
+        }
+        .menu__item:first-child {
+            border-top: 1px solid $dropdown-item-border-color;
+        }
+        &.dropdown--open {
+            border-radius: $input-border-radius $input-border-radius 0 0;
+        }
     }
 
-    // Default
-    &:not(.dropdown--reversed) .menu__item:first-child {
-        border-top: 1px solid rgba(0,0,0,0.04);
-    }
-    // Reversed
+    // Reversed (upward)
     &.dropdown--reversed {
         .menu {
-            border-top-width: 1px;
             border-bottom-width: 0;
             border-radius: $input-border-radius $input-border-radius 0 0;
         }
         .menu__item:last-child {
             border-bottom-width: 1px;
         }
-    }
-
-    // Open
-    &.dropdown--open {
-        // Default
-        &:not(.dropdown--reversed) {
-            border-bottom-color: transparent;
-            border-radius: $input-border-radius $input-border-radius 0 0;
-        }
-        // Reversed
-        &.dropdown--reversed {
-            border-top-color: transparent;
+        &.dropdown--open {
             border-radius: 0 0 $input-border-radius $input-border-radius;
         }
+    }
+
+    // Empty
+    &.dropdown--empty > span {
+        color: $input-placeholder;
     }
 }
