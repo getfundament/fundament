@@ -14,7 +14,7 @@
     @include transition(all 0.3s ease-out);
 
     &:hover {
-        color: $input-color-focus;
+        color: $input-color-hover;
         background-color: $input-background-hover;
         border-color: $input-border-hover;
     }
