@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.1.3
+ * Fundament framework v0.2.0
  *
  * https://getfundament.com
  *
@@ -337,11 +337,11 @@ var Fm = (function(document) {
 
     // Constructor
     function Dropdown(element, settings) {
-        this.config    = $.extend({}, $.fn[plugin].defaults, settings);
-        this.elem      = element;
-        this.$elem     = $(element);
-        this.$menu     = this.$elem.find('.' + this.config.classNames.menu);
-        this.$items    = this.$elem.find('.' + this.config.classNames.item);
+        this.config = $.extend({}, $.fn[plugin].defaults, settings);
+        this.elem   = element;
+        this.$elem  = $(element);
+        this.$menu  = this.$elem.find('.' + this.config.classNames.menu);
+        this.$items = this.$elem.find('.' + this.config.classNames.item);
         this.init();
     }
 
@@ -349,13 +349,19 @@ var Fm = (function(document) {
     $.extend(Dropdown.prototype, {
 
         init: function() {
+            this.bind();
+
+            if (this.is('select') && this.is('empty')) {
+                this.$elem.addClass(this.config.classNames.empty);
+            }
+        },
+
+        /**
+         * Bind event handlers.
+         */
+        bind: function() {
             var self = this;
 
-            if (self.is('select') && self.is('empty')) {
-                self.$elem.addClass(self.config.classNames.empty);
-            }
-
-            // Bind handlers
             self.$elem
                 .mousedown(function(e) {
                     var $target = $(e.target);
@@ -413,39 +419,44 @@ var Fm = (function(document) {
          * @param {jQuery|string} target
          */
         select: function(target) {
-            var self      = this,
-                $selected = self.$items.filter('.active'),
-                $item;
+            var self = this,
+                $active = self.$items.filter('.active'),
+                $target;
 
+            // Retrieve target item
             if (target instanceof jQuery) {
-                $item = target; // element is passed
+                $target = target; // element is passed
             } else {
-                if ($selected.length > 0) {
-                    $item = (target === 'next') ?
-                        $selected.next():
-                        $selected.prev();
+                if ($active.length) {
+                    $target = (target === 'next') ?
+                        $active.next():
+                        $active.prev();
                 } else {
-                    $item = self.$items.first();
+                    $target = self.$items.first();
                 }
             }
 
-            // Avoid unnecessary DOM manipulations
-            if ( ! $item || $item.length === 0 || $item.is($selected)) {
+            if ( ! $target
+                || $target.length === 0
+                || $target.is($active)) {
                 return false;
             }
 
-            // TODO: scroll to item
-            //self.$menu.scrollTop($item.offset().top  - self.$menu.offset().top);
+            // TODO: scroll to item (overflowing content)
 
             // Set classes
+            $active.removeClass('active');
+            $target.addClass('active');
             self.$elem.removeClass(self.config.classNames.empty);
-            $selected.removeClass('active');
-            $item.addClass('active');
 
             if (self.is('select')) {
-                // Set label and input value
-                self.$elem.find('input').val( $item.data('value') );
-                self.$elem.find('span').first().text( $item.text() );
+                self.$elem // input value
+                    .find('> input')
+                    .val( $target.data('value') );
+
+                self.$elem // label value
+                    .find('> span')
+                    .text( $target.text() );
             }
 
             self.config.onSelect.call(self.elem);
@@ -460,25 +471,26 @@ var Fm = (function(document) {
             var self = this,
                 char = String.fromCharCode(keyCode).toLowerCase();
 
-            if ( ! char) return;
+            if ( ! char) {
+                return;
+            }
 
             var $matches = self.$items.filter(function() {
-                return $(this).text().substr(0, 1).toLowerCase() === char
+                return $(this).text().substr(0,1).toLowerCase() === char
             });
 
             if ($matches.length) {
-                var $next = $matches.eq(
-                    $matches.filter('.active').index() + 1 // next match within collection
-                );
+                var index = $matches.index($matches.filter('.active')),
+                    $next = $($matches[index + 1]); // next match
 
-                $next.length ?
+                $next && $next.length ?
                     self.select($next):
                     self.select($matches.first());
             }
         },
 
         /**
-         * Toggles the dropdown.
+         * Toggle the dropdown.
          */
         toggle: function() {
             this.is('open') ?
@@ -490,20 +502,21 @@ var Fm = (function(document) {
          * Open the dropdown.
          */
         open: function() {
-            var self  = this;
+            var self = this;
 
             if (self.is('open')) {
                 return;
             }
-            else if (self.config.smart && self.is('select')) {
+
+            if (self.config.smart) {
                 var menuHeight  = self.$menu.outerHeight(),
                     topSpace    = self.$elem.offset().top - window.pageYOffset,
                     bottomSpace = window.innerHeight - topSpace - self.$elem.outerHeight();
 
                 // Find the best direction for the menu to open
-                (bottomSpace < menuHeight && topSpace > menuHeight) ?
-                    self.$elem.addClass(self.config.classNames.reversed):
-                    self.$elem.removeClass(self.config.classNames.reversed);
+                self.$elem.toggleClass(self.config.classNames.reversed,
+                    bottomSpace < menuHeight && topSpace > menuHeight
+                );
             }
 
             self.$menu.transition(self.config.transition + 'In', {
@@ -518,7 +531,7 @@ var Fm = (function(document) {
          * Close the dropdown.
          */
         close: function() {
-            var self  = this;
+            var self = this;
 
             if ( ! self.is('open')) {
                 return;
@@ -538,9 +551,7 @@ var Fm = (function(document) {
          * @param {Object} settings
          */
         setting: function(settings) {
-            for (var setting in settings) {
-                this.config[setting] = settings[setting];
-            }
+            $.extend(this.config, settings);
         }
 
     });
@@ -551,20 +562,27 @@ var Fm = (function(document) {
      * @param {HTMLElement} element
      */
     function transform(element) {
-        var $select  = $(element);
+        var $select = $(element);
+
         if ( ! $select.is('select')) {
             return element;
         }
 
-        var classNames = $.fn[plugin].defaults.classNames,
+        var identifier = Fm.createID(),
+            classNames = $.fn[plugin].defaults.classNames,
             $options   = $select.find('option'),
-            $selected  = $options.filter(':selected'),
-            $dropdown  = $('<div/>', {
+            $selected  = $options.filter(':selected');
+
+        // Create elements
+        var $dropdown = $('<div/>', {
+                id: identifier,
                 class: classNames.dropdown + ' ' + classNames.select,
                 tabindex: 0
             }),
             $menu  = $('<ul/>', {
-                class: classNames.menu
+                'class': classNames.menu,
+                'aria-hidden': true,
+                'aria-labelledby': identifier
             }),
             $label = $('<span/>'),
             $input = $('<input/>', {
@@ -577,9 +595,9 @@ var Fm = (function(document) {
             var $option = $(this);
             if ($option.val()) {
                 $('<li/>', {
-                    'class'      : 'menu__item',
-                    'text'       : $option.text(),
-                    'data-value' : $option.val()
+                    'text': $option.text(),
+                    'class': 'menu__item',
+                    'data-value': $option.val()
                 }).appendTo($menu);
             } else {
                 $label.text( $option.text() );
@@ -588,8 +606,8 @@ var Fm = (function(document) {
 
         // Inherit selection
         if ($selected.val()) {
-            $label.text( $selected.text() );
             $input.val( $selected.val() );
+            $label.text( $selected.text() );
         }
 
         // Generate HTML
@@ -607,13 +625,12 @@ var Fm = (function(document) {
     // Plugin definition
     $.fn[plugin] = function(settings, args) {
         return this.each(function() {
-            var element = transform(this),
-                data    = $.data(this, plugin);
+            var elem = transform(this),
+                data = $.data(this, plugin);
 
             if ( ! data) {
-                $.data(element, plugin, new Dropdown(element, settings));
-            }
-            else if (typeof settings === 'string') {
+                $.data(elem, plugin, new Dropdown(elem, settings));
+            } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
                     data[settings].apply(data, $.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
