@@ -143,7 +143,7 @@ $button-border-radius: $border-radius-base  !default;
 /*---------------------*
  * Table
  *---------------------*/
-$table-col-padding:  0.625rem               !default;
+$table-col-padding:  0.625rem, 0.625rem     !default;
 $table-border-width: 1px                    !default;
 $table-border-style: solid                  !default;
 $table-border-color: $color-gray-lightest   !default;
