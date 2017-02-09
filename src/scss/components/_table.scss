@@ -1,7 +1,7 @@
 .table {
     width: 100%;
     margin-bottom: 1rem;
-    border: 0 $table-border-style $table-border-color;
+    border: 0 solid $table-border-color;
     border-collapse: collapse;
 
     th {
@@ -9,8 +9,8 @@
     }
     th,
     td {
-        padding: $table-col-padding;
-        border-bottom: $table-border-width $table-border-style;
+        padding: spacing($table-col-padding);
+        border-bottom: $table-border-width solid;
         border-color: inherit;
         vertical-align: top;
     }
@@ -32,13 +32,13 @@
 .table--sm {
     th,
     td {
-        padding: ($table-col-padding * 0.6);
+        padding: (spacing($table-col-padding, y) * 0.6) (spacing($table-col-padding, x) * 0.6);
     }
 }
 .table--lg {
     th,
     td {
-        padding: ($table-col-padding * 1.4);
+        padding: (spacing($table-col-padding, y) * 1.4) (spacing($table-col-padding, x) * 1.4);
     }
 }
 
@@ -53,8 +53,8 @@
 
     th,
     td {
-        border-right-width: $table-border-width; // TODO: merge these? otherwise explain
-        border-right-style: $table-border-style;
+        border-right: $table-border-width solid;
+        border-color: inherit;
     }
 }
 .table--interactive {
