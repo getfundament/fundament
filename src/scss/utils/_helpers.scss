@@ -27,26 +27,19 @@
 .bg-inverse  { background-color: $color-inverse; color: #FFF; }
 
 // Images
-.img-responsive { // TODO: reconsider
+.img-auto {
     max-width: 100%;
     height: auto;
-    display: block;
 }
 .img-fluid {
     width: 100%;
     height: auto;
-    display: block;
 }
 
 // Block elements
 .block-center {
     margin-left: auto;
     margin-right: auto;
-}
-.align-center {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
 }
 
 // Spacing
