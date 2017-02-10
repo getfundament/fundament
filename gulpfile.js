@@ -55,7 +55,7 @@ const tasks = {
             .pipe(gulp.dest(Fundament.sass.dist)) // compressed
             .pipe(filter('**/*.css'))
             .pipe(rename({suffix: '.min'}))
-            .pipe(cssnano())
+            .pipe(cssnano({zindex: false}))
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest(Fundament.sass.dist)); // minified
     },
