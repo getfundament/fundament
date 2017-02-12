@@ -63,6 +63,22 @@
     }
 }
 
+// Visibility
+@each $size, $breakpoint in $grid-breakpoints {
+    @if $breakpoint > 0 {
+        @include breakpoint-down($size) {
+            .hide-#{$size}-down {
+                display: none;
+            }
+        }
+        @include breakpoint-up($size) {
+            .hide-#{$size}-up {
+                display: none;
+            }
+        }
+    }
+}
+
 // Clearfix
 .clear:after {
     content: " ";
