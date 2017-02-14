@@ -1,7 +1,6 @@
 .table {
     width: 100%;
     margin-bottom: 1rem;
-    border: 0 solid $table-border-color;
     border-collapse: collapse;
 
     th {
@@ -10,8 +9,7 @@
     th,
     td {
         padding: spacing($table-col-padding);
-        border-bottom: $table-border-width solid;
-        border-color: inherit;
+        border-bottom: $table-border-width solid $table-border-color;
         vertical-align: top;
     }
 }
@@ -20,12 +18,20 @@
 .table--primary {
     color: #FFF;
     background-color: $color-primary;
-    border-color: lighten($color-primary, 8%);
+
+    th,
+    td {
+        border-bottom: $table-border-width solid lighten($color-primary, 8%);
+    }
 }
 .table--inverse {
     color: #FFF;
     background-color: $color-inverse;
-    border-color: lighten($color-inverse, 8%);
+
+    th,
+    td {
+        border-bottom: $table-border-width solid lighten($color-inverse, 8%);
+    }
 }
 
 // Sizes
@@ -49,12 +55,11 @@
     }
 }
 .table--bordered {
-    border-width: $table-border-width;
+    border: $table-border-width solid $table-border-color;
 
     th,
     td {
-        border-right: $table-border-width solid;
-        border-color: inherit;
+        border-right: $table-border-width solid $table-border-color;
     }
 }
 .table--interactive {
