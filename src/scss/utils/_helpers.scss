@@ -12,7 +12,7 @@
             $name: if($size == xs, $align, #{$size}-#{$align}); // xs shorthand
 
             .text-#{$name} {
-                text-align: $align;
+                text-align: $align!important;
             }
         }
 
@@ -47,15 +47,15 @@
     @include breakpoint-up($size) {
 
         @each $dir, $abbr in (top: t, right: r, bottom: b, left: l) {
-            @for $i from 1 through 4 {
+            @for $i from 0 through 4 {
                 $name: if($size == xs, #{$abbr}-#{$i}, #{$abbr}-#{$size}-#{$i}); // xs shorthand
                 $value: if($i == 4, ($i*1.5) * 0.5rem, $i * 0.5rem); // double the space on 4
 
                 .m#{$name} { // margin
-                    margin-#{$dir}: $value;
+                    margin-#{$dir}: $value!important;
                 }
                 .p#{$name} { // padding
-                    padding-#{$dir}: $value;
+                    padding-#{$dir}: $value!important;
                 }
             }
         }
@@ -68,12 +68,12 @@
     @if $breakpoint > 0 {
         @include breakpoint-down($size) {
             .hide-#{$size}-down {
-                display: none;
+                display: none!important;
             }
         }
         @include breakpoint-up($size) {
             .hide-#{$size}-up {
-                display: none;
+                display: none!important;
             }
         }
     }
@@ -88,7 +88,7 @@
 
 // Screen readers
 .sr-content {
-    position: absolute !important;
+    position: absolute!important;
     height: 1px;
     width: 1px;
     overflow: hidden;
