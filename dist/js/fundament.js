@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.2.0
+ * Fundament framework v0.2.1
  *
  * https://getfundament.com
  *
@@ -124,19 +124,20 @@ var Fm = (function(document) {
 ;(function($, window, document) {
     'use strict';
 
-    var plugin    = 'dialog',
-        namespace = '.' + plugin,
-        methods   = ['open', 'close', 'setting'];
+    var plugin  = 'dialog',
+        methods = ['open', 'close', 'setting'];
 
     var $window   = $(window),
         $document = $(document),
-        $body     = $('body');
+        $body     = $(document.body);
 
     // Constructor
     function Dialog(element, settings) {
-        this.config = $.extend({}, $.fn[plugin].defaults, settings);
-        this.elem  = element;
-        this.$elem = $(element);
+        this.config  = $.extend({}, $.fn[plugin].defaults, settings);
+        this.elem    = element;
+        this.$elem   = $(element);
+        this.$dimmer = $('<div/>', {class: this.config.classNames.dimmer});
+        this.busy    = false;
         this.init();
     }
 
@@ -144,135 +145,163 @@ var Fm = (function(document) {
     $.extend(Dialog.prototype, {
 
         init: function () {
-            var self     = this,
-                settings = self.config,
-                $trigger = settings.openFrom,
-                $dimmer  = $('<div/>', {class: this.config.classNames.dimmer});
+            this.$dimmer = this.$elem
+                .wrap(this.$dimmer) // wrap around dialog
+                .parent() // retrieve dimmer element
+                .hide();
 
-            this.dialogSize = {
-                width  : self.$elem.outerWidth(),
-                height : self.$elem.outerHeight()
-            };
+            this.bind();
+        },
 
-            // Set trigger
-            if ($trigger && $trigger instanceof jQuery === false) {
-                settings.openFrom = $($trigger);
-            }
+        /**
+         * Bind event handlers.
+         */
+        bind: function() {
+            var self = this,
+                conf = self.config;
 
-            // Bind event handlers
-            if (settings.closable) {
-                $dimmer.click(function(e) {
-                    if (e.target.className === settings.classNames.dimmer) {
-                        self.close();
-                    }
+            if (conf.closable) {
+                self.$dimmer.click(function(e) {
+                    if (e.target === this) self.close();
                 });
             }
 
-            // Wrap dimmer
-            self.$elem.wrap( $dimmer.hide() );
+            if (conf.openFrom) {
+                conf.openFrom = $(conf.openFrom);
+            }
         },
 
         /**
          * Open the dialog.
          */
         open: function () {
-            var self     = this,
-                settings = self.config,
-                $dimmer  = self.$elem.parents('.' + self.config.classNames.dimmer);
+            var self = this,
+                conf = self.config;
 
-            var onOpen = function() {
-                self.$elem.css({position: '', top: '', left: ''}).addClass(settings.classNames.open);
-                settings.onOpen.call(self.elem);
-            };
-
-            // document.documentElement.style.overflow = 'hidden';  // firefox, chrome
-            // document.body.scroll = "no"; // ie only
-            document.body.style.height = '100%';
-            document.body.style.overflow = 'hidden';
-
-            $dimmer.transition('fade');
-
-            if (settings.openFrom) {
-                self.$elem.transition('dialogIn', {
-                    duration: 400,
-                    curve: 'cubic-bezier(0.4,0.6,0.3,1)',
-                    animations: self.getAnimation(),
-                    onEnd: onOpen
-                });
-            } else {
-                self.$elem.transition(settings.transition + 'In', onOpen);
+            if (self.busy) {
+                return;
             }
+
+            self.busy = true;
+            self.scrollBar(false);
+
+            self.transition('In', function() { // show
+                self.$elem.addClass(conf.classNames.open);
+                self.busy = false;
+                conf.onOpen.call(self.elem);
+            });
         },
 
         /**
          * Close the dialog.
          */
         close: function () {
-            var self     = this,
-                settings = self.config,
-                $dimmer  = self.$elem.parents('.' + settings.classNames.dimmer);
+            var self = this,
+                conf = self.config;
 
-            document.documentElement.style.overflow = 'auto';  // firefox, chrome
-            document.body.scroll = "yes"; // ie only
-
-            $dimmer.transition('fadeOut');
-
-            if (settings.openFrom) {
-                var transition = 'scaleOut';
-            } else {
-                var transition = settings.transition + 'Out';
+            if (self.busy) {
+                return;
             }
 
-            self.$elem.transition(transition, function() {
-                self.$elem.removeAttr('style').removeClass(settings.classNames.open);
-                settings.onClose.call(self.elem);
+            self.busy = true;
+
+            self.transition('Out', function() { // hide
+                self.$elem.removeClass(conf.classNames.open);
+                self.scrollBar(true);
+                self.busy = false;
+                conf.onClose.call(self.elem);
             });
         },
 
+        /**
+         * Transition the dialog.
+         *
+         * @param {string} direction
+         * @param {function} callback
+         */
+        transition: function(direction, callback) {
+            var animation,
+                duration = 400,
+                settings = {
+                    duration: duration,
+                    onEnd: callback
+                };
+
+            if (this.config.openFrom) {
+                animation = 'dialog' + direction;
+                settings.curve = 'cubic-bezier(0.4,0.7,0.6,1)';
+                settings.animations = {
+                    dialog: this.getAnimation()
+                };
+            } else {
+                animation = this.config.transition + direction;
+            }
+
+            this.$dimmer.transition('fade' + direction, duration);
+            this.$elem.transition(animation, settings);
+        },
+
+        /**
+         * Show or kill the window's scroll bar.
+         *
+         * @param {boolean} show
+         */
+        scrollBar: function(show) {
+            if ($window.height() >= $document.height()) {
+                return; // no scroll bar present
+            }
+
+            if (show) {
+                $body.css({ // show
+                    'overflow': '',
+                    'padding-right': ''
+                });
+            } else {
+                var $outer = $('<div/>').css({
+                        width: 100,
+                        overflow: 'scroll',
+                        visibility: 'hidden'
+                    }).appendTo($body),
+                    $inner = $('<div/>').css({
+                        width: '100%'
+                    }).appendTo($outer);
+
+                $body.css({ // kill
+                    'overflow': 'hidden',
+                    'padding-right': 100 - $inner.outerWidth() // scroll bar width
+                });
+
+                $outer.remove();
+            }
+        },
+
+        /**
+         * Custom (functional) animation to scale the dialog from
+         * the target element to the center of the viewport - or
+         * the other way around.
+         *
+         * @returns {Object}
+         */
         getAnimation: function() {
-            var self     = this,
-                $trigger = self.config.openFrom;
+            var self = this,
+                windowTop = window.pageYOffset,
+                $location = self.config.openFrom,
+                locationOffset = $location.offset();
 
-            var windowTop     = window.pageYOffset,
-                triggerSize   = {width: $trigger.outerWidth(), height: $trigger.outerHeight()},
-                triggerOffset = $trigger.offset();
-
-            // Scale dialog to trigger size
-            var scaleFactor = {
-                width  : triggerSize.width / self.dialogSize.width,
-                height : triggerSize.height / self.dialogSize.height
-            };
-
-            // Transform to center
-            var coords = {
-                start: {
-                    x : triggerOffset.left,
-                    y : triggerOffset.top - windowTop
-                },
-                end: {
-                    x : ($window.width() / 2) - (self.dialogSize.width / 2),
-                    y : ($window.height() / 2) - (self.dialogSize.height / 2)
-                }
-            };
             var translation = {
-                x : coords.end.x - coords.start.x,
-                y : coords.end.y - coords.start.y
+                x : locationOffset.left - ($window.width() / 2) + ($location.width() / 2),
+                y : locationOffset.top - windowTop - ($window.height() / 2) + ($location.height() / 2)
             };
 
             return {
-                dialog: {
-                    start: {
-                        'position'         : 'absolute',
-                        'top'              : triggerOffset.top - windowTop,
-                        'left'             : triggerOffset.left,
-                        'opacity'          : 0.5,
-                        'transform'        : 'scale(' + scaleFactor.width + ', ' + scaleFactor.height + ')',
-                        'transform-origin' : 'top left'
-                    },
-                    end: {
-                        'opacity'   : 1,
-                        'transform' : 'translate(' + translation.x + 'px, ' + translation.y + 'px) scale(1)'
-                    }
+                start: {
+                    'opacity': 0,
+                    'transform': 'translate(' + translation.x + 'px, ' + translation.y + 'px) scale(0.05)',
+                    'transform-origin': 'center'
+                },
+                end: {
+                    'opacity': 1,
+                    'transform': 'translate(0,0) scale(1)'
                 }
             }
         },
@@ -283,9 +312,7 @@ var Fm = (function(document) {
          * @param {Object} settings
          */
         setting: function(settings) {
-            for (var setting in settings) {
-                this.config[setting] = settings[setting];
-            }
+            $.extend(this.config, settings);
         }
 
     });
@@ -297,8 +324,7 @@ var Fm = (function(document) {
 
             if ( ! data) {
                 $.data(this, plugin, new Dialog(this, settings));
-            }
-            else if (typeof settings === 'string') {
+            } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
                     data[settings].apply(data, $.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
@@ -310,12 +336,10 @@ var Fm = (function(document) {
     $.fn[plugin].defaults = {
         openFrom   : null,
         closable   : true,
-        transition : 'scale',
+        transition : 'fadeDown',
         classNames : {
-            dimmer  : 'dialog-dimmer',
-            dialog  : 'dialog',
-            open    : 'dialog--open',
-            block   : 'dialog__block'
+            dimmer : 'dialog-dimmer',
+            open   : 'dialog--open'
         },
         onOpen    : function() {},
         onOpening : function() {},

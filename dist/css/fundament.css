@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.2.0
+ * Fundament framework v0.2.1
  *
  * https://getfundament.com
  *
@@ -937,6 +937,38 @@ p {
   .pl-xl-4 {
     padding-left: 3rem; } }
 
+@media (max-width: 539px) {
+  .hide-sm-down {
+    display: none; } }
+
+@media (min-width: 540px) {
+  .hide-sm-up {
+    display: none; } }
+
+@media (max-width: 767px) {
+  .hide-md-down {
+    display: none; } }
+
+@media (min-width: 768px) {
+  .hide-md-up {
+    display: none; } }
+
+@media (max-width: 991px) {
+  .hide-lg-down {
+    display: none; } }
+
+@media (min-width: 992px) {
+  .hide-lg-up {
+    display: none; } }
+
+@media (max-width: 1199px) {
+  .hide-xl-down {
+    display: none; } }
+
+@media (min-width: 1200px) {
+  .hide-xl-up {
+    display: none; } }
+
 .clear:after, .container:after, .menu--tabs:after {
   content: " ";
   display: table;
@@ -1222,6 +1254,7 @@ p {
         border-top-width: 1px; } }
 
 .container {
+  position: relative;
   width: 100%;
   min-height: 1px;
   padding: 0 15px;
@@ -1482,6 +1515,7 @@ label {
     display: block; } }
 
 .col {
+  position: relative;
   width: 100%;
   min-height: 1px;
   padding-left: 15px;
@@ -2115,26 +2149,28 @@ ul.list {
 .table {
   width: 100%;
   margin-bottom: 1rem;
-  border: 0 solid #E8E8E8;
   border-collapse: collapse; }
   .table th {
     text-align: left; }
   .table th,
   .table td {
     padding: 0.625rem 0.625rem;
-    border-bottom: 1px solid;
-    border-color: inherit;
+    border-bottom: 1px solid #E8E8E8;
     vertical-align: top; }
 
 .table--primary {
   color: #FFF;
-  background-color: #0288D1;
-  border-color: #02a2f9; }
+  background-color: #0288D1; }
+  .table--primary th,
+  .table--primary td {
+    border-bottom: 1px solid #02a2f9; }
 
 .table--inverse {
   color: #FFF;
-  background-color: #333;
-  border-color: #474747; }
+  background-color: #333; }
+  .table--inverse th,
+  .table--inverse td {
+    border-bottom: 1px solid #474747; }
 
 .table--sm th,
 .table--sm td {
@@ -2148,11 +2184,10 @@ ul.list {
   background-color: rgba(0, 0, 0, 0.025); }
 
 .table--bordered {
-  border-width: 1px; }
+  border: 1px solid #E8E8E8; }
   .table--bordered th,
   .table--bordered td {
-    border-right: 1px solid;
-    border-color: inherit; }
+    border-right: 1px solid #E8E8E8; }
 
 .table--interactive tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.05); }
