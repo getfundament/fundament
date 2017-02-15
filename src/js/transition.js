@@ -152,25 +152,25 @@
          * @param {string} state
          */
         style: function(state) {
-            var self      = this,
+            var self = this,
                 animation = self.config.animations[self.animation],
                 direction = self.direction,
-                css       = {};
+                css;
 
             if (state === 'start') {
                 css = (direction == 'inward') ?
                     animation.start:
                     animation.end; // reversed
 
-                css['transition'] = 'all ' +
-                    self.config.duration + 'ms ' +
-                    self.config.curve;
+                css.transition = null;
             } else {
                 css = (direction == 'inward') ?
                     animation.end:
                     animation.start; // reversed
 
-                css['transition'] = null;
+                css.transition = 'all ' +
+                    self.config.duration + 'ms ' +
+                    self.config.curve;
             }
 
             for (var attr in css) {
