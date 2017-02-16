@@ -19,24 +19,31 @@
         this.config    = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
-        this.$context  = this.config.context ? this.$elem.closest(this.config.context) : null;
+        this.$context  = this.$elem.closest(this.config.context);
         this.calc      = {};
         this.isStick   = false;
         this.isBound   = false;
         this.recalc    = Fm.debounce(this.calculate.bind(this), 200);
-        this.init();
+
+        // initialize as soon as the document and
+        // its content have finished loading
+        $window.on('load', this.init.bind(this));
     }
 
     // Instance
     $.extend(Sticky.prototype, {
 
         init: function() {
+            if ( ! this.$context.length) {
+                return console.warn(plugin + ': Undefined context element');
+            }
+
+            this.calculate();
+            this.bind();
+
             if (this.config.observe) {
                 this.observe();
             }
-
-            this.bind();
-            this.calculate();
         },
 
         /**
@@ -46,8 +53,7 @@
          */
         calculate: function() {
             var self = this,
-                calc = self.calc,
-                $context = self.$context;
+                calc = self.calc;
 
             windowHeight = $window.height();
 
@@ -55,37 +61,42 @@
                 self.make('unStick');
             }
 
+            calc.contextOffset = self.$context.offset();
+            calc.contextHeight = self.$context.outerHeight();
             calc.elemOffset = self.$elem.offset();
             calc.elemSize = {
                 width  : self.$elem.outerWidth(),
                 height : self.$elem.outerHeight()
             };
 
-            if ($context) {
-                calc.contextOffset = $context.offset();
-
-                calc.bounds = {
-                    top    : calc.elemOffset.top - self.config.topOffset,
-                    bottom : calc.contextOffset.top + $context.outerHeight() - self.config.bottomOffset
-                };
-
-                if (calc.elemSize.height >= $context.height()) {
-                    console.warn(plugin + ': The sticky element is too large for its context');
-                    return this.destroy();
-                }
-            } else {
-                calc.bounds = {
-                    top    : 0,
-                    bottom : 99999
-                };
+            if (calc.elemSize.height + self.config.scrollSpace >= calc.contextHeight) {
+                console.warn(plugin + ': Element does not have enough space to scroll');
+                return this.destroy();
             }
 
-            if (calc.elemSize.height > windowHeight) { // oversized content
-                calc.overSized = calc.elemSize.height - windowHeight;
-                calc.bounds.top += calc.overSized; // add difference in height to top boundary
-            }
+            self.setBounds();
 
             requestAnimationFrame(self.update.bind(self));
+        },
+
+        /**
+         * Set the sticky boundaries.
+         */
+        setBounds: function() {
+            var self = this,
+                calc = self.calc,
+                conf = self.config;
+
+            calc.bounds = {
+                top    : calc.elemOffset.top - conf.topOffset,
+                bottom : calc.contextOffset.top + calc.contextHeight - conf.bottomOffset
+            };
+
+            if (calc.elemSize.height > windowHeight) { // oversized content
+                calc.overSized = calc.elemSize.height - windowHeight + conf.bottomOffset;
+                calc.bounds.top += calc.overSized + conf.topOffset;
+                calc.bounds.bottom += conf.topOffset;
+            }
         },
 
         /**
@@ -123,16 +134,13 @@
                     - (calc.overSized || 0);
 
             if (
-                ! self.isStick                            // is not sticky
+                ! self.isStick                           // is not sticky
                 && scrollTop >= calc.bounds.top          // passed top boundary
             ) {
                 self.make('stick');
 
-                if (
-                    self.isBound                         // is bound
-                    && elemBottom >= calc.bounds.bottom  // passed bottom boundary
-                ) {
-                    self.make('bound'); // fail-safe when recalculating
+                if (elemBottom >= calc.bounds.bottom) {
+                    self.make('bound'); // fail-safe on load or recalculation
                 }
             }
             else if (
@@ -170,18 +178,18 @@
                         position  : 'fixed',
                         top       : calc.overSized ? -calc.overSized : self.config.topOffset, // oversized content has a negative top
                         left      : calc.elemOffset.left,
-                        width     : calc.elemSize.width,
-                        transform : 'translateZ(0)'
+                        bottom    : '',
+                        width     : calc.elemSize.width
                     });
+
+                    self.isStick = true;
                 },
 
                 stick: function() {
                     self.make('fixed');
+                    self.mask(true);
                     self.$elem.addClass(self.config.classNames.stick);
 
-                    self.mask(true);
-
-                    self.isStick = true;
                     self.config.onStick.call(self.elem);
                 },
 
@@ -189,6 +197,7 @@
                     self.clear();
                     self.mask().hide();
 
+                    self.isBound = false;
                     self.isStick = false;
                     self.config.onUnStick.call(self.elem);
                 },
@@ -197,7 +206,8 @@
                     self.$elem
                         .css({
                             position : 'absolute',
-                            top      : (calc.bounds.bottom - calc.elemSize.height) - calc.contextOffset.top, // subtract context top offset (relative-absolute positioning)
+                            top      : '',
+                            bottom   : self.config.bottomOffset,
                             left     : 0
                         })
                         .addClass(self.config.classNames.bound);
@@ -252,8 +262,7 @@
                     position  : '',
                     top       : '',
                     left      : '',
-                    width     : '',
-                    transform : ''
+                    width     : ''
                 })
                 .removeClass(
                     this.config.classNames.stick + ' ' +
@@ -273,7 +282,7 @@
                 });
 
                 this.contextObserver = new MutationObserver(this.recalc);
-                this.contextObserver.observe(this.config.context[0], {
+                this.contextObserver.observe(this.$context[0], {
                     childList : true,
                     subtree   : true
                 });
@@ -286,9 +295,7 @@
          * @param {Object} settings
          */
         setting: function(settings) {
-            for (var setting in settings) {
-                this.config[setting] = settings[setting];
-            }
+            $.extend(this.config, settings);
         },
 
         /**
@@ -331,6 +338,7 @@
         observe      : false,
         topOffset    : 0,
         bottomOffset : 0,
+        scrollSpace  : 200,
         classNames : {
             stick  : 'stick',
             bound  : 'bound',
