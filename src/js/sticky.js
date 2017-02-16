@@ -38,12 +38,9 @@
                 return console.warn(plugin + ': Undefined context element');
             }
 
-            this.calculate();
             this.bind();
-
-            if (this.config.observe) {
-                this.observe();
-            }
+            this.observe();
+            this.calculate();
         },
 
         /**
@@ -70,7 +67,7 @@
             };
 
             if (calc.elemSize.height + self.config.scrollSpace >= calc.contextHeight) {
-                console.warn(plugin + ': Element does not have enough space to scroll');
+                console.warn(plugin + ': Insufficient scrolling space available');
                 return this.destroy();
             }
 
@@ -96,6 +93,8 @@
                 calc.overSized = calc.elemSize.height - windowHeight + conf.bottomOffset;
                 calc.bounds.top += calc.overSized + conf.topOffset;
                 calc.bounds.bottom += conf.topOffset;
+            } else {
+                calc.overSized = 0;
             }
         },
 
@@ -127,11 +126,11 @@
         update: function() {
             var self = this,
                 calc = self.calc,
-                scrollTop  = window.pageYOffset,
+                scrollTop = window.pageYOffset,
                 elemBottom = scrollTop
                     + self.config.topOffset
                     + calc.elemSize.height
-                    - (calc.overSized || 0);
+                    - calc.overSized;
 
             if (
                 ! self.isStick                           // is not sticky
@@ -140,7 +139,7 @@
                 self.make('stick');
 
                 if (elemBottom >= calc.bounds.bottom) {
-                    self.make('bound'); // fail-safe on load or recalculation
+                    self.make('bound'); // fail-safe
                 }
             }
             else if (
@@ -181,22 +180,19 @@
                         bottom    : '',
                         width     : calc.elemSize.width
                     });
-
                     self.isStick = true;
                 },
 
                 stick: function() {
                     self.make('fixed');
-                    self.mask(true);
+                    self.mask('show');
                     self.$elem.addClass(self.config.classNames.stick);
-
                     self.config.onStick.call(self.elem);
                 },
 
                 unStick: function() {
                     self.clear();
-                    self.mask().hide();
-
+                    self.mask('hide');
                     self.isBound = false;
                     self.isStick = false;
                     self.config.onUnStick.call(self.elem);
@@ -211,7 +207,6 @@
                             left     : 0
                         })
                         .addClass(self.config.classNames.bound);
-
                     self.isBound = true;
                     self.config.onBound.call(self.elem);
                 },
@@ -219,38 +214,52 @@
                 unBound: function() {
                     self.make('fixed');
                     self.$elem.removeClass(self.config.classNames.bound);
-
                     self.isBound = false;
                     self.config.onUnBound.call(self.elem);
                 }
-            }[state].apply(this);
+            }[state].apply(self);
         },
 
         /**
-         * Get or show the mask for the sticky element.
+         * Perform an action for the mask element.
          *
-         * @param {boolean} show
+         * @param {string} action
          */
-        mask: function(show) {
-            var $mask = this.$elem.next('.' + this.config.classNames.mask);
+        mask: function(action) {
+            var self = this,
+                calc = self.calc,
+                $mask = this.$elem.next('.' + this.config.classNames.mask);
 
-            if ( ! show)
-                return $mask; // return existing
-
-            if ($mask.length) {
-                $mask.css({ // show existing
-                    width  : this.calc.elemSize.width,
-                    height : this.calc.elemSize.height
-                }).show();
-            } else {
-                $('<div/>', { // create new
-                    class : this.config.classNames.mask,
-                    css   : {
-                        width  : this.calc.elemSize.width,
-                        height : this.calc.elemSize.height
-                    }
-                }).insertAfter(this.$elem);
+            if ( ! self.config.mask) {
+                return;
             }
+
+            return {
+                show: function() {
+                    if ($mask.length) {
+                        $mask.css({ // show existing
+                            width  : calc.elemSize.width,
+                            height : calc.elemSize.height
+                        }).show();
+                    } else {
+                        $('<div/>', { // create new
+                            class : self.config.classNames.mask,
+                            css   : {
+                                width  : calc.elemSize.width,
+                                height : calc.elemSize.height
+                            }
+                        }).insertAfter(self.$elem);
+                    }
+                },
+
+                hide: function() {
+                    $mask.hide();
+                },
+
+                remove: function() {
+                    $mask.remove();
+                }
+            }[action].apply(self);
         },
 
         /**
@@ -262,6 +271,7 @@
                     position  : '',
                     top       : '',
                     left      : '',
+                    bottom    : '',
                     width     : ''
                 })
                 .removeClass(
@@ -274,19 +284,21 @@
          * Observe DOM changes.
          */
         observe: function() {
-            if ('MutationObserver' in window) {
-                this.observer = new MutationObserver(this.recalc);
-                this.observer.observe(this.elem, {
-                    childList : true,
-                    subtree   : true
-                });
-
-                this.contextObserver = new MutationObserver(this.recalc);
-                this.contextObserver.observe(this.$context[0], {
-                    childList : true,
-                    subtree   : true
-                });
+            if ( ! this.config.observe || ! 'MutationObserver' in window) {
+                return;
             }
+
+            this.observer = new MutationObserver(this.recalc);
+            this.observer.observe(this.elem, {
+                childList : true,
+                subtree   : true
+            });
+
+            this.contextObserver = new MutationObserver(this.recalc);
+            this.contextObserver.observe(this.$context[0], {
+                childList : true,
+                subtree   : true
+            });
         },
 
         /**
@@ -309,7 +321,7 @@
 
             this.unbind();
             this.clear();
-            this.mask().remove();
+            this.mask('remove');
 
             $.data(this.elem, plugin, null); // unset data
         }
