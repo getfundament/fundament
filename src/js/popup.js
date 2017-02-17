@@ -75,6 +75,7 @@
                     break;
                 case 'hover':
                     self.$elem
+                        .add(self.config.hoverable ? self.$popup : null)
                         .on('mouseenter' + namespace, self.show.bind(self))
                         .on('mouseleave' + namespace, self.hide.bind(self));
                     break;
@@ -104,6 +105,7 @@
                     break;
                 case 'hover':
                     self.$elem
+                        .add(self.config.hoverable ? self.$popup : null)
                         .off('mouseenter' + namespace)
                         .off('mouseleave' + namespace);
                     break;
@@ -308,6 +310,7 @@
         direction  : 'southwest',
         delay      : 0,
         distance   : 10,
+        hoverable  : false,
         classNames : {
             popup  : 'popup'
         },
