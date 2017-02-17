@@ -22,6 +22,7 @@
         this.$popup    = this.$elem.next('.' + this.config.classNames.popup);
         this.calc      = null;
         this.timer     = null;
+        this.active    = false;
         this.init();
     }
 
@@ -64,7 +65,7 @@
          * Bind event handlers.
          */
         bind: function() {
-            var self      = this,
+            var self = this,
                 namespace = self.namespace;
 
             switch (self.config.trigger) {
@@ -85,11 +86,7 @@
             }
 
             $window.on('resize' + namespace,
-                Fm.debounce(function() {
-                    if (self.$elem.is(':visible')) {
-                        self.hide(); // hide to force recalculation
-                    }
-                }, 200, true)
+                Fm.debounce(self.hide.bind(self), 200, true) // hide to force recalculation
             );
         },
 
@@ -97,7 +94,7 @@
          * Unbind event handlers.
          */
         unbind: function() {
-            var self      = this,
+            var self = this,
                 namespace = self.namespace;
 
             switch (self.config.trigger) {
@@ -198,8 +195,8 @@
                     break;
                 case 'southwest':
                     positioning = {
-                        top    : calc.elem.top + calc.elem.height + distance,
-                        left   : calc.elem.left
+                        top  : calc.elem.top + calc.elem.height + distance,
+                        left : calc.elem.left
                     };
                     break;
                 case 'west':
@@ -225,9 +222,9 @@
          * Toggle the popup.
          */
         toggle: function() {
-            this.$popup.is(':hidden') ?
-                this.show():
-                this.hide();
+            this.active ?
+                this.hide():
+                this.show();
         },
 
         /**
@@ -241,10 +238,13 @@
 
             clearTimeout(self.timer);
 
-            self.timer = setTimeout(function() {
-                self.$popup.transition(self.config.transition + 'In', {queue: false});
-                self.config.onShow.call(self.elem);
-            }, delay.hasOwnProperty('show') ? delay.show : delay);
+            if ( ! self.active) {
+                self.timer = setTimeout(function() {
+                    self.$popup.transition(self.config.transition + 'In', {queue: false});
+                    self.active = true;
+                    self.config.onShow.call(self.elem);
+                }, delay.hasOwnProperty('show') ? delay.show : delay);
+            }
         },
 
         /**
@@ -256,10 +256,13 @@
 
             clearTimeout(self.timer);
 
-            self.timer = setTimeout(function() {
-                self.$popup.transition(self.config.transition + 'Out', {queue: false});
-                self.config.onHide.call(self.elem);
-            }, delay.hasOwnProperty('hide') ? delay.hide : delay);
+            if (self.active) {
+                self.timer = setTimeout(function() {
+                    self.$popup.transition(self.config.transition + 'Out', {queue: false});
+                    self.active = false;
+                    self.config.onHide.call(self.elem);
+                }, delay.hasOwnProperty('hide') ? delay.hide : delay);
+            }
         },
 
         /**
@@ -268,9 +271,7 @@
          * @param {Object} settings
          */
         setting: function(settings) {
-            for (var setting in settings) {
-                this.config[setting] = settings[setting];
-            }
+            $.extend(this.config, settings);
         },
 
         /**
@@ -279,6 +280,7 @@
         destroy: function() {
             this.unbind();
             this.$popup.remove();
+
             $.data(this.elem, plugin, null);
         }
 
@@ -291,8 +293,7 @@
 
             if ( ! data) {
                 $.data(this, plugin, new Popup(this, settings));
-            }
-            else if (typeof settings === 'string') {
+            } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
                     data[settings].apply(data, $.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
