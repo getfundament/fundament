@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.2.1
+ * Fundament framework v0.2.2
  *
  * https://getfundament.com
  *
@@ -707,6 +707,7 @@ var Fm = (function(document) {
         this.$popup    = this.$elem.next('.' + this.config.classNames.popup);
         this.calc      = null;
         this.timer     = null;
+        this.active    = false;
         this.init();
     }
 
@@ -749,7 +750,7 @@ var Fm = (function(document) {
          * Bind event handlers.
          */
         bind: function() {
-            var self      = this,
+            var self = this,
                 namespace = self.namespace;
 
             switch (self.config.trigger) {
@@ -759,6 +760,7 @@ var Fm = (function(document) {
                     break;
                 case 'hover':
                     self.$elem
+                        .add(self.config.hoverable ? self.$popup : null)
                         .on('mouseenter' + namespace, self.show.bind(self))
                         .on('mouseleave' + namespace, self.hide.bind(self));
                     break;
@@ -770,11 +772,7 @@ var Fm = (function(document) {
             }
 
             $window.on('resize' + namespace,
-                Fm.debounce(function() {
-                    if (self.$elem.is(':visible')) {
-                        self.hide(); // hide to force recalculation
-                    }
-                }, 200, true)
+                Fm.debounce(self.hide.bind(self), 200, true) // hide to force recalculation
             );
         },
 
@@ -782,7 +780,7 @@ var Fm = (function(document) {
          * Unbind event handlers.
          */
         unbind: function() {
-            var self      = this,
+            var self = this,
                 namespace = self.namespace;
 
             switch (self.config.trigger) {
@@ -792,6 +790,7 @@ var Fm = (function(document) {
                     break;
                 case 'hover':
                     self.$elem
+                        .add(self.config.hoverable ? self.$popup : null)
                         .off('mouseenter' + namespace)
                         .off('mouseleave' + namespace);
                     break;
@@ -883,8 +882,8 @@ var Fm = (function(document) {
                     break;
                 case 'southwest':
                     positioning = {
-                        top    : calc.elem.top + calc.elem.height + distance,
-                        left   : calc.elem.left
+                        top  : calc.elem.top + calc.elem.height + distance,
+                        left : calc.elem.left
                     };
                     break;
                 case 'west':
@@ -910,9 +909,9 @@ var Fm = (function(document) {
          * Toggle the popup.
          */
         toggle: function() {
-            this.$popup.is(':hidden') ?
-                this.show():
-                this.hide();
+            this.active ?
+                this.hide():
+                this.show();
         },
 
         /**
@@ -926,10 +925,13 @@ var Fm = (function(document) {
 
             clearTimeout(self.timer);
 
-            self.timer = setTimeout(function() {
-                self.$popup.transition(self.config.transition + 'In', {queue: false});
-                self.config.onShow.call(self.elem);
-            }, delay.hasOwnProperty('show') ? delay.show : delay);
+            if ( ! self.active) {
+                self.timer = setTimeout(function() {
+                    self.$popup.transition(self.config.transition + 'In', {queue: false});
+                    self.active = true;
+                    self.config.onShow.call(self.elem);
+                }, delay.hasOwnProperty('show') ? delay.show : delay);
+            }
         },
 
         /**
@@ -941,10 +943,13 @@ var Fm = (function(document) {
 
             clearTimeout(self.timer);
 
-            self.timer = setTimeout(function() {
-                self.$popup.transition(self.config.transition + 'Out', {queue: false});
-                self.config.onHide.call(self.elem);
-            }, delay.hasOwnProperty('hide') ? delay.hide : delay);
+            if (self.active) {
+                self.timer = setTimeout(function() {
+                    self.$popup.transition(self.config.transition + 'Out', {queue: false});
+                    self.active = false;
+                    self.config.onHide.call(self.elem);
+                }, delay.hasOwnProperty('hide') ? delay.hide : delay);
+            }
         },
 
         /**
@@ -953,9 +958,7 @@ var Fm = (function(document) {
          * @param {Object} settings
          */
         setting: function(settings) {
-            for (var setting in settings) {
-                this.config[setting] = settings[setting];
-            }
+            $.extend(this.config, settings);
         },
 
         /**
@@ -964,6 +967,7 @@ var Fm = (function(document) {
         destroy: function() {
             this.unbind();
             this.$popup.remove();
+
             $.data(this.elem, plugin, null);
         }
 
@@ -976,8 +980,7 @@ var Fm = (function(document) {
 
             if ( ! data) {
                 $.data(this, plugin, new Popup(this, settings));
-            }
-            else if (typeof settings === 'string') {
+            } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
                     data[settings].apply(data, $.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
@@ -992,6 +995,7 @@ var Fm = (function(document) {
         direction  : 'southwest',
         delay      : 0,
         distance   : 10,
+        hoverable  : false,
         classNames : {
             popup  : 'popup'
         },
@@ -1022,23 +1026,27 @@ var Fm = (function(document) {
         this.config    = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
-        this.$context  = this.config.context ? this.$elem.closest(this.config.context) : null;
+        this.$context  = this.$elem.closest(this.config.context);
         this.calc      = {};
         this.isStick   = false;
         this.isBound   = false;
         this.recalc    = Fm.debounce(this.calculate.bind(this), 200);
-        this.init();
+
+        // initialize as soon as the document and
+        // its content have finished loading
+        $window.on('load', this.init.bind(this));
     }
 
     // Instance
     $.extend(Sticky.prototype, {
 
         init: function() {
-            if (this.config.observe) {
-                this.observe();
+            if ( ! this.$context.length) {
+                return console.warn(plugin + ': Undefined context element');
             }
 
             this.bind();
+            this.observe();
             this.calculate();
         },
 
@@ -1049,8 +1057,7 @@ var Fm = (function(document) {
          */
         calculate: function() {
             var self = this,
-                calc = self.calc,
-                $context = self.$context;
+                calc = self.calc;
 
             windowHeight = $window.height();
 
@@ -1058,37 +1065,44 @@ var Fm = (function(document) {
                 self.make('unStick');
             }
 
+            calc.contextOffset = self.$context.offset();
+            calc.contextHeight = self.$context.outerHeight();
             calc.elemOffset = self.$elem.offset();
             calc.elemSize = {
                 width  : self.$elem.outerWidth(),
                 height : self.$elem.outerHeight()
             };
 
-            if ($context) {
-                calc.contextOffset = $context.offset();
-
-                calc.bounds = {
-                    top    : calc.elemOffset.top - self.config.topOffset,
-                    bottom : calc.contextOffset.top + $context.outerHeight() - self.config.bottomOffset
-                };
-
-                if (calc.elemSize.height >= $context.height()) {
-                    console.warn(plugin + ': The sticky element is too large for its context');
-                    return this.destroy();
-                }
-            } else {
-                calc.bounds = {
-                    top    : 0,
-                    bottom : 99999
-                };
+            if (calc.elemSize.height + self.config.scrollSpace >= calc.contextHeight) {
+                console.warn(plugin + ': Insufficient scrolling space available');
+                return this.destroy();
             }
 
-            if (calc.elemSize.height > windowHeight) { // oversized content
-                calc.overSized = calc.elemSize.height - windowHeight;
-                calc.bounds.top += calc.overSized; // add difference in height to top boundary
-            }
+            self.setBounds();
 
             requestAnimationFrame(self.update.bind(self));
+        },
+
+        /**
+         * Set the sticky boundaries.
+         */
+        setBounds: function() {
+            var self = this,
+                calc = self.calc,
+                conf = self.config;
+
+            calc.bounds = {
+                top    : calc.elemOffset.top - conf.topOffset,
+                bottom : calc.contextOffset.top + calc.contextHeight - conf.bottomOffset
+            };
+
+            if (calc.elemSize.height > windowHeight) { // oversized content
+                calc.overSized = calc.elemSize.height - windowHeight + conf.bottomOffset;
+                calc.bounds.top += calc.overSized + conf.topOffset;
+                calc.bounds.bottom += conf.topOffset;
+            } else {
+                calc.overSized = 0;
+            }
         },
 
         /**
@@ -1119,23 +1133,20 @@ var Fm = (function(document) {
         update: function() {
             var self = this,
                 calc = self.calc,
-                scrollTop  = window.pageYOffset,
+                scrollTop = window.pageYOffset,
                 elemBottom = scrollTop
                     + self.config.topOffset
                     + calc.elemSize.height
-                    - (calc.overSized || 0);
+                    - calc.overSized;
 
             if (
-                ! self.isStick                            // is not sticky
+                ! self.isStick                           // is not sticky
                 && scrollTop >= calc.bounds.top          // passed top boundary
             ) {
                 self.make('stick');
 
-                if (
-                    self.isBound                         // is bound
-                    && elemBottom >= calc.bounds.bottom  // passed bottom boundary
-                ) {
-                    self.make('bound'); // fail-safe when recalculating
+                if (elemBottom >= calc.bounds.bottom) {
+                    self.make('bound'); // fail-safe
                 }
             }
             else if (
@@ -1173,25 +1184,23 @@ var Fm = (function(document) {
                         position  : 'fixed',
                         top       : calc.overSized ? -calc.overSized : self.config.topOffset, // oversized content has a negative top
                         left      : calc.elemOffset.left,
-                        width     : calc.elemSize.width,
-                        transform : 'translateZ(0)'
+                        bottom    : '',
+                        width     : calc.elemSize.width
                     });
+                    self.isStick = true;
                 },
 
                 stick: function() {
                     self.make('fixed');
+                    self.mask('show');
                     self.$elem.addClass(self.config.classNames.stick);
-
-                    self.mask(true);
-
-                    self.isStick = true;
                     self.config.onStick.call(self.elem);
                 },
 
                 unStick: function() {
                     self.clear();
-                    self.mask().hide();
-
+                    self.mask('hide');
+                    self.isBound = false;
                     self.isStick = false;
                     self.config.onUnStick.call(self.elem);
                 },
@@ -1200,11 +1209,11 @@ var Fm = (function(document) {
                     self.$elem
                         .css({
                             position : 'absolute',
-                            top      : (calc.bounds.bottom - calc.elemSize.height) - calc.contextOffset.top, // subtract context top offset (relative-absolute positioning)
+                            top      : '',
+                            bottom   : self.config.bottomOffset,
                             left     : 0
                         })
                         .addClass(self.config.classNames.bound);
-
                     self.isBound = true;
                     self.config.onBound.call(self.elem);
                 },
@@ -1212,38 +1221,52 @@ var Fm = (function(document) {
                 unBound: function() {
                     self.make('fixed');
                     self.$elem.removeClass(self.config.classNames.bound);
-
                     self.isBound = false;
                     self.config.onUnBound.call(self.elem);
                 }
-            }[state].apply(this);
+            }[state].apply(self);
         },
 
         /**
-         * Get or show the mask for the sticky element.
+         * Perform an action for the mask element.
          *
-         * @param {boolean} show
+         * @param {string} action
          */
-        mask: function(show) {
-            var $mask = this.$elem.next('.' + this.config.classNames.mask);
+        mask: function(action) {
+            var self = this,
+                calc = self.calc,
+                $mask = this.$elem.next('.' + this.config.classNames.mask);
 
-            if ( ! show)
-                return $mask; // return existing
-
-            if ($mask.length) {
-                $mask.css({ // show existing
-                    width  : this.calc.elemSize.width,
-                    height : this.calc.elemSize.height
-                }).show();
-            } else {
-                $('<div/>', { // create new
-                    class : this.config.classNames.mask,
-                    css   : {
-                        width  : this.calc.elemSize.width,
-                        height : this.calc.elemSize.height
-                    }
-                }).insertAfter(this.$elem);
+            if ( ! self.config.mask) {
+                return;
             }
+
+            return {
+                show: function() {
+                    if ($mask.length) {
+                        $mask.css({ // show existing
+                            width  : calc.elemSize.width,
+                            height : calc.elemSize.height
+                        }).show();
+                    } else {
+                        $('<div/>', { // create new
+                            class : self.config.classNames.mask,
+                            css   : {
+                                width  : calc.elemSize.width,
+                                height : calc.elemSize.height
+                            }
+                        }).insertAfter(self.$elem);
+                    }
+                },
+
+                hide: function() {
+                    $mask.hide();
+                },
+
+                remove: function() {
+                    $mask.remove();
+                }
+            }[action].apply(self);
         },
 
         /**
@@ -1255,8 +1278,8 @@ var Fm = (function(document) {
                     position  : '',
                     top       : '',
                     left      : '',
-                    width     : '',
-                    transform : ''
+                    bottom    : '',
+                    width     : ''
                 })
                 .removeClass(
                     this.config.classNames.stick + ' ' +
@@ -1268,19 +1291,21 @@ var Fm = (function(document) {
          * Observe DOM changes.
          */
         observe: function() {
-            if ('MutationObserver' in window) {
-                this.observer = new MutationObserver(this.recalc);
-                this.observer.observe(this.elem, {
-                    childList : true,
-                    subtree   : true
-                });
-
-                this.contextObserver = new MutationObserver(this.recalc);
-                this.contextObserver.observe(this.config.context[0], {
-                    childList : true,
-                    subtree   : true
-                });
+            if ( ! this.config.observe || ! 'MutationObserver' in window) {
+                return;
             }
+
+            this.observer = new MutationObserver(this.recalc);
+            this.observer.observe(this.elem, {
+                childList : true,
+                subtree   : true
+            });
+
+            this.contextObserver = new MutationObserver(this.recalc);
+            this.contextObserver.observe(this.$context[0], {
+                childList : true,
+                subtree   : true
+            });
         },
 
         /**
@@ -1289,9 +1314,7 @@ var Fm = (function(document) {
          * @param {Object} settings
          */
         setting: function(settings) {
-            for (var setting in settings) {
-                this.config[setting] = settings[setting];
-            }
+            $.extend(this.config, settings);
         },
 
         /**
@@ -1305,7 +1328,7 @@ var Fm = (function(document) {
 
             this.unbind();
             this.clear();
-            this.mask().remove();
+            this.mask('remove');
 
             $.data(this.elem, plugin, null); // unset data
         }
@@ -1334,6 +1357,7 @@ var Fm = (function(document) {
         observe      : false,
         topOffset    : 0,
         bottomOffset : 0,
+        scrollSpace  : 200,
         classNames : {
             stick  : 'stick',
             bound  : 'bound',
@@ -1559,25 +1583,25 @@ var Fm = (function(document) {
          * @param {string} state
          */
         style: function(state) {
-            var self      = this,
+            var self = this,
                 animation = self.config.animations[self.animation],
                 direction = self.direction,
-                css       = {};
+                css;
 
             if (state === 'start') {
                 css = (direction == 'inward') ?
                     animation.start:
                     animation.end; // reversed
 
-                css['transition'] = 'all ' +
-                    self.config.duration + 'ms ' +
-                    self.config.curve;
+                css.transition = null;
             } else {
                 css = (direction == 'inward') ?
                     animation.end:
                     animation.start; // reversed
 
-                css['transition'] = null;
+                css.transition = 'all ' +
+                    self.config.duration + 'ms ' +
+                    self.config.curve;
             }
 
             for (var attr in css) {
