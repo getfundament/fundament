@@ -42,10 +42,14 @@
             var self = this,
                 conf = self.config;
 
+            self.$elem
+                .on('click', '.' + conf.classNames.close, self.close.bind(self));
+
             if (conf.closable) {
-                self.$dimmer.click(function(e) {
-                    if (e.target === this) self.close();
-                });
+                self.$dimmer
+                    .on('click', function(e) {
+                        if (e.target === this) self.close();
+                    });
             }
 
             if (conf.openFrom) {
@@ -230,7 +234,8 @@
         transition : 'fadeDown',
         classNames : {
             dimmer : 'dialog-dimmer',
-            open   : 'dialog--open'
+            open   : 'dialog--open',
+            close  : 'dialog__close'
         },
         onOpen    : function() {},
         onOpening : function() {},
