@@ -182,10 +182,11 @@ $dialog-background:    #FFF                 !default;
 $dialog-border-radius: $border-radius-base  !default;
 
 // Block
-$dialog-block-width:    40rem !default;
-$dialog-block-width-sm: ($dialog-block-width * 0.6) !default;
-$dialog-block-width-lg: ($dialog-block-width * 1.4) !default;
-$dialog-block-padding:  1rem  !default;
+$dialog-block-width:        40rem                       !default;
+$dialog-block-width-sm:     ($dialog-block-width * 0.6) !default;
+$dialog-block-width-lg:     ($dialog-block-width * 1.4) !default;
+$dialog-block-padding:      1rem                        !default;
+$dialog-block-border-color: $color-gray-lightest        !default;
 
 // Dimmer
 $dialog-dimmer-background: rgba(0,0,0,0.3) !default;
