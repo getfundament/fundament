@@ -77,12 +77,15 @@
                 return;
             }
 
+            conf.onOpening.call(self.elem);
+
             self.busy = true;
             self.scrollBar(false);
 
             self.transition('In', function() { // show
                 self.$elem.addClass(conf.classNames.open);
                 self.busy = false;
+                self.focus();
                 conf.onOpen.call(self.elem);
             });
         },
@@ -97,6 +100,8 @@
             if (self.busy) {
                 return;
             }
+
+            conf.onClosing.call(self.elem);
 
             self.busy = true;
 
@@ -171,6 +176,18 @@
         },
 
         /**
+         * Focus the first form element in the dialog.
+         */
+        focus: function() {
+            if (this.config.autoFocus) {
+                this.$elem
+                    .find('input, textarea, select, button')
+                    .first()
+                    .focus();
+            }
+        },
+
+        /**
          * Custom (functional) animation to scale the dialog from
          * the target element to the center of the viewport - or
          * the other way around.
@@ -231,6 +248,7 @@
     $.fn[plugin].defaults = {
         openFrom   : null,
         closable   : true,
+        autoFocus  : true,
         transition : 'fadeDown',
         classNames : {
             dimmer : 'dialog-dimmer',
