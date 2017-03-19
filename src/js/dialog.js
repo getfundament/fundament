@@ -7,7 +7,7 @@
     'use strict';
 
     var plugin  = 'dialog',
-        methods = ['open', 'close', 'setting'];
+        methods = ['toggle', 'open', 'close', 'setting'];
 
     var $window   = $(window),
         $document = $(document),
@@ -51,6 +51,15 @@
             if (conf.openFrom) {
                 conf.openFrom = $(conf.openFrom);
             }
+        },
+
+        /**
+         * Toggle the dialog.
+         */
+        toggle: function () {
+            this.$elem.is(':visible') ?
+                this.close():
+                this.open();
         },
 
         /**
