@@ -121,7 +121,7 @@
          */
         transition: function(direction, callback) {
             var animation,
-                duration = 400,
+                duration = $.fn.transition.defaults.duration * 1.5,
                 settings = {
                     duration: duration,
                     onEnd: callback
