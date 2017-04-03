@@ -192,7 +192,7 @@
 
     // Default settings
     $.fn[plugin].defaults = {
-        duration : 250,
+        duration : 280,
         delay    : 0,
         curve    : 'ease',
         queue    : true,
@@ -231,18 +231,22 @@
 
         // slide
         slideUp: {
-            start : { 'opacity': 0.5, 'transform': 'scaleY(0.01)', 'transform-origin': 'bottom'},
+            start : { 'opacity': 0.2, 'transform': 'scaleY(0.01)', 'transform-origin': 'bottom'},
             end   : { 'opacity': 1, 'transform': 'scaleY(1)', 'transform-origin': 'bottom'}
         },
         slideDown: {
-            start : { 'opacity': 0.5, 'transform': 'scaleY(0.01)', 'transform-origin': 'top'},
+            start : { 'opacity': 0.2, 'transform': 'scaleY(0.01)', 'transform-origin': 'top'},
             end   : { 'opacity': 1, 'transform': 'scaleY(1)', 'transform-origin': 'top'}
         },
 
         // flip
-        flip: {
-            start : { 'opacity': 0.5, 'transform': 'perspective(2000px) rotateY(-90deg)' },
+        flipX: {
+            start : { 'opacity': 0, 'transform': 'perspective(2000px) rotateY(-90deg)' },
             end   : { 'opacity': 1, 'transform': 'perspective(2000px) rotateY(0deg)' }
+        },
+        flipY: {
+            start : { 'opacity': 0, 'transform': 'perspective(2000px) rotateX(-90deg)' },
+            end   : { 'opacity': 1, 'transform': 'perspective(2000px) rotateX(0deg)' }
         }
     };
 
