@@ -181,7 +181,7 @@
         focus: function() {
             if (this.config.autoFocus) {
                 this.$elem
-                    .find('input, textarea, select, button')
+                    .find('input, textarea, select')
                     .first()
                     .focus();
             }
@@ -207,7 +207,7 @@
 
             return {
                 start: {
-                    'opacity': 0,
+                    'opacity': 0.2,
                     'transform': 'translate(' + translation.x + 'px, ' + translation.y + 'px) scale(0.05)',
                     'transform-origin': 'center'
                 },
@@ -249,7 +249,7 @@
         openFrom   : null,
         closable   : true,
         autoFocus  : true,
-        transition : 'fadeDown',
+        transition : 'scale',
         classNames : {
             dimmer : 'dialog-dimmer',
             open   : 'dialog--open',
