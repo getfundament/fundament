@@ -7,11 +7,11 @@
 /*---------------------*
  * Colors
  *---------------------*/
-$color-primary:    #0288D1      !default; // #3F51B5 (indigo) #8E22A9 (purple)
-$color-base:       #222         !default;
-$color-heading:    inherit      !default;
-$color-inverse:    #333         !default;
-$color-background: #fff         !default;
+$color-primary:    #0288D1  !default;
+$color-base:       #222     !default;
+$color-heading:    inherit  !default;
+$color-inverse:    #333     !default;
+$color-background: #fff     !default;
 
 $color-positive: #4CAF50    !default;
 $color-warning:  #FFA000    !default;
@@ -76,7 +76,8 @@ $container-widths: (
 /*---------------------*
  * Global
  *---------------------*/
-$border-radius-base: 0.25rem !default;
+$border-radius-base: 0.25rem        !default;
+$transition-base:    all 280ms ease !default;
 
 // Z-indexes
 $z-popup:    10     !default;
@@ -93,10 +94,11 @@ $input-placeholder:   #999                  !default;
 $input-background:    #fff                  !default;
 $input-border-color:  $color-gray-light     !default;
 $input-border-radius: $border-radius-base   !default;
+$input-transition:    $transition-base      !default;
 
 // Sizes
-$input-padding-sm:    0.4375rem, 0.625rem   !default;
-$input-padding-lg:    0.75rem, 1rem         !default;
+$input-padding-sm: 0.4375rem, 0.625rem  !default;
+$input-padding-lg: 0.75rem, 1rem        !default;
 
 // States
 $input-color-hover:      $input-color                       !default;
@@ -137,6 +139,7 @@ $button-font-weight:   normal               !default;
 $button-color:         $color-base          !default;
 $button-background:    $color-gray-lightest !default;
 $button-border-radius: $border-radius-base  !default;
+$button-transition:    $transition-base     !default;
 
 // Sizes
 $button-padding-sm: 0.375rem, 0.6875rem !default;

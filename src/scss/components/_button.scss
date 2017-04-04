@@ -13,8 +13,8 @@
     vertical-align: middle;
     cursor: pointer;
     user-select: none;
+    transition: $button-transition;
     @include make-button($button-color, $button-background);
-    @include transition(all 0.25s ease-out);
 
     &:disabled,
     &.btn--disabled {

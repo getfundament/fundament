@@ -11,7 +11,7 @@
     font-size: $font-size-base;
     line-height: $input-line-height;
     color: $input-color;
-    @include transition(all 0.3s ease-out);
+    transition: $input-transition;
 
     &:hover {
         color: $input-color-hover;
@@ -92,7 +92,7 @@ select.input,
 input[type="time"].input,
 input[type="date"].input,
 input[type="datetime"].input {
-    padding: (spacing($input-padding, y) * 0.8) (spacing($input-padding, x) * 0.8); // decrease padding
+    padding: calc(#{spacing($input-padding, y)} - 1px) calc(#{spacing($input-padding, x)} - 2px); // decrease padding
 }
 textarea.input {
     resize: vertical;
