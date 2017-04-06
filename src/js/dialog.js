@@ -9,6 +9,8 @@
     var plugin  = 'dialog',
         methods = ['toggle', 'open', 'close', 'setting'];
 
+    var transitionEndEvent = Fm.transitionEnd();
+
     var $window   = $(window),
         $document = $(document),
         $body     = $(document.body);
@@ -43,7 +45,11 @@
                 conf = self.config;
 
             self.$elem
-                .on('click', '.' + conf.classNames.close, self.close.bind(self));
+                .on('click', '.' + conf.classNames.close, self.close.bind(self))
+                .find('.' + conf.classNames.block)
+                .on(transitionEndEvent, function(e) {
+                    e.stopPropagation(); // prevent event bubbling
+                });
 
             if (conf.closable) {
                 self.$dimmer
@@ -84,9 +90,9 @@
 
             self.transition('In', function() { // show
                 self.$elem.addClass(conf.classNames.open);
-                self.busy = false;
                 self.focus();
                 conf.onOpen.call(self.elem);
+                self.busy = false;
             });
         },
 
@@ -108,8 +114,8 @@
             self.transition('Out', function() { // hide
                 self.$elem.removeClass(conf.classNames.open);
                 self.scrollBar(true);
-                self.busy = false;
                 conf.onClose.call(self.elem);
+                self.busy = false;
             });
         },
 
@@ -253,6 +259,7 @@
         classNames : {
             dimmer : 'dialog-dimmer',
             open   : 'dialog--open',
+            block  : 'dialog__block',
             close  : 'dialog__close'
         },
         onOpen    : function() {},
