@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.2.2
+ * Fundament framework v0.3.0
  *
  * https://getfundament.com
  *
