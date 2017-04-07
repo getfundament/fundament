@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.2.2
+ * Fundament framework v0.3.0
  *
  * https://getfundament.com
  *
@@ -125,7 +125,9 @@ var Fm = (function(document) {
     'use strict';
 
     var plugin  = 'dialog',
-        methods = ['open', 'close', 'setting'];
+        methods = ['toggle', 'open', 'close', 'setting'];
+
+    var transitionEndEvent = Fm.transitionEnd();
 
     var $window   = $(window),
         $document = $(document),
@@ -160,15 +162,32 @@ var Fm = (function(document) {
             var self = this,
                 conf = self.config;
 
-            if (conf.closable) {
-                self.$dimmer.click(function(e) {
-                    if (e.target === this) self.close();
+            self.$elem
+                .on('click', '.' + conf.classNames.close, self.close.bind(self))
+                .find('.' + conf.classNames.block)
+                .on(transitionEndEvent, function(e) {
+                    e.stopPropagation(); // prevent event bubbling
                 });
+
+            if (conf.closable) {
+                self.$dimmer
+                    .on('click', function(e) {
+                        if (e.target === this) self.close();
+                    });
             }
 
             if (conf.openFrom) {
                 conf.openFrom = $(conf.openFrom);
             }
+        },
+
+        /**
+         * Toggle the dialog.
+         */
+        toggle: function () {
+            this.$elem.is(':visible') ?
+                this.close():
+                this.open();
         },
 
         /**
@@ -183,12 +202,14 @@ var Fm = (function(document) {
             }
 
             self.busy = true;
+            conf.onOpening.call(self.elem);
             self.scrollBar(false);
 
             self.transition('In', function() { // show
                 self.$elem.addClass(conf.classNames.open);
-                self.busy = false;
+                self.focus();
                 conf.onOpen.call(self.elem);
+                self.busy = false;
             });
         },
 
@@ -204,12 +225,13 @@ var Fm = (function(document) {
             }
 
             self.busy = true;
+            conf.onClosing.call(self.elem);
 
             self.transition('Out', function() { // hide
                 self.$elem.removeClass(conf.classNames.open);
                 self.scrollBar(true);
-                self.busy = false;
                 conf.onClose.call(self.elem);
+                self.busy = false;
             });
         },
 
@@ -221,7 +243,7 @@ var Fm = (function(document) {
          */
         transition: function(direction, callback) {
             var animation,
-                duration = 400,
+                duration = $.fn.transition.defaults.duration * 1.5,
                 settings = {
                     duration: duration,
                     onEnd: callback
@@ -276,6 +298,18 @@ var Fm = (function(document) {
         },
 
         /**
+         * Focus the first form element in the dialog.
+         */
+        focus: function() {
+            if (this.config.autoFocus) {
+                this.$elem
+                    .find('input, textarea, select')
+                    .first()
+                    .focus();
+            }
+        },
+
+        /**
          * Custom (functional) animation to scale the dialog from
          * the target element to the center of the viewport - or
          * the other way around.
@@ -295,7 +329,7 @@ var Fm = (function(document) {
 
             return {
                 start: {
-                    'opacity': 0,
+                    'opacity': 0.2,
                     'transform': 'translate(' + translation.x + 'px, ' + translation.y + 'px) scale(0.05)',
                     'transform-origin': 'center'
                 },
@@ -336,10 +370,13 @@ var Fm = (function(document) {
     $.fn[plugin].defaults = {
         openFrom   : null,
         closable   : true,
-        transition : 'fadeDown',
+        autoFocus  : true,
+        transition : 'scale',
         classNames : {
             dimmer : 'dialog-dimmer',
-            open   : 'dialog--open'
+            open   : 'dialog--open',
+            block  : 'dialog__block',
+            close  : 'dialog__close'
         },
         onOpen    : function() {},
         onOpening : function() {},
@@ -387,14 +424,15 @@ var Fm = (function(document) {
             var self = this;
 
             self.$elem
-                .mousedown(function(e) {
+                .on('mousedown', function(e) {
                     var $target = $(e.target);
                     if ($target.hasClass(self.config.classNames.item)) {
                         self.select($target); // click on item
                     }
                     self.toggle();
                 })
-                .keydown(function(e) {
+                .on('focusout', self.close.bind(self))
+                .on('keydown', function(e) {
                     switch (e.which) {
                         case 13 : // enter key
                             self.toggle();
@@ -410,9 +448,6 @@ var Fm = (function(document) {
                         default :
                             self.selectByKey(e.which);
                     }
-                })
-                .focusout(function() {
-                    self.close();
                 });
         },
 
@@ -483,7 +518,7 @@ var Fm = (function(document) {
                     .text( $target.text() );
             }
 
-            self.config.onSelect.call(self.elem);
+            self.config.onSelect.call(self.elem, $target[0]);
         },
 
         /**
@@ -526,47 +561,53 @@ var Fm = (function(document) {
          * Open the dropdown.
          */
         open: function() {
-            var self = this;
+            var self = this,
+                conf = self.config;
 
             if (self.is('open')) {
                 return;
             }
 
-            if (self.config.smart) {
+            conf.onOpening.call(self.elem);
+
+            if (conf.smart) {
                 var menuHeight  = self.$menu.outerHeight(),
                     topSpace    = self.$elem.offset().top - window.pageYOffset,
                     bottomSpace = window.innerHeight - topSpace - self.$elem.outerHeight();
 
                 // Find the best direction for the menu to open
-                self.$elem.toggleClass(self.config.classNames.reversed,
+                self.$elem.toggleClass(conf.classNames.reversed,
                     bottomSpace < menuHeight && topSpace > menuHeight
                 );
             }
 
-            self.$menu.transition(self.config.transition + 'In', {
+            self.$menu.transition(conf.transition + 'In', {
                 queue: false,
-                onEnd: self.config.onOpen.bind(self.elem)
+                onEnd: conf.onOpen.bind(self.elem)
             });
 
-            self.$elem.addClass(self.config.classNames.open);
+            self.$elem.addClass(conf.classNames.open);
         },
 
         /**
          * Close the dropdown.
          */
         close: function() {
-            var self = this;
+            var self = this,
+                conf = self.config;
 
             if ( ! self.is('open')) {
                 return;
             }
 
-            self.$menu.transition(self.config.transition + 'Out', {
+            conf.onClosing.call(self.elem);
+
+            self.$menu.transition(conf.transition + 'Out', {
                 queue: false,
-                onEnd: self.config.onClose.bind(self.elem)
+                onEnd: conf.onClose.bind(self.elem)
             });
 
-            self.$elem.removeClass(self.config.classNames.open);
+            self.$elem.removeClass(conf.classNames.open);
         },
 
         /**
@@ -676,9 +717,11 @@ var Fm = (function(document) {
             menu     : 'menu',
             item     : 'menu__item'
         },
-        onOpen   : function() {},
-        onSelect : function() {},
-        onClose  : function() {}
+        onOpen    : function() {},
+        onOpening : function() {},
+        onClose   : function() {},
+        onClosing : function() {},
+        onSelect  : function(item) {}
     };
 
 })(jQuery, window);
@@ -918,19 +961,20 @@ var Fm = (function(document) {
          * Show the popup.
          */
         show: function() {
-            var self  = this,
-                delay = self.config.delay;
-
-            self.position();
+            var self = this,
+                conf = self.config;
 
             clearTimeout(self.timer);
 
             if ( ! self.active) {
+                self.position();
                 self.timer = setTimeout(function() {
-                    self.$popup.transition(self.config.transition + 'In', {queue: false});
                     self.active = true;
-                    self.config.onShow.call(self.elem);
-                }, delay.hasOwnProperty('show') ? delay.show : delay);
+                    self.$popup.transition(conf.transition + 'In', {
+                        queue: false,
+                        onEnd: conf.onShow.bind(self.elem)
+                    });
+                }, conf.delay.show || conf.delay);
             }
         },
 
@@ -938,17 +982,19 @@ var Fm = (function(document) {
          * Hide the popup.
          */
         hide: function() {
-            var self  = this,
-                delay = self.config.delay;
+            var self = this,
+                conf = self.config;
 
             clearTimeout(self.timer);
 
             if (self.active) {
                 self.timer = setTimeout(function() {
-                    self.$popup.transition(self.config.transition + 'Out', {queue: false});
                     self.active = false;
-                    self.config.onHide.call(self.elem);
-                }, delay.hasOwnProperty('hide') ? delay.hide : delay);
+                    self.$popup.transition(conf.transition + 'Out', {
+                        queue: false,
+                        onEnd: conf.onHide.bind(self.elem)
+                    });
+                }, conf.delay.hide || conf.delay);
             }
         },
 
@@ -993,7 +1039,7 @@ var Fm = (function(document) {
         trigger    : 'hover',
         transition : 'display',
         direction  : 'southwest',
-        delay      : 0,
+        delay      : 100,
         distance   : 10,
         hoverable  : false,
         classNames : {
@@ -1623,7 +1669,7 @@ var Fm = (function(document) {
 
     // Default settings
     $.fn[plugin].defaults = {
-        duration : 300,
+        duration : 280,
         delay    : 0,
         curve    : 'ease',
         queue    : true,
@@ -1662,18 +1708,22 @@ var Fm = (function(document) {
 
         // slide
         slideUp: {
-            start : { 'opacity': 0, 'transform': 'scaleY(0.01)', 'transform-origin': 'bottom'},
+            start : { 'opacity': 0.2, 'transform': 'scaleY(0.01)', 'transform-origin': 'bottom'},
             end   : { 'opacity': 1, 'transform': 'scaleY(1)', 'transform-origin': 'bottom'}
         },
         slideDown: {
-            start : { 'opacity': 0, 'transform': 'scaleY(0.01)', 'transform-origin': 'top'},
+            start : { 'opacity': 0.2, 'transform': 'scaleY(0.01)', 'transform-origin': 'top'},
             end   : { 'opacity': 1, 'transform': 'scaleY(1)', 'transform-origin': 'top'}
         },
 
         // flip
-        flip: {
+        flipX: {
             start : { 'opacity': 0, 'transform': 'perspective(2000px) rotateY(-90deg)' },
             end   : { 'opacity': 1, 'transform': 'perspective(2000px) rotateY(0deg)' }
+        },
+        flipY: {
+            start : { 'opacity': 0, 'transform': 'perspective(2000px) rotateX(-90deg)' },
+            end   : { 'opacity': 1, 'transform': 'perspective(2000px) rotateX(0deg)' }
         }
     };
 

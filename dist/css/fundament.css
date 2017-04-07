@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.2.2
+ * Fundament framework v0.3.0
  *
  * https://getfundament.com
  *
@@ -1063,13 +1063,13 @@ p {
 
 .btn {
   display: inline-block;
-  padding: 0.625rem 1.125rem;
+  padding: 0.5625rem 1.125rem;
   border: 1px solid transparent;
   border-radius: 0.25rem;
   outline: 0;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 16px;
-  line-height: 1.125;
+  line-height: 1.25;
   font-weight: normal;
   text-align: center;
   text-decoration: none;
@@ -1079,6 +1079,8 @@ p {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  -webkit-transition: all 280ms ease;
+  transition: all 280ms ease;
   color: #222;
   background-color: #E8E8E8; }
   .btn:focus, .btn:hover {
@@ -1146,58 +1148,58 @@ p {
   color: #888;
   background-color: transparent; }
   .btn--hollow:focus, .btn--hollow:hover {
-    border-color: #cecece;
-    color: #797979;
+    border-color: #cbcbcb;
+    color: #767676;
     background-color: transparent; }
   .btn--hollow:active {
-    border-color: #bebebe;
-    color: dimgray;
+    border-color: #b9b9b9;
+    color: #646464;
     background-color: transparent; }
   .btn--hollow.btn--primary {
     border-color: #0288D1;
     color: #0288D1; }
     .btn--hollow.btn--primary:focus, .btn--hollow.btn--primary:hover {
-      border-color: #0274b3;
-      color: #0274b3; }
+      border-color: #0271ae;
+      color: #0271ae; }
     .btn--hollow.btn--primary:active {
-      border-color: #016194;
-      color: #016194; }
+      border-color: #015a8a;
+      color: #015a8a; }
   .btn--hollow.btn--positive {
     border-color: #4CAF50;
     color: #4CAF50; }
     .btn--hollow.btn--positive:focus, .btn--hollow.btn--positive:hover {
-      border-color: #439a46;
-      color: #439a46; }
+      border-color: #419645;
+      color: #419645; }
     .btn--hollow.btn--positive:active {
-      border-color: #39843c;
-      color: #39843c; }
+      border-color: #367d39;
+      color: #367d39; }
   .btn--hollow.btn--warning {
     border-color: #FFA000;
     color: #FFA000; }
     .btn--hollow.btn--warning:focus, .btn--hollow.btn--warning:hover {
-      border-color: #e08d00;
-      color: #e08d00; }
+      border-color: #db8a00;
+      color: #db8a00; }
     .btn--hollow.btn--warning:active {
-      border-color: #c27a00;
-      color: #c27a00; }
+      border-color: #b87300;
+      color: #b87300; }
   .btn--hollow.btn--negative {
     border-color: #D84315;
     color: #D84315; }
     .btn--hollow.btn--negative:focus, .btn--hollow.btn--negative:hover {
-      border-color: #bc3a12;
-      color: #bc3a12; }
+      border-color: #b73912;
+      color: #b73912; }
     .btn--hollow.btn--negative:active {
-      border-color: #a03210;
-      color: #a03210; }
+      border-color: #972f0f;
+      color: #972f0f; }
   .btn--hollow.btn--inverse {
     border-color: #333;
     color: #333; }
     .btn--hollow.btn--inverse:focus, .btn--hollow.btn--inverse:hover {
-      border-color: #242424;
-      color: #242424; }
+      border-color: #212121;
+      color: #212121; }
     .btn--hollow.btn--inverse:active {
-      border-color: #141414;
-      color: #141414; }
+      border-color: #0f0f0f;
+      color: #0f0f0f; }
 
 .btn--sm {
   padding: 0.375rem 0.6875rem;
@@ -1370,7 +1372,7 @@ p {
       -ms-flex-pack: center;
           justify-content: center;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.3); }
+  background-color: rgba(0, 0, 0, 0.4); }
 
 .dialog {
   display: none;
@@ -1387,6 +1389,8 @@ p {
   width: 40rem;
   max-width: 100%;
   padding: 1rem; }
+  .dialog__block + .dialog__block {
+    border-top: 1px solid #E8E8E8; }
 
 .dialog__close {
   position: absolute;
@@ -1735,15 +1739,17 @@ label {
   display: block;
   width: 100%;
   margin: 0;
-  padding: 0.625rem 0.8125rem;
+  padding: 0.5625rem 0.8125rem;
   border: 1px solid #DDD;
   border-radius: 0.25rem;
   outline: 0;
   background-color: #fff;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 16px;
-  line-height: 1.125;
-  color: #222; }
+  line-height: 1.25;
+  color: #222;
+  -webkit-transition: all 280ms ease;
+  transition: all 280ms ease; }
   .input:hover, .dropdown--select:hover {
     color: #222;
     background-color: #fff;
@@ -1796,10 +1802,10 @@ label {
         -ms-flex: 0 0 auto;
             flex: 0 0 auto; }
   .input-group > .label {
-    padding: 0.625rem 0.8125rem;
+    padding: 0.5625rem 0.8125rem;
     border: 1px solid #DDD;
     font-size: 1rem;
-    line-height: 1.125; }
+    line-height: 1.25; }
   .input-group > .input:focus, .input-group > .dropdown--select:focus,
   .input-group > .btn:focus {
     position: relative;
@@ -1818,7 +1824,7 @@ input[type="date"].input,
 input[type="date"].dropdown--select,
 input[type="datetime"].input,
 input[type="datetime"].dropdown--select {
-  padding: 0.5rem 0.65rem; }
+  padding: calc(0.5625rem - 1px) calc(0.8125rem - 2px); }
 
 textarea.input, textarea.dropdown--select {
   resize: vertical; }
@@ -1989,7 +1995,7 @@ ul.list {
 .msg {
   position: relative;
   margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 1rem;
   border: 1px solid #DDD;
   background-color: #FFF;
   border-radius: 0.25rem; }
@@ -2002,7 +2008,7 @@ ul.list {
 
 .msg__close {
   position: absolute;
-  top: 0.75rem;
+  top: 0.625rem;
   right: 1rem;
   padding: 0;
   background: none;
@@ -2065,7 +2071,7 @@ ul.list {
   position: absolute;
   z-index: 10;
   max-width: 18rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4375rem 0.75rem;
   font-size: 0.9375rem;
   background-color: #FFF;
   border: 1px solid #DDD;
