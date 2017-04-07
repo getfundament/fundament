@@ -233,19 +233,20 @@
          * Show the popup.
          */
         show: function() {
-            var self  = this,
-                delay = self.config.delay;
-
-            self.position();
+            var self = this,
+                conf = self.config;
 
             clearTimeout(self.timer);
 
             if ( ! self.active) {
+                self.position();
                 self.timer = setTimeout(function() {
-                    self.$popup.transition(self.config.transition + 'In', {queue: false});
                     self.active = true;
-                    self.config.onShow.call(self.elem);
-                }, delay.hasOwnProperty('show') ? delay.show : delay);
+                    self.$popup.transition(conf.transition + 'In', {
+                        queue: false,
+                        onEnd: conf.onShow.bind(self.elem)
+                    });
+                }, conf.delay.show || conf.delay);
             }
         },
 
@@ -253,17 +254,19 @@
          * Hide the popup.
          */
         hide: function() {
-            var self  = this,
-                delay = self.config.delay;
+            var self = this,
+                conf = self.config;
 
             clearTimeout(self.timer);
 
             if (self.active) {
                 self.timer = setTimeout(function() {
-                    self.$popup.transition(self.config.transition + 'Out', {queue: false});
                     self.active = false;
-                    self.config.onHide.call(self.elem);
-                }, delay.hasOwnProperty('hide') ? delay.hide : delay);
+                    self.$popup.transition(conf.transition + 'Out', {
+                        queue: false,
+                        onEnd: conf.onHide.bind(self.elem)
+                    });
+                }, conf.delay.hide || conf.delay);
             }
         },
 
@@ -308,7 +311,7 @@
         trigger    : 'hover',
         transition : 'display',
         direction  : 'southwest',
-        delay      : 0,
+        delay      : 100,
         distance   : 10,
         hoverable  : false,
         classNames : {

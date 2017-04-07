@@ -37,14 +37,15 @@
             var self = this;
 
             self.$elem
-                .mousedown(function(e) {
+                .on('mousedown', function(e) {
                     var $target = $(e.target);
                     if ($target.hasClass(self.config.classNames.item)) {
                         self.select($target); // click on item
                     }
                     self.toggle();
                 })
-                .keydown(function(e) {
+                .on('focusout', self.close.bind(self))
+                .on('keydown', function(e) {
                     switch (e.which) {
                         case 13 : // enter key
                             self.toggle();
@@ -60,9 +61,6 @@
                         default :
                             self.selectByKey(e.which);
                     }
-                })
-                .focusout(function() {
-                    self.close();
                 });
         },
 
@@ -133,7 +131,7 @@
                     .text( $target.text() );
             }
 
-            self.config.onSelect.call(self.elem);
+            self.config.onSelect.call(self.elem, $target[0]);
         },
 
         /**
@@ -176,47 +174,53 @@
          * Open the dropdown.
          */
         open: function() {
-            var self = this;
+            var self = this,
+                conf = self.config;
 
             if (self.is('open')) {
                 return;
             }
 
-            if (self.config.smart) {
+            conf.onOpening.call(self.elem);
+
+            if (conf.smart) {
                 var menuHeight  = self.$menu.outerHeight(),
                     topSpace    = self.$elem.offset().top - window.pageYOffset,
                     bottomSpace = window.innerHeight - topSpace - self.$elem.outerHeight();
 
                 // Find the best direction for the menu to open
-                self.$elem.toggleClass(self.config.classNames.reversed,
+                self.$elem.toggleClass(conf.classNames.reversed,
                     bottomSpace < menuHeight && topSpace > menuHeight
                 );
             }
 
-            self.$menu.transition(self.config.transition + 'In', {
+            self.$menu.transition(conf.transition + 'In', {
                 queue: false,
-                onEnd: self.config.onOpen.bind(self.elem)
+                onEnd: conf.onOpen.bind(self.elem)
             });
 
-            self.$elem.addClass(self.config.classNames.open);
+            self.$elem.addClass(conf.classNames.open);
         },
 
         /**
          * Close the dropdown.
          */
         close: function() {
-            var self = this;
+            var self = this,
+                conf = self.config;
 
             if ( ! self.is('open')) {
                 return;
             }
 
-            self.$menu.transition(self.config.transition + 'Out', {
+            conf.onClosing.call(self.elem);
+
+            self.$menu.transition(conf.transition + 'Out', {
                 queue: false,
-                onEnd: self.config.onClose.bind(self.elem)
+                onEnd: conf.onClose.bind(self.elem)
             });
 
-            self.$elem.removeClass(self.config.classNames.open);
+            self.$elem.removeClass(conf.classNames.open);
         },
 
         /**
@@ -326,9 +330,11 @@
             menu     : 'menu',
             item     : 'menu__item'
         },
-        onOpen   : function() {},
-        onSelect : function() {},
-        onClose  : function() {}
+        onOpen    : function() {},
+        onOpening : function() {},
+        onClose   : function() {},
+        onClosing : function() {},
+        onSelect  : function(item) {}
     };
 
 })(jQuery, window);

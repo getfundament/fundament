@@ -83,9 +83,8 @@
                 return;
             }
 
-            conf.onOpening.call(self.elem);
-
             self.busy = true;
+            conf.onOpening.call(self.elem);
             self.scrollBar(false);
 
             self.transition('In', function() { // show
@@ -107,9 +106,8 @@
                 return;
             }
 
-            conf.onClosing.call(self.elem);
-
             self.busy = true;
+            conf.onClosing.call(self.elem);
 
             self.transition('Out', function() { // hide
                 self.$elem.removeClass(conf.classNames.open);
