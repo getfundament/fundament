@@ -176,7 +176,6 @@
                     self.$elem.css({
                         position  : 'fixed',
                         top       : calc.overSized ? -calc.overSized : self.config.topOffset, // oversized content has a negative top
-                        left      : calc.elemOffset.left,
                         bottom    : '',
                         width     : calc.elemSize.width
                     });
@@ -203,8 +202,7 @@
                         .css({
                             position : 'absolute',
                             top      : '',
-                            bottom   : self.config.bottomOffset,
-                            left     : 0
+                            bottom   : self.config.bottomOffset
                         })
                         .addClass(self.config.classNames.bound);
                     self.isBound = true;
@@ -270,7 +268,6 @@
                 .css({
                     position  : '',
                     top       : '',
-                    left      : '',
                     bottom    : '',
                     width     : ''
                 })
