@@ -52,10 +52,9 @@
                 });
 
             if (conf.closable) {
-                self.$dimmer
-                    .on('click', function(e) {
-                        if (e.target === this) self.close();
-                    });
+                self.$dimmer.on('click', function(e) {
+                    if (e.target === this) self.close();
+                });
             }
 
             if (conf.openFrom) {
@@ -76,22 +75,18 @@
          * Open the dialog.
          */
         open: function () {
-            var self = this,
-                conf = self.config;
+            var self = this;
 
             if (self.busy) {
                 return;
             }
 
-            self.busy = true;
-            conf.onOpening.call(self.elem);
+            self.$dimmer.show().addClass('active');
             self.scrollBar(false);
+            self.config.onOpening.call(self.elem);
 
             self.transition('In', function() { // show
-                self.$elem.addClass(conf.classNames.open);
                 self.focus();
-                conf.onOpen.call(self.elem);
-                self.busy = false;
             });
         },
 
@@ -99,21 +94,18 @@
          * Close the dialog.
          */
         close: function () {
-            var self = this,
-                conf = self.config;
+            var self = this;
 
             if (self.busy) {
                 return;
             }
 
-            self.busy = true;
-            conf.onClosing.call(self.elem);
+            self.$dimmer.removeClass('active');
+            self.config.onClosing.call(self.elem);
 
             self.transition('Out', function() { // hide
-                self.$elem.removeClass(conf.classNames.open);
+                self.$dimmer.hide();
                 self.scrollBar(true);
-                conf.onClose.call(self.elem);
-                self.busy = false;
             });
         },
 
@@ -124,24 +116,26 @@
          * @param {function} callback
          */
         transition: function(direction, callback) {
-            var animation,
-                duration = $.fn.transition.defaults.duration * 1.5,
-                settings = {
-                    duration: duration,
-                    onEnd: callback
-                };
+            var self      = this,
+                conf      = self.config,
+                animation = conf.transition + direction,
+                settings  = {};
+
+            settings.duration = $.fn.transition.defaults.duration * 1.5;
+            settings.onEnd = function() {
+                callback();
+                self.busy = false;
+                self.$elem.toggleClass(self.config.classNames.open, direction === 'In');
+                direction === 'In' ? conf.onOpen.call(self.elem) : conf.onClose.call(self.elem);
+            };
 
             if (this.config.openFrom) {
                 animation = 'dialog' + direction;
                 settings.curve = 'cubic-bezier(0.4,0.7,0.6,1)';
-                settings.animations = {
-                    dialog: this.getAnimation()
-                };
-            } else {
-                animation = this.config.transition + direction;
+                settings.animations = this.getAnimation();
             }
 
-            this.$dimmer.transition('fade' + direction, duration);
+            this.busy = true;
             this.$elem.transition(animation, settings);
         },
 
@@ -192,6 +186,15 @@
         },
 
         /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            $.extend(this.config, settings);
+        },
+
+        /**
          * Custom (functional) animation to scale the dialog from
          * the target element to the center of the viewport - or
          * the other way around.
@@ -199,9 +202,8 @@
          * @returns {Object}
          */
         getAnimation: function() {
-            var self = this,
-                windowTop = window.pageYOffset,
-                $location = self.config.openFrom,
+            var windowTop = window.pageYOffset,
+                $location = this.config.openFrom,
                 locationOffset = $location.offset();
 
             var translation = {
@@ -210,25 +212,18 @@
             };
 
             return {
-                start: {
-                    'opacity': 0.2,
-                    'transform': 'translate(' + translation.x + 'px, ' + translation.y + 'px) scale(0.05)',
-                    'transform-origin': 'center'
-                },
-                end: {
-                    'opacity': 1,
-                    'transform': 'translate(0,0) scale(1)'
+                dialog: {
+                    start: {
+                        'opacity': 0,
+                        'transform': 'translate(' + translation.x + 'px, ' + translation.y + 'px) scale(0.05)',
+                        'transform-origin': 'center'
+                    },
+                    end: {
+                        'opacity': 1,
+                        'transform': 'translate(0,0) scale(1)'
+                    }
                 }
             }
-        },
-
-        /**
-         * Override the instance's settings.
-         *
-         * @param {Object} settings
-         */
-        setting: function(settings) {
-            $.extend(this.config, settings);
         }
 
     });
