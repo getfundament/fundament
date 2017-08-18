@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.0
+ * Fundament framework v0.3.1
  *
  * https://getfundament.com
  *
@@ -170,10 +170,9 @@ var Fm = (function(document) {
                 });
 
             if (conf.closable) {
-                self.$dimmer
-                    .on('click', function(e) {
-                        if (e.target === this) self.close();
-                    });
+                self.$dimmer.on('click', function(e) {
+                    if (e.target === this) self.close();
+                });
             }
 
             if (conf.openFrom) {
@@ -194,22 +193,18 @@ var Fm = (function(document) {
          * Open the dialog.
          */
         open: function () {
-            var self = this,
-                conf = self.config;
+            var self = this;
 
             if (self.busy) {
                 return;
             }
 
-            self.busy = true;
-            conf.onOpening.call(self.elem);
+            self.$dimmer.show().addClass('active');
             self.scrollBar(false);
+            self.config.onOpening.call(self.elem);
 
             self.transition('In', function() { // show
-                self.$elem.addClass(conf.classNames.open);
                 self.focus();
-                conf.onOpen.call(self.elem);
-                self.busy = false;
             });
         },
 
@@ -217,21 +212,18 @@ var Fm = (function(document) {
          * Close the dialog.
          */
         close: function () {
-            var self = this,
-                conf = self.config;
+            var self = this;
 
             if (self.busy) {
                 return;
             }
 
-            self.busy = true;
-            conf.onClosing.call(self.elem);
+            self.$dimmer.removeClass('active');
+            self.config.onClosing.call(self.elem);
 
             self.transition('Out', function() { // hide
-                self.$elem.removeClass(conf.classNames.open);
+                self.$dimmer.hide();
                 self.scrollBar(true);
-                conf.onClose.call(self.elem);
-                self.busy = false;
             });
         },
 
@@ -242,24 +234,26 @@ var Fm = (function(document) {
          * @param {function} callback
          */
         transition: function(direction, callback) {
-            var animation,
-                duration = $.fn.transition.defaults.duration * 1.5,
-                settings = {
-                    duration: duration,
-                    onEnd: callback
-                };
+            var self      = this,
+                conf      = self.config,
+                animation = conf.transition + direction,
+                settings  = {};
+
+            settings.duration = $.fn.transition.defaults.duration * 1.5;
+            settings.onEnd = function() {
+                callback();
+                self.busy = false;
+                self.$elem.toggleClass(self.config.classNames.open, direction === 'In');
+                direction === 'In' ? conf.onOpen.call(self.elem) : conf.onClose.call(self.elem);
+            };
 
             if (this.config.openFrom) {
                 animation = 'dialog' + direction;
                 settings.curve = 'cubic-bezier(0.4,0.7,0.6,1)';
-                settings.animations = {
-                    dialog: this.getAnimation()
-                };
-            } else {
-                animation = this.config.transition + direction;
+                settings.animations = this.getAnimation();
             }
 
-            this.$dimmer.transition('fade' + direction, duration);
+            this.busy = true;
             this.$elem.transition(animation, settings);
         },
 
@@ -310,6 +304,15 @@ var Fm = (function(document) {
         },
 
         /**
+         * Override the instance's settings.
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            $.extend(this.config, settings);
+        },
+
+        /**
          * Custom (functional) animation to scale the dialog from
          * the target element to the center of the viewport - or
          * the other way around.
@@ -317,9 +320,8 @@ var Fm = (function(document) {
          * @returns {Object}
          */
         getAnimation: function() {
-            var self = this,
-                windowTop = window.pageYOffset,
-                $location = self.config.openFrom,
+            var windowTop = window.pageYOffset,
+                $location = this.config.openFrom,
                 locationOffset = $location.offset();
 
             var translation = {
@@ -328,25 +330,18 @@ var Fm = (function(document) {
             };
 
             return {
-                start: {
-                    'opacity': 0.2,
-                    'transform': 'translate(' + translation.x + 'px, ' + translation.y + 'px) scale(0.05)',
-                    'transform-origin': 'center'
-                },
-                end: {
-                    'opacity': 1,
-                    'transform': 'translate(0,0) scale(1)'
+                dialog: {
+                    start: {
+                        'opacity': 0,
+                        'transform': 'translate(' + translation.x + 'px, ' + translation.y + 'px) scale(0.05)',
+                        'transform-origin': 'center'
+                    },
+                    end: {
+                        'opacity': 1,
+                        'transform': 'translate(0,0) scale(1)'
+                    }
                 }
             }
-        },
-
-        /**
-         * Override the instance's settings.
-         *
-         * @param {Object} settings
-         */
-        setting: function(settings) {
-            $.extend(this.config, settings);
         }
 
     });
@@ -434,8 +429,10 @@ var Fm = (function(document) {
                 .on('focusout', self.close.bind(self))
                 .on('keydown', function(e) {
                     switch (e.which) {
+                        case 32 : // space key
                         case 13 : // enter key
                             self.toggle();
+                            e.preventDefault(); // prevent scroll
                             break;
                         case 38 : // arrow up
                             self.select('prev');
@@ -1229,7 +1226,6 @@ var Fm = (function(document) {
                     self.$elem.css({
                         position  : 'fixed',
                         top       : calc.overSized ? -calc.overSized : self.config.topOffset, // oversized content has a negative top
-                        left      : calc.elemOffset.left,
                         bottom    : '',
                         width     : calc.elemSize.width
                     });
@@ -1256,8 +1252,7 @@ var Fm = (function(document) {
                         .css({
                             position : 'absolute',
                             top      : '',
-                            bottom   : self.config.bottomOffset,
-                            left     : 0
+                            bottom   : self.config.bottomOffset
                         })
                         .addClass(self.config.classNames.bound);
                     self.isBound = true;
@@ -1323,7 +1318,6 @@ var Fm = (function(document) {
                 .css({
                     position  : '',
                     top       : '',
-                    left      : '',
                     bottom    : '',
                     width     : ''
                 })
@@ -1517,7 +1511,7 @@ var Fm = (function(document) {
 
             self.animation = self.parse(animation);
 
-            if (self.animation == 'display') {
+            if (self.animation === 'display') {
                 return self.end();
             } else if ( ! config.animations.hasOwnProperty(self.animation)) {
                 return console.warn('Trying to call an undefined animation');
@@ -1544,7 +1538,7 @@ var Fm = (function(document) {
                 requestAnimationFrame(self.start.bind(self));
             };
 
-            config.delay == 0 ? fire() : setTimeout(fire, config.delay);
+            config.delay ? fire() : setTimeout(fire, config.delay);
         },
 
         /**
@@ -1635,13 +1629,13 @@ var Fm = (function(document) {
                 css;
 
             if (state === 'start') {
-                css = (direction == 'inward') ?
+                css = (direction === 'inward') ?
                     animation.start:
                     animation.end; // reversed
 
                 css.transition = null;
             } else {
-                css = (direction == 'inward') ?
+                css = (direction === 'inward') ?
                     animation.end:
                     animation.start; // reversed
 
