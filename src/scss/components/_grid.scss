@@ -16,6 +16,24 @@
         display: block;
     }
 }
+.row--compact {
+    margin-left: 0;
+    margin-right: 0;
+
+    > .col {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+.row--relaxed {
+    margin-left: -($grid-gutter-width*0.75);
+    margin-right: -($grid-gutter-width*0.75);
+
+    > .col {
+        padding-left: $grid-gutter-width*0.75;
+        padding-right: $grid-gutter-width*0.75;
+    }
+}
 
 // Columns
 .col {
