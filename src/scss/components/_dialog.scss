@@ -9,7 +9,12 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: $dialog-dimmer-background;
+    background-color: transparent;
+    transition: background-color 420ms ease;
+
+    &.active {
+        background-color: $dialog-dimmer-background;
+    }
 }
 .dialog {
     display: none;
