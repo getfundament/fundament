@@ -40,7 +40,7 @@
 
             self.animation = self.parse(animation);
 
-            if (self.animation == 'display') {
+            if (self.animation === 'display') {
                 return self.end();
             } else if ( ! config.animations.hasOwnProperty(self.animation)) {
                 return console.warn('Trying to call an undefined animation');
@@ -67,7 +67,7 @@
                 requestAnimationFrame(self.start.bind(self));
             };
 
-            config.delay == 0 ? fire() : setTimeout(fire, config.delay);
+            config.delay ? fire() : setTimeout(fire, config.delay);
         },
 
         /**
@@ -158,13 +158,13 @@
                 css;
 
             if (state === 'start') {
-                css = (direction == 'inward') ?
+                css = (direction === 'inward') ?
                     animation.start:
                     animation.end; // reversed
 
                 css.transition = null;
             } else {
-                css = (direction == 'inward') ?
+                css = (direction === 'inward') ?
                     animation.end:
                     animation.start; // reversed
 
