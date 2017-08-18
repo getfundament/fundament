@@ -47,8 +47,10 @@
                 .on('focusout', self.close.bind(self))
                 .on('keydown', function(e) {
                     switch (e.which) {
+                        case 32 : // space key
                         case 13 : // enter key
                             self.toggle();
+                            e.preventDefault(); // prevent scroll
                             break;
                         case 38 : // arrow up
                             self.select('prev');
