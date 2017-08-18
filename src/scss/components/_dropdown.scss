@@ -18,6 +18,7 @@
         position: absolute;
         top: 100%;
         left: 0;
+        min-width: $dropdown-min-width;
         margin: spacing($dropdown-margin);
         z-index: $z-dropdown;
         outline: 0;
