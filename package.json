@@ -30,8 +30,10 @@
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.4.1",
+    "gulp-typescript": "^3.2.1",
     "gulp-uglify": "^2.0.0",
-    "gulp-watch": "^4.3.10"
+    "gulp-watch": "^4.3.10",
+    "typescript": "^2.4.2"
   },
   "scripts": {
     "test": "exit 1"

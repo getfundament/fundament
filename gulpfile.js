@@ -8,14 +8,15 @@ const gulp       = require('gulp'),
       sourcemaps = require('gulp-sourcemaps'),
       sass       = require('gulp-sass'),
       cssnano    = require('gulp-cssnano'),
-      filter     = require('gulp-filter');
+      filter     = require('gulp-filter'),
+      typescript = require('gulp-typescript');
 
 /**
  * Fundament source and dist paths.
  */
 const Fundament = {
     js : {
-        src  : 'src/js/*.js',
+        src  : 'src/js/*.ts',
         dist : 'dist/js'
     },
     sass : {
@@ -30,11 +31,10 @@ const Fundament = {
  */
 const tasks = {
 
-    js: function() {
-        gulp.src(Fundament.js.src)
-            .pipe(plumber())
+    ts: function() {
+        return gulp.src(Fundament.js.src)
             .pipe(sourcemaps.init())
-            .pipe(concat('fundament.js'))
+            .pipe(typescript({outFile: 'fundament.js'}))
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest(Fundament.js.dist)) // compressed
             .pipe(filter('**/*.js'))
