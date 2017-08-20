@@ -173,10 +173,10 @@
                     self.config.curve;
             }
 
-            for (var attr in css) {
-                var prefixed = Fm.prefixAttr(attr); // prefix attributes
-                if (prefixed !== attr)
-                    css[prefixed] = css[attr];
+            for (var prop in css) {
+                var prefixed = Fm.prefixProp(prop); // prefix attributes
+                if (prefixed !== prop)
+                    css[prefixed] = css[prop];
             }
 
             return css;

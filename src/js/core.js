@@ -67,12 +67,12 @@ var Fm = (function(document) {
     };
 
     /**
-     * Returns a prefixed CSS attribute.
+     * Returns a prefixed CSS property.
      *
      * @param {string} attr
      * @returns {string}
      */
-    var prefixAttr = function(attr) {
+    var prefixProp = function(attr) {
         if (cssDeclaration[attr] === undefined) {
             for (var i = 0; i < cssPrefixes.length; i++) {
                 var prefixed = cssPrefixes[i] + attr;
@@ -110,7 +110,7 @@ var Fm = (function(document) {
     return {
         createID: createID,
         debounce: debounce,
-        prefixAttr: prefixAttr,
+        prefixProp: prefixProp,
         transitionEnd: transitionEnd
     };
 
