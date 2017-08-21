@@ -44,8 +44,7 @@ const tasks = {
                 entries: [Fundament.js.src]
             })
             .plugin(tsify, {
-                'target': 'es2015',
-                'noImplicitAny': true
+                'target': 'es2015'
             })
             .transform('babelify', {
                 presets: ['es2015'],
