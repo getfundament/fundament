@@ -148,10 +148,11 @@ $button-padding-lg: 0.8125rem, 1.5rem   !default;
 /*---------------------*
  * Table
  *---------------------*/
-$table-col-padding:  0.625rem, 0.625rem     !default;
-$table-border-width: 1px                    !default;
-$table-border-style: solid                  !default;
-$table-border-color: $color-gray-lightest   !default;
+$table-margin-bottom: 1rem                  !default;
+$table-col-padding:   0.625rem, 0.625rem    !default;
+$table-border-width:  1px                   !default;
+$table-border-style:  solid                 !default;
+$table-border-color:  $color-gray-lightest  !default;
 
 /*---------------------*
  * Card
