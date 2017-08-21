@@ -9,14 +9,20 @@ const gulp       = require('gulp'),
       sass       = require('gulp-sass'),
       cssnano    = require('gulp-cssnano'),
       filter     = require('gulp-filter'),
-      typescript = require('gulp-typescript');
+      tsify      = require("tsify"),
+      browserify = require("browserify"),
+      source     = require('vinyl-source-stream'),
+      buffer     = require('vinyl-buffer');
 
 /**
  * Fundament source and dist paths.
  */
 const Fundament = {
     js : {
-        src  : 'src/js/*.ts',
+        src  : [
+            'src/js/core.ts',
+            'src/js/dialog.ts'
+        ],
         dist : 'dist/js'
     },
     sass : {
@@ -31,10 +37,24 @@ const Fundament = {
  */
 const tasks = {
 
-    ts: function() {
-        return gulp.src(Fundament.js.src)
-            .pipe(sourcemaps.init())
-            .pipe(typescript({outFile: 'fundament.js'}))
+    js: function() {
+        return browserify({
+                basedir: '.',
+                debug: true,
+                entries: [Fundament.js.src]
+            })
+            .plugin(tsify, {
+                'target': 'es2015',
+                'noImplicitAny': true
+            })
+            .transform('babelify', {
+                presets: ['es2015'],
+                extensions: ['.ts']
+            })
+            .bundle()
+            .pipe(source('fundament.js'))
+            .pipe(buffer())
+            .pipe(sourcemaps.init({loadMaps: true}))
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest(Fundament.js.dist)) // compressed
             .pipe(filter('**/*.js'))
@@ -45,7 +65,7 @@ const tasks = {
     },
 
     sass: function() {
-        gulp.src(Fundament.sass.src)
+        return gulp.src(Fundament.sass.src)
             .pipe(plumber())
             .pipe(sourcemaps.init())
             .pipe(sass())
@@ -69,6 +89,6 @@ const tasks = {
 
 };
 
-for (var task in tasks) {
+for (let task in tasks) {
     gulp.task(task, tasks[task]);
 }
