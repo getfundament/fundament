@@ -237,7 +237,7 @@
                 $.data(this, plugin, new Dialog(this, settings));
             } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, $.isArray(args) ? args : [args]):
+                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
             }
         });
