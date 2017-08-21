@@ -1,7 +1,16 @@
-//import {Plugin} from './plugin';
+import Plugin from './plugin';
 
-class Dialog {
-    constructor() {
-        console.log('Hello world');
+export default class Dialog extends Plugin {
+
+    /**
+     * @constructor
+     *
+     * @param {HTMLElement} element
+     * @param {Object} settings
+     */
+    constructor(element: HTMLElement, settings: Object) {
+        super(element, settings);
+        console.log('Hello dialog');
     }
+
 }
