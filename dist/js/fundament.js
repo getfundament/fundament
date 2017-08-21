@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.1
+ * Fundament framework v0.3.2
  *
  * https://getfundament.com
  *
@@ -67,12 +67,12 @@ var Fm = (function(document) {
     };
 
     /**
-     * Returns a prefixed CSS attribute.
+     * Returns a prefixed CSS property.
      *
      * @param {string} attr
      * @returns {string}
      */
-    var prefixAttr = function(attr) {
+    var prefixProp = function(attr) {
         if (cssDeclaration[attr] === undefined) {
             for (var i = 0; i < cssPrefixes.length; i++) {
                 var prefixed = cssPrefixes[i] + attr;
@@ -110,7 +110,7 @@ var Fm = (function(document) {
     return {
         createID: createID,
         debounce: debounce,
-        prefixAttr: prefixAttr,
+        prefixProp: prefixProp,
         transitionEnd: transitionEnd
     };
 
@@ -355,7 +355,7 @@ var Fm = (function(document) {
                 $.data(this, plugin, new Dialog(this, settings));
             } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, $.isArray(args) ? args : [args]):
+                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
             }
         });
@@ -694,7 +694,7 @@ var Fm = (function(document) {
                 $.data(elem, plugin, new Dropdown(elem, settings));
             } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, $.isArray(args) ? args : [args]):
+                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
             }
         });
@@ -1025,7 +1025,7 @@ var Fm = (function(document) {
                 $.data(this, plugin, new Popup(this, settings));
             } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, $.isArray(args) ? args : [args]):
+                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
             }
         });
@@ -1384,7 +1384,7 @@ var Fm = (function(document) {
                 $.data(this, plugin, new Sticky(this, settings));
             } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, $.isArray(args) ? args : [args]):
+                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
             }
         });
@@ -1449,7 +1449,7 @@ var Fm = (function(document) {
             }
             else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, $.isArray(args) ? args : [args]):
+                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
             }
         });
@@ -1644,10 +1644,10 @@ var Fm = (function(document) {
                     self.config.curve;
             }
 
-            for (var attr in css) {
-                var prefixed = Fm.prefixAttr(attr); // prefix attributes
-                if (prefixed !== attr)
-                    css[prefixed] = css[attr];
+            for (var prop in css) {
+                var prefixed = Fm.prefixProp(prop); // prefix attributes
+                if (prefixed !== prop)
+                    css[prefixed] = css[prop];
             }
 
             return css;

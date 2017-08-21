@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.1
+ * Fundament framework v0.3.2
  *
  * https://getfundament.com
  *
@@ -2292,5 +2292,11 @@ ul.list {
 
 .table--interactive tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.05); }
+
+.table-view {
+  overflow-x: auto;
+  margin-bottom: 1rem; }
+  .table-view .table {
+    margin-bottom: 0; }
 
 /*# sourceMappingURL=fundament.css.map */
