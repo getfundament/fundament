@@ -1,4 +1,5 @@
-import Plugin from './plugin';
+import { DialogSettings } from "./interfaces/settings.dialog.interface"
+import { Plugin } from './plugin';
 
 export default class Dialog extends Plugin {
 
@@ -6,9 +7,9 @@ export default class Dialog extends Plugin {
      * @constructor
      *
      * @param {HTMLElement} element
-     * @param {Object} settings
+     * @param {DialogSettings} settings
      */
-    constructor(element: HTMLElement, settings: Object) {
+    constructor(element: HTMLElement, settings: DialogSettings) {
         super(element, settings);
         console.log('Hello dialog');
     }

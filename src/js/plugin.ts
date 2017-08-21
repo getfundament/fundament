@@ -1,6 +1,6 @@
 import { DialogSettings } from "./interfaces/settings.dialog.interface";
 
-export default class Plugin {
+export class Plugin {
 
     /**
      * @constructor
