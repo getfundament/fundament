@@ -1,7 +1,7 @@
 interface Config {
 
     /* Class names used by the plugin */
-    classNames: {[key: string]: string};
+    classNames: any;//{[key: string]: string};
 
 }
 

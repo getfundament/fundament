@@ -14,6 +14,18 @@ interface DialogConfig extends Config {
     /* The transition being applied to the dialog */
     transition: string,
 
+    /* Callback when the dialog opens */
+    onOpening: Function;
+
+    /* Callback when the dialog opened */
+    onOpen: Function;
+
+    /* Callback when the dialog closes */
+    onClosing: Function;
+
+    /* Callback when the dialog closed */
+    onClose: Function;
+
 }
 
 export default DialogConfig;

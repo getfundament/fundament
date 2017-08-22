@@ -1,14 +1,19 @@
 import Core from './core'
 import Config from './interfaces/config.interface';
-import * as $ from "jquery";
 
 abstract class Plugin {
+
+    /* The name of the plugin */
+    public abstract name: string;
+
+    /* The public methods of the plugin */
+    public abstract methods: Array<string>;
 
     /* The main element */
     public elem: HTMLElement;
 
     /* The main jQuery object */
-    public $elem: $;
+    public $elem: JQuery;
 
     /* The plugin configuration */
     public config: Config;
@@ -19,14 +24,15 @@ abstract class Plugin {
     /**
      * @constructor
      *
+     * @param {string} plugin
      * @param {HTMLElement} element
      * @param {Config} config
      */
-    constructor(element: HTMLElement, config: Config) {
+    constructor(plugin: string, element: HTMLElement, config: Config) {
         this.elem      = element;
-        this.$elem     = $(element);
-        this.config    = $.extend({}, $.fn['dialog'].defaults, config);
-        this.namespace = 'dialog.' + Core.createId();
+        this.$elem     = jQuery(element);
+        this.config    = jQuery.extend({}, jQuery.fn[plugin].defaults, config);
+        this.namespace = plugin + '.' + Core.createId();
         console.log('Hello plugin', this);
     }
 
@@ -39,13 +45,6 @@ abstract class Plugin {
      * Bind event handlers.
      */
     abstract bind(): void;
-
-    /**
-     *  Get the name of the plugin.
-     *
-     *  @returns {string}
-     */
-    static name: () => string;
 
 }
 
