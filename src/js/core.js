@@ -16,7 +16,7 @@ window.requestAnimationFrame = window.requestAnimationFrame
     || function(callback){ setTimeout(callback, 0) };
 
 /**
- * Fundament global variables and utility functions.
+ * Fundament core variables and utility functions.
  *
  * @package Fundament
  */
@@ -30,9 +30,9 @@ var Fm = (function(document) {
      *
      * @returns {string}
      */
-    var createID = function() {
+    function generateId() {
         return (Math.random().toString(16) + '000000000').substr(2,8);
-    };
+    }
 
     /**
      * Debounces a function which will be called after it stops being
@@ -43,7 +43,7 @@ var Fm = (function(document) {
      * @param {int} wait
      * @param {boolean} immediate
      */
-    var debounce = function(func, wait, immediate) {
+    function debounce(func, wait, immediate) {
         var timeout;
 
         return function() {
@@ -64,7 +64,7 @@ var Fm = (function(document) {
             if (callNow)
                 func.apply(self, args);
         };
-    };
+    }
 
     /**
      * Returns a prefixed CSS property.
@@ -72,7 +72,7 @@ var Fm = (function(document) {
      * @param {string} attr
      * @returns {string}
      */
-    var prefixProp = function(attr) {
+    function prefixProp(attr) {
         if (cssDeclaration[attr] === undefined) {
             for (var i = 0; i < cssPrefixes.length; i++) {
                 var prefixed = cssPrefixes[i] + attr;
@@ -83,14 +83,14 @@ var Fm = (function(document) {
         }
 
         return attr;
-    };
+    }
 
     /**
      * Returns the supported transitionEnd event.
      *
      * @returns {string|null}
      */
-    var transitionEnd = function() {
+    function transitionEnd() {
         var events = {
             transition       : 'transitionend',
             OTransition      : 'otransitionend',
@@ -105,10 +105,10 @@ var Fm = (function(document) {
         }
 
         return null;
-    };
+    }
 
     return {
-        createID: createID,
+        createID: generateId,
         debounce: debounce,
         prefixProp: prefixProp,
         transitionEnd: transitionEnd
