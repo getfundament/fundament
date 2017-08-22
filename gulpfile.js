@@ -18,17 +18,18 @@ const gulp       = require('gulp'),
  * Fundament source and dist paths.
  */
 const Fundament = {
-    js : {
-        src  : [
+    js: {
+        src: [
             'src/js/core.ts',
             'src/js/dialog.ts'
         ],
-        dist : 'dist/js'
+        watch: 'src/js/*.ts',
+        dist: 'dist/js'
     },
-    sass : {
-        src   : 'src/scss/build.scss',
-        watch : 'src/scss/**/*.scss',
-        dist  : 'dist/css'
+    sass: {
+        src: 'src/scss/build.scss',
+        watch: 'src/scss/**/*.scss',
+        dist: 'dist/css'
     }
 };
 
