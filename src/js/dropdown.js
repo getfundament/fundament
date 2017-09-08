@@ -242,52 +242,47 @@
      * @param {HTMLElement} element
      */
     function transform(element) {
-        var $select = $(element);
-
-        if ( ! $select.is('select')) {
+        if (element.nodeName !== 'SELECT') {
             return element;
         }
 
-        var identifier = Fm.createID(),
-            classNames = $.fn[plugin].defaults.classNames,
+        var classNames = $.fn[plugin].defaults.classNames,
+            $select    = $(element),
             $options   = $select.find('option'),
             $selected  = $options.filter(':selected');
 
         // Create elements
         var $dropdown = $('<div/>', {
-                id: identifier,
                 class: classNames.dropdown + ' ' + classNames.select,
                 tabindex: 0
             }),
-            $menu  = $('<ul/>', {
+            $menu = $('<ul/>', {
                 'class': classNames.menu,
+                'role': 'listbox',
                 'aria-hidden': true,
-                'aria-labelledby': identifier
             }),
-            $label = $('<span/>'),
             $input = $('<input/>', {
                 type: 'hidden',
                 name: $select.attr('name')
-            });
+            }),
+            $label = $('<span/>');
 
         // Create menu
         $options.each(function() {
             var $option = $(this);
-            if ($option.val()) {
-                $('<li/>', {
-                    'text': $option.text(),
-                    'class': 'menu__item',
-                    'data-value': $option.val()
-                }).appendTo($menu);
-            } else {
-                $label.text( $option.text() );
-            }
+
+            $('<li/>', {
+                'text': $option.text(),
+                'class': 'menu__item',
+                'role': 'option',
+                'data-value': $option.val()
+            }).appendTo($menu);
         });
 
         // Inherit selection
         if ($selected.val()) {
-            $input.val( $selected.val() );
-            $label.text( $selected.text() );
+            $input.val($selected.val());
+            $label.text($selected.text());
         }
 
         // Generate HTML
