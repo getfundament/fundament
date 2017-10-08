@@ -13,6 +13,25 @@
     var $window = $(window),
         windowHeight = $window.height();
 
+    var Defaults = {
+        context      : null,
+        mask         : true,
+        observe      : false,
+        topOffset    : 0,
+        bottomOffset : 0,
+        scrollSpace  : 200,
+        onStick      : function() {},
+        onUnStick    : function() {},
+        onBound      : function() {},
+        onUnBound    : function() {}
+    };
+
+    var ClassNames = {
+        mask  : 'sticky-mask',
+        stick : 'stick',
+        bound : 'bound'
+    };
+
     // Constructor
     function Sticky(element, settings) {
         this.namespace = namespace + '.' + Fm.createID();
@@ -185,7 +204,7 @@
                 stick: function() {
                     self.make('fixed');
                     self.mask('show');
-                    self.$elem.addClass(self.config.classNames.stick);
+                    self.$elem.addClass(ClassNames.stick);
                     self.config.onStick.call(self.elem);
                 },
 
@@ -204,14 +223,14 @@
                             top      : '',
                             bottom   : self.config.bottomOffset
                         })
-                        .addClass(self.config.classNames.bound);
+                        .addClass(ClassNames.bound);
                     self.isBound = true;
                     self.config.onBound.call(self.elem);
                 },
 
                 unBound: function() {
                     self.make('fixed');
-                    self.$elem.removeClass(self.config.classNames.bound);
+                    self.$elem.removeClass(ClassNames.bound);
                     self.isBound = false;
                     self.config.onUnBound.call(self.elem);
                 }
@@ -226,7 +245,7 @@
         mask: function(action) {
             var self = this,
                 calc = self.calc,
-                $mask = this.$elem.next('.' + this.config.classNames.mask);
+                $mask = this.$elem.next('.' + ClassNames.mask);
 
             if ( ! self.config.mask) {
                 return;
@@ -241,7 +260,7 @@
                         }).show();
                     } else {
                         $('<div/>', { // create new
-                            class : self.config.classNames.mask,
+                            class : ClassNames.mask,
                             css   : {
                                 width  : calc.elemSize.width,
                                 height : calc.elemSize.height
@@ -272,8 +291,8 @@
                     width     : ''
                 })
                 .removeClass(
-                    this.config.classNames.stick + ' ' +
-                    this.config.classNames.bound
+                    ClassNames.stick + ' ' +
+                    ClassNames.bound
                 );
         },
 
@@ -341,22 +360,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        context      : null,
-        mask         : true,
-        observe      : false,
-        topOffset    : 0,
-        bottomOffset : 0,
-        scrollSpace  : 200,
-        classNames : {
-            stick  : 'stick',
-            bound  : 'bound',
-            mask   : 'sticky-mask'
-        },
-        onStick   : function() {},
-        onUnStick : function() {},
-        onBound   : function() {},
-        onUnBound : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
 })(jQuery, window, document);

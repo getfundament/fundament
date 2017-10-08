@@ -13,13 +13,28 @@
     var $window = $(window),
         $body   = $(document.body);
 
+    var Defaults = {
+        trigger    : 'hover',
+        transition : 'display',
+        direction  : 'southwest',
+        delay      : 100,
+        distance   : 10,
+        hoverable  : false,
+        onShow     : function() {},
+        onHide     : function() {}
+    };
+
+    var ClassNames = {
+        popup : 'popup'
+    };
+
     // Constructor
     function Popup(element, settings) {
         this.namespace = namespace + '.' + Fm.createID();
         this.config    = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
-        this.$popup    = this.$elem.next('.' + this.config.classNames.popup);
+        this.$popup    = this.$elem.next('.' + ClassNames.popup);
         this.calc      = null;
         this.timer     = null;
         this.active    = false;
@@ -50,7 +65,7 @@
          */
         create: function() {
             var $popup = $('<div/>', {
-                    class : this.config.classNames.popup,
+                    class : ClassNames.popup,
                     html  : $('<div/>').html( this.$elem.attr('title') ).text()
                 });
 
@@ -217,7 +232,7 @@
 
             self.$popup
                 .css(positioning)
-                .addClass(self.config.classNames.popup + '--' + direction);
+                .addClass(ClassNames.popup + '--' + direction);
         },
 
         /**
@@ -307,18 +322,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        trigger    : 'hover',
-        transition : 'display',
-        direction  : 'southwest',
-        delay      : 100,
-        distance   : 10,
-        hoverable  : false,
-        classNames : {
-            popup  : 'popup'
-        },
-        onShow : function() {},
-        onHide : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
 })(jQuery, window, document);

@@ -10,6 +10,15 @@
 
     var transitionEndEvent = Fm.transitionEnd();
 
+    var Defaults = {
+        duration : 280,
+        delay    : 0,
+        curve    : 'ease',
+        queue    : true,
+        onStart  : function() {},
+        onEnd    : function() {}
+    };
+
     // Constructor
     function Transition(element, animation, settings, onEnd) {
         var self = this;
@@ -191,14 +200,7 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        duration : 280,
-        delay    : 0,
-        curve    : 'ease',
-        queue    : true,
-        onStart  : function() {},
-        onEnd    : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
     $.fn[plugin].defaults.animations = {
         // fade

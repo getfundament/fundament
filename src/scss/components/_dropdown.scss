@@ -41,10 +41,6 @@
         &:hover {
             background-color: rgba(0,0,0,0.03);
         }
-        &.active {
-            font-weight: bold;
-            background-color: rgba(0,0,0,0.01);
-        }
     }
 
     // Reversed (upward)
@@ -80,6 +76,12 @@
         border: 1px solid $input-border-focus;
         box-shadow: none;
     }
+    .menu__item {
+        &.is-active {
+            font-weight: bold;
+            background-color: rgba(0,0,0,0.01);
+        }
+    }
 
     // Default (downward)
     &:not(.dropdown--reversed) {
@@ -90,7 +92,7 @@
         .menu__item:first-child {
             border-top: 1px solid $dropdown-item-border-color;
         }
-        &.dropdown--open {
+        &.is-open {
             border-radius: $input-border-radius $input-border-radius 0 0;
         }
     }
@@ -104,13 +106,13 @@
         .menu__item:last-child {
             border-bottom-width: 1px;
         }
-        &.dropdown--open {
+        &.is-open {
             border-radius: 0 0 $input-border-radius $input-border-radius;
         }
     }
 
     // Empty
-    &.dropdown--empty > span {
+    &.is-empty > span {
         color: $input-placeholder;
     }
 }

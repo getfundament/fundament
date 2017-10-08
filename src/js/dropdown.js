@@ -9,13 +9,35 @@
     var plugin    = 'dropdown',
         methods   = ['toggle', 'open', 'close', 'setting'];
 
+    var Defaults = {
+        smart      : false,
+        searchable : false,
+        transition : 'display',
+        onOpen     : function() {},
+        onOpening  : function() {},
+        onClose    : function() {},
+        onClosing  : function() {},
+        onSelect   : function(item) {}
+    };
+
+    var ClassNames = {
+        dropdown : 'dropdown',
+        select   : 'dropdown--select',
+        reversed : 'dropdown--reversed',
+        menu     : 'menu',
+        item     : 'menu__item',
+        open     : 'is-open',
+        empty    : 'is-empty',
+        active   : 'is-active'
+    };
+
     // Constructor
     function Dropdown(element, settings) {
         this.config = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem   = element;
         this.$elem  = $(element);
-        this.$menu  = this.$elem.find('.' + this.config.classNames.menu);
-        this.$items = this.$elem.find('.' + this.config.classNames.item);
+        this.$menu  = this.$elem.find('.' + ClassNames.menu);
+        this.$items = this.$elem.find('.' + ClassNames.item);
         this.init();
     }
 
@@ -26,7 +48,7 @@
             this.bind();
 
             if (this.is('select') && this.is('empty')) {
-                this.$elem.addClass(this.config.classNames.empty);
+                this.$elem.addClass(ClassNames.empty);
             }
         },
 
@@ -39,7 +61,7 @@
             self.$elem
                 .on('mousedown', function(e) {
                     var $target = $(e.target);
-                    if ($target.hasClass(self.config.classNames.item)) {
+                    if ($target.hasClass(ClassNames.item)) {
                         self.select($target); // click on item
                     }
                     self.toggle();
@@ -76,10 +98,10 @@
 
             return {
                 open: function() {
-                    return self.$elem.hasClass(self.config.classNames.open);
+                    return self.$elem.hasClass(ClassNames.open);
                 },
                 select: function() {
-                    return self.$elem.hasClass(self.config.classNames.select);
+                    return self.$elem.hasClass(ClassNames.select);
                 },
                 empty: function() {
                     return self.$elem.find('input').val().length === 0
@@ -94,8 +116,7 @@
          */
         select: function(target) {
             var self = this,
-                classNames = self.config.classNames,
-                $active = self.$items.filter('.' + classNames.active),
+                $active = self.$items.filter('.' + ClassNames.active),
                 $target;
 
             // Retrieve target item
@@ -120,9 +141,9 @@
             // TODO: scroll to item (overflowing content)
 
             // Set classes
-            $active.removeClass(classNames.active);
-            $target.addClass(classNames.active);
-            self.$elem.removeClass(classNames.empty);
+            $active.removeClass(ClassNames.active);
+            $target.addClass(ClassNames.active);
+            self.$elem.removeClass(ClassNames.empty);
 
             if (self.is('select')) {
                 self.$elem // input value
@@ -155,7 +176,7 @@
             });
 
             if ($matches.length) {
-                var index = $matches.index($matches.filter('.' + this.config.classNames.active)),
+                var index = $matches.index($matches.filter('.' + ClassNames.active)),
                     $next = $($matches[index + 1]); // next match
 
                 $next && $next.length ?
@@ -192,7 +213,7 @@
                     bottomSpace = window.innerHeight - topSpace - self.$elem.outerHeight();
 
                 // Find the best direction for the menu to open
-                self.$elem.toggleClass(conf.classNames.reversed,
+                self.$elem.toggleClass(ClassNames.reversed,
                     bottomSpace < menuHeight && topSpace > menuHeight
                 );
             }
@@ -202,7 +223,7 @@
                 onEnd: conf.onOpen.bind(self.elem)
             });
 
-            self.$elem.addClass(conf.classNames.open);
+            self.$elem.addClass(ClassNames.open);
         },
 
         /**
@@ -223,7 +244,7 @@
                 onEnd: conf.onClose.bind(self.elem)
             });
 
-            self.$elem.removeClass(conf.classNames.open);
+            self.$elem.removeClass(ClassNames.open);
         },
 
         /**
@@ -247,18 +268,17 @@
             return element;
         }
 
-        var classNames = $.fn[plugin].defaults.classNames,
-            $select    = $(element),
-            $options   = $select.find('option'),
-            $selected  = $options.filter(':selected');
+        var $select   = $(element),
+            $options  = $select.find('option'),
+            $selected = $options.filter(':selected');
 
         // Create elements
         var $dropdown = $('<div/>', {
-                class: classNames.dropdown + ' ' + classNames.select,
+                class: ClassNames.dropdown + ' ' + ClassNames.select,
                 tabindex: 0
             }),
             $menu = $('<ul/>', {
-                'class': classNames.menu,
+                'class': ClassNames.menu,
                 'role': 'listbox',
                 'aria-hidden': true
             }),
@@ -273,7 +293,7 @@
         // Create menu
         $options.each(function() {
             var $option = $(this),
-                classes = classNames.item + ($option.is($selected) ? ' is-active' : '');
+                classes = ClassNames.item + ($option.is($selected) ? ' is-active' : '');
 
             if ($option.val() === '') {
                 return;
@@ -318,25 +338,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        smart      : false,
-        searchable : false,
-        transition : 'display',
-        classNames : {
-            dropdown : 'dropdown',
-            select   : 'dropdown--select',
-            reversed : 'dropdown--reversed',
-            open     : 'is-open',
-            empty    : 'is-empty',
-            active   : 'is-active',
-            menu     : 'menu',
-            item     : 'menu__item'
-        },
-        onOpen    : function() {},
-        onOpening : function() {},
-        onClose   : function() {},
-        onClosing : function() {},
-        onSelect  : function(item) {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
 })(jQuery, window);

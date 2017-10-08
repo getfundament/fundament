@@ -15,13 +15,32 @@
         $document = $(document),
         $body     = $(document.body);
 
+    var Defaults = {
+        openFrom   : null,
+        closable   : true,
+        autoFocus  : true,
+        transition : 'scale',
+        onOpen     : function() {},
+        onOpening  : function() {},
+        onClose    : function() {},
+        onClosing  : function() {}
+    };
+
+    var ClassNames = {
+        dimmer : 'page-dimmer',
+        wrap   : 'dialog-wrap',
+        block  : 'dialog__block',
+        close  : 'dialog__close',
+        active : 'is-active'
+    };
+
     // Constructor
     function Dialog(element, settings) {
         this.config  = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem    = element;
         this.$elem   = $(element);
-        this.$wrap   = $('<div/>', {class: this.config.classNames.wrap, role: 'document'});
-        this.$dimmer = $('<div/>', {class: this.config.classNames.dimmer});
+        this.$wrap   = $('<div/>', {class: ClassNames.wrap, role: 'document'});
+        this.$dimmer = $('<div/>', {class: ClassNames.dimmer});
         this.busy    = false;
         this.init();
     }
@@ -40,11 +59,11 @@
         setup: function() {
             var conf = this.config;
 
-            if ($('.' + this.config.classNames.dimmer).length === 0) {
+            if ($('.' + ClassNames.dimmer).length === 0) {
                 $body.append(this.$dimmer);
             }
 
-            this.$dimmer = $('.' + conf.classNames.dimmer);
+            this.$dimmer = $('.' + ClassNames.dimmer);
             this.$wrap = this.$elem
                 .wrap(this.$wrap) // wrap around dialog
                 .parent() // retrieve element
@@ -63,8 +82,8 @@
                 conf = self.config;
 
             self.$elem
-                .on('click', '.' + conf.classNames.close, self.close.bind(self))
-                .find('.' + conf.classNames.block)
+                .on('click', '.' + ClassNames.close, self.close.bind(self))
+                .find('.' + ClassNames.block)
                 .on(transitionEndEvent, function(e) {
                     e.stopPropagation(); // prevent event bubbling
                 });
@@ -105,7 +124,7 @@
             self.scrollBar(false);
             self.$dimmer.show();
             self.$wrap.show();
-            self.$dimmer.addClass('is-active');
+            self.$dimmer.addClass(ClassNames.active);
 
             self.transition('In', function() { // show
                 self.focus();
@@ -132,7 +151,7 @@
             self.transition('Out', function() { // hide
                 self.$wrap.hide();
                 self.$dimmer
-                    .removeClass('is-active')
+                    .removeClass(ClassNames.active)
                     .one(transitionEndEvent, function() {
                         self.scrollBar(true);
                         self.$dimmer.hide();
@@ -271,20 +290,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        openFrom   : null,
-        closable   : true,
-        autoFocus  : true,
-        transition : 'scale',
-        classNames : {
-            dimmer : 'page-dimmer',
-            wrap   : 'dialog-wrap',
-            block  : 'dialog__block',
-            close  : 'dialog__close'
-        },
-        onOpen    : function() {},
-        onOpening : function() {},
-        onClose   : function() {},
-        onClosing : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
+
 })(jQuery, window, document);
