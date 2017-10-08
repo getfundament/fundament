@@ -8,7 +8,7 @@
     }
     th,
     td {
-        padding: spacing($table-col-padding);
+        padding: $table-col-padding;
         border-bottom: $table-border-width solid $table-border-color;
         vertical-align: top;
     }

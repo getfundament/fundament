@@ -2,7 +2,7 @@
     display: block;
     width: 100%;
     margin: 0;
-    padding: spacing($input-padding);
+    padding: $input-padding;
     border: 1px solid $input-border-color;
     border-radius: $input-border-radius;
     outline: 0;
@@ -27,11 +27,11 @@
 
 // Size
 .input--sm {
-    padding: spacing($input-padding-sm);
+    padding: $input-padding-sm;
     font-size: $font-size-sm;
 }
 .input--lg {
-    padding: spacing($input-padding-lg);
+    padding: $input-padding-lg;
     font-size: $font-size-lg;
 }
 
@@ -69,7 +69,7 @@
         flex: 0 0 auto;
     }
     > .label {
-        padding: spacing($input-padding);
+        padding: $input-padding;
         border: 1px solid $input-border-color;
         font-size: 1rem;
         line-height: $input-line-height;

@@ -3,7 +3,7 @@
     position: absolute;
     z-index: $z-popup;
     max-width: $popup-max-width;
-    padding: spacing($popup-padding);
+    padding: $popup-padding;
     font-size: $popup-font-size;
     background-color: $popup-background;
     border: 1px solid $popup-border-color;

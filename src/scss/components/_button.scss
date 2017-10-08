@@ -1,6 +1,6 @@
 .btn {
     display: inline-block;
-    padding: spacing($button-padding);
+    padding: $button-padding;
     border: 1px solid transparent;
     border-radius: $button-border-radius;
     outline: 0;
@@ -64,11 +64,11 @@
 
 // Sizes
 .btn--sm {
-    padding: spacing($button-padding-sm);
+    padding: $button-padding-sm;
     font-size: $font-size-sm;
 }
 .btn--lg {
-    padding: spacing($button-padding-lg);
+    padding: $button-padding-lg;
     font-size: $font-size-lg;
 }
 .btn--fluid {

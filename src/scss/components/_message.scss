@@ -1,7 +1,7 @@
 .msg {
     position: relative;
     margin-bottom: $msg-margin-bottom;
-    padding: spacing($msg-padding);
+    padding: $msg-padding;
     border: 1px solid $msg-border-color;
     background-color: $msg-background;
     border-radius: $msg-border-radius;
@@ -63,7 +63,7 @@
 
 // Sizes
 .msg--sm {
-    padding: spacing($msg-padding-sm);
+    padding: $msg-padding-sm;
     font-size: $font-size-sm;
 
     &.msg--dismissable {
@@ -77,7 +77,7 @@
     }
 }
 .msg--lg {
-    padding: spacing($msg-padding-lg);
+    padding: $msg-padding-lg;
     font-size: $font-size-lg;
 
     &.msg--dismissable {

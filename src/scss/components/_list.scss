@@ -11,7 +11,7 @@ ul.list {
 // Item
 .list__item {
     display: flex;
-    padding: spacing($list-item-padding);
+    padding: $list-item-padding;
     justify-content: flex-start;
     border-bottom: 1px solid $list-item-border-color;
     background-color: $list-item-background;

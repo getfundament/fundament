@@ -19,7 +19,7 @@
         top: 100%;
         left: 0;
         min-width: $dropdown-min-width;
-        margin: spacing($dropdown-margin);
+        margin: $dropdown-margin;
         z-index: $z-dropdown;
         outline: 0;
         line-height: 1;
@@ -31,7 +31,7 @@
         box-shadow: $dropdown-box-shadow;
     }
     .menu__item {
-        padding: spacing($dropdown-item-padding);
+        padding: $dropdown-item-padding;
         color: $input-color;
         border-bottom: 1px solid $dropdown-item-border-color;
 

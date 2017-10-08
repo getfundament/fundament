@@ -22,7 +22,7 @@
 }
 .card__block {
     position: relative;
-    padding: spacing($card-padding);
+    padding: $card-padding;
 
     + .card__block {
         border-top: 1px solid $card-block-border-color;

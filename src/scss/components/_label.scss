@@ -1,6 +1,6 @@
  .label {
     display: inline-block;
-    padding: spacing($label-padding);
+    padding: $label-padding;
     border-radius: $label-border-radius;
     overflow: hidden;
     font-size: $label-font-size;
@@ -13,7 +13,7 @@
     > span {
         display: inline-block;
         margin: -#{spacing($label-padding, y)} -#{spacing($label-padding, x)} -#{spacing($label-padding, y)} #{spacing($label-padding, x)};
-        padding: spacing($label-padding);
+        padding: $label-padding;
         font-weight: lighter;
         vertical-align: top;
         background-color: rgba(0,0,0,0.08);
