@@ -30,10 +30,6 @@
     $.extend(Dialog.prototype, {
 
         init: function () {
-            if ($('.' + this.config.classNames.dimmer).length === 0) {
-                $body.append(this.$dimmer);
-            }
-
             this.setup();
             this.bind();
         },
@@ -43,6 +39,10 @@
          */
         setup: function() {
             var conf = this.config;
+
+            if ($('.' + this.config.classNames.dimmer).length === 0) {
+                $body.append(this.$dimmer);
+            }
 
             this.$dimmer = $('.' + conf.classNames.dimmer);
             this.$wrap = this.$elem
@@ -78,6 +78,8 @@
 
         /**
          * Toggle the dialog.
+         *
+         * @public
          */
         toggle: function () {
             this.$elem.is(':visible') ?
@@ -87,6 +89,8 @@
 
         /**
          * Open the dialog.
+         *
+         * @public
          */
         open: function () {
             var self = this;
@@ -97,19 +101,23 @@
 
             self.config.onOpening.call(self.elem);
             self.busy = true;
-            self.scrollBar(false);
 
+            self.scrollBar(false);
             self.$dimmer.show();
             self.$wrap.show();
             self.$dimmer.addClass('is-active');
 
             self.transition('In', function() { // show
                 self.focus();
+                self.config.onOpen.call(self.elem);
+                self.busy = false;
             });
         },
 
         /**
          * Close the dialog.
+         *
+         * @public
          */
         close: function () {
             var self = this;
@@ -119,6 +127,7 @@
             }
 
             self.config.onClosing.call(self.elem);
+            self.busy = true;
 
             self.transition('Out', function() { // hide
                 self.$wrap.hide();
@@ -127,6 +136,7 @@
                     .one(transitionEndEvent, function() {
                         self.scrollBar(true);
                         self.$dimmer.hide();
+                        self.config.onClose.call(self.elem);
                         self.busy = false;
                     });
             });
@@ -139,18 +149,11 @@
          * @param {function} callback
          */
         transition: function(direction, callback) {
-            var self      = this,
-                conf      = self.config,
-                animation = conf.transition + direction,
-                settings  = {};
-
-            settings.duration = $.fn.transition.defaults.duration * 1.5;
-            settings.onEnd = function() {
-                callback();
-                direction === 'In' ?
-                    conf.onOpen.call(self.elem) :
-                    conf.onClose.call(self.elem);
-            };
+            var animation = this.config.transition + direction,
+                settings  = {
+                    duration: $.fn.transition.defaults.duration * 1.5,
+                    onEnd: callback
+                };
 
             if (this.config.openFrom) {
                 animation = 'dialog' + direction;
@@ -209,6 +212,8 @@
 
         /**
          * Override the instance's settings.
+         *
+         * @public
          *
          * @param {Object} settings
          */
