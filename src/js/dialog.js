@@ -96,6 +96,7 @@
             }
 
             self.config.onOpening.call(self.elem);
+            self.busy = true;
             self.scrollBar(false);
 
             self.$dimmer.show();
@@ -124,8 +125,9 @@
                 self.$dimmer
                     .removeClass('is-active')
                     .one(transitionEndEvent, function() {
-                        self.$dimmer.hide();
                         self.scrollBar(true);
+                        self.$dimmer.hide();
+                        self.busy = false;
                     });
             });
         },
@@ -145,9 +147,9 @@
             settings.duration = $.fn.transition.defaults.duration * 1.5;
             settings.onEnd = function() {
                 callback();
-                self.busy = false;
-                self.$elem.toggleClass(self.config.classNames.open, direction === 'In');
-                direction === 'In' ? conf.onOpen.call(self.elem) : conf.onClose.call(self.elem);
+                direction === 'In' ?
+                    conf.onOpen.call(self.elem) :
+                    conf.onClose.call(self.elem);
             };
 
             if (this.config.openFrom) {
@@ -156,7 +158,6 @@
                 settings.animations = this.getAnimation();
             }
 
-            this.busy = true;
             this.$elem.transition(animation, settings);
         },
 
@@ -273,7 +274,6 @@
         classNames : {
             dimmer : 'page-dimmer',
             wrap   : 'dialog-wrap',
-            open   : 'dialog--open',
             block  : 'dialog__block',
             close  : 'dialog__close'
         },
