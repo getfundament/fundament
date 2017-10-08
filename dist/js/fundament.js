@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.2
+ * Fundament framework v0.3.3
  *
  * https://getfundament.com
  *
@@ -16,7 +16,7 @@ window.requestAnimationFrame = window.requestAnimationFrame
     || function(callback){ setTimeout(callback, 0) };
 
 /**
- * Fundament global variables and utility functions.
+ * Fundament core variables and utility functions.
  *
  * @package Fundament
  */
@@ -30,9 +30,9 @@ var Fm = (function(document) {
      *
      * @returns {string}
      */
-    var createID = function() {
+    function generateId() {
         return (Math.random().toString(16) + '000000000').substr(2,8);
-    };
+    }
 
     /**
      * Debounces a function which will be called after it stops being
@@ -43,7 +43,7 @@ var Fm = (function(document) {
      * @param {int} wait
      * @param {boolean} immediate
      */
-    var debounce = function(func, wait, immediate) {
+    function debounce(func, wait, immediate) {
         var timeout;
 
         return function() {
@@ -64,7 +64,7 @@ var Fm = (function(document) {
             if (callNow)
                 func.apply(self, args);
         };
-    };
+    }
 
     /**
      * Returns a prefixed CSS property.
@@ -72,7 +72,7 @@ var Fm = (function(document) {
      * @param {string} attr
      * @returns {string}
      */
-    var prefixProp = function(attr) {
+    function prefixProp(attr) {
         if (cssDeclaration[attr] === undefined) {
             for (var i = 0; i < cssPrefixes.length; i++) {
                 var prefixed = cssPrefixes[i] + attr;
@@ -83,14 +83,14 @@ var Fm = (function(document) {
         }
 
         return attr;
-    };
+    }
 
     /**
      * Returns the supported transitionEnd event.
      *
      * @returns {string|null}
      */
-    var transitionEnd = function() {
+    function transitionEnd() {
         var events = {
             transition       : 'transitionend',
             OTransition      : 'otransitionend',
@@ -105,10 +105,10 @@ var Fm = (function(document) {
         }
 
         return null;
-    };
+    }
 
     return {
-        createID: createID,
+        createID: generateId,
         debounce: debounce,
         prefixProp: prefixProp,
         transitionEnd: transitionEnd
@@ -138,6 +138,7 @@ var Fm = (function(document) {
         this.config  = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem    = element;
         this.$elem   = $(element);
+        this.$wrap   = $('<div/>', {class: this.config.classNames.wrap, role: 'document'});
         this.$dimmer = $('<div/>', {class: this.config.classNames.dimmer});
         this.busy    = false;
         this.init();
@@ -147,12 +148,29 @@ var Fm = (function(document) {
     $.extend(Dialog.prototype, {
 
         init: function () {
-            this.$dimmer = this.$elem
-                .wrap(this.$dimmer) // wrap around dialog
-                .parent() // retrieve dimmer element
+            this.setup();
+            this.bind();
+        },
+
+        /**
+         * Create and retrieve DOM elements.
+         */
+        setup: function() {
+            var conf = this.config;
+
+            if ($('.' + this.config.classNames.dimmer).length === 0) {
+                $body.append(this.$dimmer);
+            }
+
+            this.$dimmer = $('.' + conf.classNames.dimmer);
+            this.$wrap = this.$elem
+                .wrap(this.$wrap) // wrap around dialog
+                .parent() // retrieve element
                 .hide();
 
-            this.bind();
+            if (conf.openFrom) {
+                conf.openFrom = $(conf.openFrom);
+            }
         },
 
         /**
@@ -170,18 +188,16 @@ var Fm = (function(document) {
                 });
 
             if (conf.closable) {
-                self.$dimmer.on('click', function(e) {
+                self.$wrap.on('click', function(e) {
                     if (e.target === this) self.close();
                 });
-            }
-
-            if (conf.openFrom) {
-                conf.openFrom = $(conf.openFrom);
             }
         },
 
         /**
          * Toggle the dialog.
+         *
+         * @public
          */
         toggle: function () {
             this.$elem.is(':visible') ?
@@ -191,6 +207,8 @@ var Fm = (function(document) {
 
         /**
          * Open the dialog.
+         *
+         * @public
          */
         open: function () {
             var self = this;
@@ -199,17 +217,25 @@ var Fm = (function(document) {
                 return;
             }
 
-            self.$dimmer.show().addClass('active');
-            self.scrollBar(false);
             self.config.onOpening.call(self.elem);
+            self.busy = true;
+
+            self.scrollBar(false);
+            self.$dimmer.show();
+            self.$wrap.show();
+            self.$dimmer.addClass('is-active');
 
             self.transition('In', function() { // show
                 self.focus();
+                self.config.onOpen.call(self.elem);
+                self.busy = false;
             });
         },
 
         /**
          * Close the dialog.
+         *
+         * @public
          */
         close: function () {
             var self = this;
@@ -218,12 +244,19 @@ var Fm = (function(document) {
                 return;
             }
 
-            self.$dimmer.removeClass('active');
             self.config.onClosing.call(self.elem);
+            self.busy = true;
 
             self.transition('Out', function() { // hide
-                self.$dimmer.hide();
-                self.scrollBar(true);
+                self.$wrap.hide();
+                self.$dimmer
+                    .removeClass('is-active')
+                    .one(transitionEndEvent, function() {
+                        self.scrollBar(true);
+                        self.$dimmer.hide();
+                        self.config.onClose.call(self.elem);
+                        self.busy = false;
+                    });
             });
         },
 
@@ -234,18 +267,11 @@ var Fm = (function(document) {
          * @param {function} callback
          */
         transition: function(direction, callback) {
-            var self      = this,
-                conf      = self.config,
-                animation = conf.transition + direction,
-                settings  = {};
-
-            settings.duration = $.fn.transition.defaults.duration * 1.5;
-            settings.onEnd = function() {
-                callback();
-                self.busy = false;
-                self.$elem.toggleClass(self.config.classNames.open, direction === 'In');
-                direction === 'In' ? conf.onOpen.call(self.elem) : conf.onClose.call(self.elem);
-            };
+            var animation = this.config.transition + direction,
+                settings  = {
+                    duration: $.fn.transition.defaults.duration * 1.5,
+                    onEnd: callback
+                };
 
             if (this.config.openFrom) {
                 animation = 'dialog' + direction;
@@ -253,7 +279,6 @@ var Fm = (function(document) {
                 settings.animations = this.getAnimation();
             }
 
-            this.busy = true;
             this.$elem.transition(animation, settings);
         },
 
@@ -305,6 +330,8 @@ var Fm = (function(document) {
 
         /**
          * Override the instance's settings.
+         *
+         * @public
          *
          * @param {Object} settings
          */
@@ -368,8 +395,8 @@ var Fm = (function(document) {
         autoFocus  : true,
         transition : 'scale',
         classNames : {
-            dimmer : 'dialog-dimmer',
-            open   : 'dialog--open',
+            dimmer : 'page-dimmer',
+            wrap   : 'dialog-wrap',
             block  : 'dialog__block',
             close  : 'dialog__close'
         },
@@ -476,7 +503,8 @@ var Fm = (function(document) {
          */
         select: function(target) {
             var self = this,
-                $active = self.$items.filter('.active'),
+                classNames = self.config.classNames,
+                $active = self.$items.filter('.' + classNames.active),
                 $target;
 
             // Retrieve target item
@@ -501,9 +529,9 @@ var Fm = (function(document) {
             // TODO: scroll to item (overflowing content)
 
             // Set classes
-            $active.removeClass('active');
-            $target.addClass('active');
-            self.$elem.removeClass(self.config.classNames.empty);
+            $active.removeClass(classNames.active);
+            $target.addClass(classNames.active);
+            self.$elem.removeClass(classNames.empty);
 
             if (self.is('select')) {
                 self.$elem // input value
@@ -536,7 +564,7 @@ var Fm = (function(document) {
             });
 
             if ($matches.length) {
-                var index = $matches.index($matches.filter('.active')),
+                var index = $matches.index($matches.filter('.' + this.config.classNames.active)),
                     $next = $($matches[index + 1]); // next match
 
                 $next && $next.length ?
@@ -624,60 +652,58 @@ var Fm = (function(document) {
      * @param {HTMLElement} element
      */
     function transform(element) {
-        var $select = $(element);
-
-        if ( ! $select.is('select')) {
+        if (element.nodeName !== 'SELECT') {
             return element;
         }
 
-        var identifier = Fm.createID(),
-            classNames = $.fn[plugin].defaults.classNames,
+        var classNames = $.fn[plugin].defaults.classNames,
+            $select    = $(element),
             $options   = $select.find('option'),
             $selected  = $options.filter(':selected');
 
         // Create elements
         var $dropdown = $('<div/>', {
-                id: identifier,
                 class: classNames.dropdown + ' ' + classNames.select,
                 tabindex: 0
             }),
-            $menu  = $('<ul/>', {
+            $menu = $('<ul/>', {
                 'class': classNames.menu,
-                'aria-hidden': true,
-                'aria-labelledby': identifier
+                'role': 'listbox',
+                'aria-hidden': true
             }),
-            $label = $('<span/>'),
             $input = $('<input/>', {
                 type: 'hidden',
                 name: $select.attr('name')
+            }),
+            $label = $('<span/>', {
+                text: $selected.text()
             });
 
         // Create menu
         $options.each(function() {
-            var $option = $(this);
-            if ($option.val()) {
-                $('<li/>', {
-                    'text': $option.text(),
-                    'class': 'menu__item',
-                    'data-value': $option.val()
-                }).appendTo($menu);
-            } else {
-                $label.text( $option.text() );
+            var $option = $(this),
+                classes = classNames.item + ($option.is($selected) ? ' is-active' : '');
+
+            if ($option.val() === '') {
+                return;
             }
+
+            $('<li/>', {
+                'text': $option.text(),
+                'class': classes,
+                'role': 'option',
+                'data-value': $option.val()
+            }).appendTo($menu);
         });
 
         // Inherit selection
-        if ($selected.val()) {
-            $input.val( $selected.val() );
-            $label.text( $selected.text() );
-        }
+        $input.val($selected.val());
 
         // Generate HTML
-        $select
+        $dropdown = $select
             .wrap($dropdown)
-            .after($menu, $label, $input);
-
-        $dropdown = $select.parents('.' + classNames.dropdown);
+            .after($menu, $label, $input)
+            .parent(); // retrieve element
 
         $select.remove();
 
@@ -708,9 +734,10 @@ var Fm = (function(document) {
         classNames : {
             dropdown : 'dropdown',
             select   : 'dropdown--select',
-            open     : 'dropdown--open',
-            empty    : 'dropdown--empty',
             reversed : 'dropdown--reversed',
+            open     : 'is-open',
+            empty    : 'is-empty',
+            active   : 'is-active',
             menu     : 'menu',
             item     : 'menu__item'
         },

@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.2
+ * Fundament framework v0.3.3
  *
  * https://getfundament.com
  *
@@ -1354,13 +1354,25 @@ p {
     .container {
       max-width: 1140px; } }
 
-.dialog-dimmer {
+.page-dimmer {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1000;
+  background-color: transparent;
+  transition: all 280ms ease; }
+  .page-dimmer.is-active {
+    background-color: rgba(0, 0, 0, 0.4); }
+
+.dialog-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1371,10 +1383,7 @@ p {
       -ms-flex-pack: center;
           justify-content: center;
   overflow: hidden;
-  background-color: transparent;
-  transition: background-color 420ms ease; }
-  .dialog-dimmer.active {
-    background-color: rgba(0, 0, 0, 0.4); }
+  z-index: 1001; }
 
 .dialog {
   display: none;
@@ -1418,14 +1427,14 @@ p {
   .dropdown:after {
     content: " ";
     display: inline-block;
-    margin-left: .4em;
-    margin-top: -0.15em;
+    margin-left: .25em;
+    margin-top: -0.125em;
     vertical-align: middle;
     width: 0;
     height: 0;
-    border-left: 0.3em solid transparent;
-    border-right: 0.3em solid transparent;
-    border-top: 0.3em solid; }
+    border-left: 0.25em solid transparent;
+    border-right: 0.25em solid transparent;
+    border-top: 0.25em solid; }
   .dropdown .menu {
     display: none;
     position: absolute;
@@ -1450,9 +1459,6 @@ p {
       border-bottom-width: 0; }
     .dropdown .menu__item:hover {
       background-color: rgba(0, 0, 0, 0.03); }
-    .dropdown .menu__item.active {
-      font-weight: bold;
-      background-color: rgba(0, 0, 0, 0.01); }
   .dropdown.dropdown--reversed .menu {
     top: auto;
     bottom: 100%; }
@@ -1476,6 +1482,10 @@ p {
   border: 1px solid #0288D1;
   box-shadow: none; }
 
+.dropdown--select .menu__item.is-active {
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.01); }
+
 .dropdown--select:not(.dropdown--reversed) .menu {
   border-top-width: 0;
   border-radius: 0 0 0.25rem 0.25rem; }
@@ -1483,7 +1493,7 @@ p {
 .dropdown--select:not(.dropdown--reversed) .menu__item:first-child {
   border-top: 1px solid rgba(0, 0, 0, 0.04); }
 
-.dropdown--select:not(.dropdown--reversed).dropdown--open {
+.dropdown--select:not(.dropdown--reversed).is-open {
   border-radius: 0.25rem 0.25rem 0 0; }
 
 .dropdown--select.dropdown--reversed .menu {
@@ -1493,10 +1503,10 @@ p {
 .dropdown--select.dropdown--reversed .menu__item:last-child {
   border-bottom-width: 1px; }
 
-.dropdown--select.dropdown--reversed.dropdown--open {
+.dropdown--select.dropdown--reversed.is-open {
   border-radius: 0 0 0.25rem 0.25rem; }
 
-.dropdown--select.dropdown--empty > span {
+.dropdown--select.is-empty > span {
   color: #999; }
 
 label {
@@ -2010,7 +2020,7 @@ ul.list {
 .msg {
   position: relative;
   margin-bottom: 1rem;
-  padding: 0.625rem 1rem;
+  padding: 0.75rem 1rem;
   border: 1px solid #DDD;
   background-color: #FFF;
   border-radius: 0.25rem; }
@@ -2023,7 +2033,7 @@ ul.list {
 
 .msg__close {
   position: absolute;
-  top: 0.625rem;
+  top: 0.75rem;
   right: 1rem;
   padding: 0;
   background: none;
