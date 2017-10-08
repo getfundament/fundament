@@ -94,7 +94,8 @@
          */
         select: function(target) {
             var self = this,
-                $active = self.$items.filter('.active'),
+                classNames = self.config.classNames,
+                $active = self.$items.filter('.' + classNames.active),
                 $target;
 
             // Retrieve target item
@@ -119,9 +120,9 @@
             // TODO: scroll to item (overflowing content)
 
             // Set classes
-            $active.removeClass('active');
-            $target.addClass('active');
-            self.$elem.removeClass(self.config.classNames.empty);
+            $active.removeClass(classNames.active);
+            $target.addClass(classNames.active);
+            self.$elem.removeClass(classNames.empty);
 
             if (self.is('select')) {
                 self.$elem // input value
@@ -154,7 +155,7 @@
             });
 
             if ($matches.length) {
-                var index = $matches.index($matches.filter('.active')),
+                var index = $matches.index($matches.filter('.' + this.config.classNames.active)),
                     $next = $($matches[index + 1]); // next match
 
                 $next && $next.length ?
@@ -259,38 +260,41 @@
             $menu = $('<ul/>', {
                 'class': classNames.menu,
                 'role': 'listbox',
-                'aria-hidden': true,
+                'aria-hidden': true
             }),
             $input = $('<input/>', {
                 type: 'hidden',
                 name: $select.attr('name')
             }),
-            $label = $('<span/>');
+            $label = $('<span/>', {
+                text: $selected.text()
+            });
 
         // Create menu
         $options.each(function() {
-            var $option = $(this);
+            var $option = $(this),
+                classes = classNames.item + ($option.is($selected) ? ' is-active' : '');
+
+            if ($option.val() === '') {
+                return;
+            }
 
             $('<li/>', {
                 'text': $option.text(),
-                'class': 'menu__item',
+                'class': classes,
                 'role': 'option',
                 'data-value': $option.val()
             }).appendTo($menu);
         });
 
         // Inherit selection
-        if ($selected.val()) {
-            $input.val($selected.val());
-            $label.text($selected.text());
-        }
+        $input.val($selected.val());
 
         // Generate HTML
-        $select
+        $dropdown = $select
             .wrap($dropdown)
-            .after($menu, $label, $input);
-
-        $dropdown = $select.parents('.' + classNames.dropdown);
+            .after($menu, $label, $input)
+            .parent(); // retrieve element
 
         $select.remove();
 
@@ -321,9 +325,10 @@
         classNames : {
             dropdown : 'dropdown',
             select   : 'dropdown--select',
-            open     : 'dropdown--open',
-            empty    : 'dropdown--empty',
             reversed : 'dropdown--reversed',
+            open     : 'is-open',
+            empty    : 'is-empty',
+            active   : 'is-active',
             menu     : 'menu',
             item     : 'menu__item'
         },
