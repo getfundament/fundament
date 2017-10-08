@@ -1,20 +1,29 @@
-.dialog-dimmer {
+.page-dimmer {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: $z-dialog;
+    background-color: transparent;
+    transition: $transition-base;
+
+    &.is-active {
+        background-color: $dialog-dimmer-background;
+    }
+}
+.dialog-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: transparent;
-    transition: background-color 420ms ease;
-
-    &.active {
-        background-color: $dialog-dimmer-background;
-    }
+    z-index: $z-dialog + 1;
 }
 .dialog {
     display: none;

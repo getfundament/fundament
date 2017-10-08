@@ -20,6 +20,7 @@
         this.config  = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem    = element;
         this.$elem   = $(element);
+        this.$wrap   = $('<div/>', {class: this.config.classNames.wrap, role: 'document'});
         this.$dimmer = $('<div/>', {class: this.config.classNames.dimmer});
         this.busy    = false;
         this.init();
@@ -29,12 +30,29 @@
     $.extend(Dialog.prototype, {
 
         init: function () {
-            this.$dimmer = this.$elem
-                .wrap(this.$dimmer) // wrap around dialog
-                .parent() // retrieve dimmer element
+            if ($('.' + this.config.classNames.dimmer).length === 0) {
+                $body.append(this.$dimmer);
+            }
+
+            this.setup();
+            this.bind();
+        },
+
+        /**
+         * Create and retrieve DOM elements.
+         */
+        setup: function() {
+            var conf = this.config;
+
+            this.$dimmer = $('.' + conf.classNames.dimmer);
+            this.$wrap = this.$elem
+                .wrap(this.$wrap) // wrap around dialog
+                .parent() // retrieve element
                 .hide();
 
-            this.bind();
+            if (conf.openFrom) {
+                conf.openFrom = $(conf.openFrom);
+            }
         },
 
         /**
@@ -52,13 +70,9 @@
                 });
 
             if (conf.closable) {
-                self.$dimmer.on('click', function(e) {
+                self.$wrap.on('click', function(e) {
                     if (e.target === this) self.close();
                 });
-            }
-
-            if (conf.openFrom) {
-                conf.openFrom = $(conf.openFrom);
             }
         },
 
@@ -81,9 +95,12 @@
                 return;
             }
 
-            self.$dimmer.show().addClass('active');
-            self.scrollBar(false);
             self.config.onOpening.call(self.elem);
+            self.scrollBar(false);
+
+            self.$dimmer.show();
+            self.$wrap.show();
+            self.$dimmer.addClass('is-active');
 
             self.transition('In', function() { // show
                 self.focus();
@@ -100,12 +117,16 @@
                 return;
             }
 
-            self.$dimmer.removeClass('active');
             self.config.onClosing.call(self.elem);
 
             self.transition('Out', function() { // hide
-                self.$dimmer.hide();
-                self.scrollBar(true);
+                self.$wrap.hide();
+                self.$dimmer
+                    .removeClass('is-active')
+                    .one(transitionEndEvent, function() {
+                        self.$dimmer.hide();
+                        self.scrollBar(true);
+                    });
             });
         },
 
@@ -250,7 +271,8 @@
         autoFocus  : true,
         transition : 'scale',
         classNames : {
-            dimmer : 'dialog-dimmer',
+            dimmer : 'page-dimmer',
+            wrap   : 'dialog-wrap',
             open   : 'dialog--open',
             block  : 'dialog__block',
             close  : 'dialog__close'
