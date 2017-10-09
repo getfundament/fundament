@@ -18,11 +18,13 @@ $color-warning:  #FFA000    !default;
 $color-negative: #D84315    !default;
 $color-info:     #0288D1    !default;
 
-$color-gray-darkest:  #666      !default;
+$color-gray-darkest:  #444      !default;
+$color-gray-darker:   #666      !default;
 $color-gray-dark:     #888      !default;
 $color-gray:          #AAA      !default;
 $color-gray-light:    #DDD      !default;
-$color-gray-lightest: #E8E8E8   !default;
+$color-gray-lighter:  #E8E8E8   !default;
+$color-gray-lightest: #F9F9F9   !default;
 
 /*---------------------*
  * Typography
@@ -116,7 +118,7 @@ $label-padding:       0.35em 0.625em        !default;
 $label-font-size:     0.875em               !default;
 $label-font-weight:   normal                !default;
 $label-color:         $color-base           !default;
-$label-background:    $color-gray-lightest  !default;
+$label-background:    $color-gray-lighter   !default;
 $label-border-radius: $border-radius-base   !default;
 
 /*---------------------*
@@ -126,9 +128,9 @@ $list-line-height: 1.25     !default;
 $list-spacing:     0.75rem  !default;
 
 // Item
-$list-item-padding:      0.75rem 1rem          !default;
-$list-item-border-color: $color-gray-lightest  !default;
-$list-item-background:   transparent           !default;
+$list-item-padding:      0.75rem 1rem           !default;
+$list-item-border-color: $color-gray-lighter    !default;
+$list-item-background:   transparent            !default;
 
 /*---------------------*
  * Button
@@ -137,7 +139,7 @@ $button-padding:       0.5625rem 1.125rem   !default;
 $button-line-height:   1.25                 !default;
 $button-font-weight:   normal               !default;
 $button-color:         $color-base          !default;
-$button-background:    $color-gray-lightest !default;
+$button-background:    $color-gray-lighter  !default;
 $button-border-radius: $border-radius-base  !default;
 $button-transition:    $transition-base     !default;
 
@@ -152,7 +154,7 @@ $table-margin-bottom: 1rem                  !default;
 $table-col-padding:   0.625rem 0.625rem     !default;
 $table-border-width:  1px                   !default;
 $table-border-style:  solid                 !default;
-$table-border-color:  $color-gray-lightest  !default;
+$table-border-color:  $color-gray-lighter   !default;
 
 /*---------------------*
  * Card
@@ -164,7 +166,7 @@ $card-border-radius: $border-radius-base        !default;
 $card-box-shadow:    0 1px 3px rgba(0,0,0,0.06) !default;
 
 // Block
-$card-block-border-color: $color-gray-lightest !default;
+$card-block-border-color: $color-gray-lighter   !default;
 
 /*---------------------*
  * Dropdown
@@ -189,9 +191,9 @@ $dialog-background:    #FFF                 !default;
 $dialog-border-radius: $border-radius-base  !default;
 
 // Block
-$dialog-block-width:        40rem                   !default;
-$dialog-block-padding:      1rem                    !default;
-$dialog-block-border-color: $color-gray-lightest    !default;
+$dialog-block-width:        40rem               !default;
+$dialog-block-padding:      1rem                !default;
+$dialog-block-border-color: $color-gray-lighter !default;
 
 // Sizes
 $dialog-block-width-sm: ($dialog-block-width * 0.6) !default;
