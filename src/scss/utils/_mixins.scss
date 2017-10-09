@@ -47,11 +47,9 @@
 }
 
 // Arrow
-@mixin make-arrow($color, $direction, $size, $tip-size: $size, $set-size: true) {
-    @if $set-size {
-        width: 0;
-        height: 0;
-    }
+@mixin make-arrow($color, $direction, $size, $tip-size: $size) {
+    @content;
+
     @if $direction == up {
         border-left: $size solid transparent;
         border-right: $size solid transparent;

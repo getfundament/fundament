@@ -92,8 +92,9 @@ $z-dialog:   1000   !default;
 $input-padding:       0.5625rem 0.8125rem   !default;
 $input-line-height:   1.25                  !default;
 $input-color:         $color-base           !default;
-$input-placeholder:   #999                  !default;
+$input-placeholder:   $color-gray           !default;
 $input-background:    #fff                  !default;
+$input-border-width:  1px                   !default;
 $input-border-color:  $color-gray-light     !default;
 $input-border-radius: $border-radius-base   !default;
 $input-transition:    $transition-base      !default;
@@ -103,13 +104,13 @@ $input-padding-sm: 0.375rem 0.625rem   !default;
 $input-padding-lg: 0.75rem 1rem        !default;
 
 // States
-$input-color-hover:      $input-color                       !default;
-$input-border-hover:     darken($input-border-color, 8%)    !default;
-$input-background-hover: $input-background                  !default;
+$input-hover-color:        $input-color                       !default;
+$input-hover-background:   $input-background                  !default;
+$input-hover-border-color: darken($input-border-color, 8%)    !default;
 
-$input-color-focus:      $input-color       !default;
-$input-border-focus:     $color-primary     !default;
-$input-background-focus: $input-background  !default;
+$input-focus-color:        $input-color         !default;
+$input-focus-background:   $input-background    !default;
+$input-focus-border-color: $color-primary       !default;
 
 /*---------------------*
  * Label
@@ -118,8 +119,8 @@ $label-padding:       0.35em 0.625em        !default;
 $label-font-size:     0.875em               !default;
 $label-font-weight:   normal                !default;
 $label-color:         $color-base           !default;
-$label-background:    $color-gray-lighter   !default;
 $label-border-radius: $border-radius-base   !default;
+$label-background:    $color-gray-lighter   !default;
 
 /*---------------------*
  * List
@@ -129,6 +130,7 @@ $list-spacing:     0.75rem  !default;
 
 // Item
 $list-item-padding:      0.75rem 1rem           !default;
+$list-item-border-width: 1px                    !default;
 $list-item-border-color: $color-gray-lighter    !default;
 $list-item-background:   transparent            !default;
 
@@ -140,6 +142,7 @@ $button-line-height:   1.25                 !default;
 $button-font-weight:   normal               !default;
 $button-color:         $color-base          !default;
 $button-background:    $color-gray-lighter  !default;
+$button-border-width:  1px                  !default;
 $button-border-radius: $border-radius-base  !default;
 $button-transition:    $transition-base     !default;
 
@@ -153,7 +156,6 @@ $button-padding-lg: 0.8125rem 1.5rem    !default;
 $table-margin-bottom: 1rem                  !default;
 $table-col-padding:   0.625rem 0.625rem     !default;
 $table-border-width:  1px                   !default;
-$table-border-style:  solid                 !default;
 $table-border-color:  $color-gray-lighter   !default;
 
 /*---------------------*
@@ -161,6 +163,7 @@ $table-border-color:  $color-gray-lighter   !default;
  *---------------------*/
 $card-padding:       1rem 1rem                  !default;
 $card-background:    #FFF                       !default;
+$card-border-width:  1px                        !default;
 $card-border-color:  $color-gray-light          !default;
 $card-border-radius: $border-radius-base        !default;
 $card-box-shadow:    0 1px 3px rgba(0,0,0,0.06) !default;
@@ -179,8 +182,10 @@ $dropdown-border-radius: $border-radius-base        !default;
 $dropdown-box-shadow:    0 2px 6px rgba(0,0,0,0.1)  !default;
 
 // Item
-$dropdown-item-padding:      0.625rem 0.8125rem !default;
-$dropdown-item-border-color: rgba(0,0,0,0.04)   !default;
+$dropdown-item-padding:      0.625rem 0.8125rem     !default;
+$dropdown-item-border-color: rgba(0,0,0,0.04)       !default;
+
+$dropdown-hover-item-background: $color-gray-lightest  !default;
 
 /*---------------------*
  * Dialog
@@ -213,7 +218,7 @@ $form-info-font-size:      0.9375rem    !default;
 /*---------------------*
  * Menu
  *---------------------*/
-$menu-tabs: '';
+$menu-tabs: '' !default;
 
 /*---------------------*
  * Message
@@ -221,6 +226,7 @@ $menu-tabs: '';
 $msg-margin-bottom: 1rem                    !default;
 $msg-padding:       0.75rem 1rem            !default;
 $msg-background:    #FFF                    !default;
+$msg-border-width:  1px                     !default;
 $msg-border-color:  $color-gray-light       !default;
 $msg-border-radius: $border-radius-base     !default;
 
@@ -241,6 +247,7 @@ $popup-max-width:    18rem                      !default;
 $popup-padding:      0.4375rem 0.75rem          !default;
 $popup-font-size:    0.9375rem                  !default;
 $popup-background:   #FFF                       !default;
+$popup-border-width: 1px                        !default;
 $popup-border-color: $color-gray-light          !default;
 $popup-box-shadow:   0 2px 6px rgba(0,0,0,0.1)  !default;
 $popup-arrow-size:   6px                        !default;

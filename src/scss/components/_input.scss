@@ -2,26 +2,26 @@
     display: block;
     width: 100%;
     margin: 0;
-    padding: $input-padding;
-    border: 1px solid $input-border-color;
-    border-radius: $input-border-radius;
     outline: 0;
-    background-color: $input-background;
+    padding: $input-padding;
     font-family: $font-family-base;
     font-size: $font-size-base;
     line-height: $input-line-height;
     color: $input-color;
+    background-color: $input-background;
+    border: $input-border-width solid $input-border-color;
+    border-radius: $input-border-radius;
     transition: $input-transition;
 
     &:hover {
-        color: $input-color-hover;
-        background-color: $input-background-hover;
-        border-color: $input-border-hover;
+        color: $input-hover-color;
+        background-color: $input-hover-background;
+        border-color: $input-hover-border-color;
     }
     &:focus {
-        color: $input-color-focus;
-        background-color: $input-background-focus;
-        border-color: $input-border-focus;
+        color: $input-focus-color;
+        background-color: $input-focus-background;
+        border-color: $input-focus-border-color;
     }
 }
 
@@ -58,7 +58,7 @@
             border-radius: 0 $input-border-radius $input-border-radius 0;
         }
         &:not(:first-child) {
-            margin-left: -1px; // overlap borders
+            margin-left: -$input-border-width; // overlap borders
         }
     }
     > .input {
@@ -70,7 +70,7 @@
     }
     > .label {
         padding: $input-padding;
-        border: 1px solid $input-border-color;
+        border: $input-border-width solid $input-border-color;
         font-size: 1rem;
         line-height: $input-line-height;
     }
@@ -141,7 +141,7 @@
         padding: 0.5425rem;
         pointer-events: none;
         background-color: #FFF;
-        border: 1px solid $input-border-color;
+        border: $input-border-width solid $input-border-color;
 
         &:after {
             content: " ";

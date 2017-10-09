@@ -2,7 +2,7 @@
     position: relative;
     margin-bottom: $msg-margin-bottom;
     padding: $msg-padding;
-    border: 1px solid $msg-border-color;
+    border: $msg-border-width solid $msg-border-color;
     background-color: $msg-background;
     border-radius: $msg-border-radius;
 

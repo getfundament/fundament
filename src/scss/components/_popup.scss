@@ -6,7 +6,7 @@
     padding: $popup-padding;
     font-size: $popup-font-size;
     background-color: $popup-background;
-    border: 1px solid $popup-border-color;
+    border: $popup-border-width solid $popup-border-color;
     border-radius: $border-radius-base;
     box-shadow: $popup-box-shadow;
 
@@ -30,111 +30,113 @@
 }
 
 // Directions
+$outer: $popup-arrow-size + $popup-border-width;
+
 .popup--north {
     &:before {
         top: 100%;
         left: 50%;
-        margin-left: -#{$popup-arrow-size + 1px};
-        @include make-arrow($popup-border-color, 'down', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
+        margin-left: -$outer;
+        @include make-arrow($popup-border-color, 'down', $outer, $outer);
     }
     &:after {
         top: 100%;
         left: 50%;
         margin-left: -$popup-arrow-size;
-        @include make-arrow($popup-background, 'down', $popup-arrow-size, $popup-arrow-size, false);
+        @include make-arrow($popup-background, 'down', $popup-arrow-size, $popup-arrow-size);
     }
 }
 .popup--northeast {
     &:before {
         top: 100%;
         right: 0.875rem;
-        margin-right: -1px;
-        @include make-arrow($popup-border-color, 'down', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
+        margin-right: -$popup-border-width;
+        @include make-arrow($popup-border-color, 'down', $outer, $outer);
     }
     &:after {
         top: 100%;
         right: 0.875rem;
-        @include make-arrow($popup-background, 'down', $popup-arrow-size, $popup-arrow-size, false);
+        @include make-arrow($popup-background, 'down', $popup-arrow-size, $popup-arrow-size);
     }
 }
 .popup--east {
     &:before {
         top: 50%;
         right: 100%;
-        margin-top: -#{$popup-arrow-size + 1px};
-        @include make-arrow($popup-border-color, 'left', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
+        margin-top: -$outer;
+        @include make-arrow($popup-border-color, 'left', $outer, $outer);
     }
     &:after {
         top: 50%;
         right: 100%;
         margin-top: -$popup-arrow-size;
-        @include make-arrow($popup-background, 'left', $popup-arrow-size, $popup-arrow-size, false);
+        @include make-arrow($popup-background, 'left', $popup-arrow-size, $popup-arrow-size);
     }
 }
 .popup--southeast {
     &:before {
         bottom: 100%;
         right: 0.875rem;
-        margin-right: -1px;
-        @include make-arrow($popup-border-color, 'up', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
+        margin-right: -$popup-border-width;
+        @include make-arrow($popup-border-color, 'up', $outer, $outer);
     }
     &:after {
         bottom: 100%;
         right: 0.875rem;
-        @include make-arrow($popup-background, 'up', $popup-arrow-size, $popup-arrow-size, false);
+        @include make-arrow($popup-background, 'up', $popup-arrow-size, $popup-arrow-size);
     }
 }
 .popup--south {
     &:before {
         bottom: 100%;
         left: 50%;
-        margin-left: -#{$popup-arrow-size + 1px};
-        @include make-arrow($popup-border-color, 'up', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
+        margin-left: -$outer;
+        @include make-arrow($popup-border-color, 'up', $outer, $outer);
     }
     &:after {
         bottom: 100%;
         left: 50%;
         margin-left: -$popup-arrow-size;
-        @include make-arrow($popup-background, 'up', $popup-arrow-size, $popup-arrow-size, false);
+        @include make-arrow($popup-background, 'up', $popup-arrow-size, $popup-arrow-size);
     }
 }
 .popup--southwest {
     &:before {
         bottom: 100%;
         left: 0.875rem;
-        margin-left: -1px;
-        @include make-arrow($popup-border-color, 'up', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
+        margin-left: -$popup-border-width;
+        @include make-arrow($popup-border-color, 'up', $outer, $outer);
     }
     &:after {
         bottom: 100%;
         left: 0.875rem;
-        @include make-arrow($popup-background, 'up', $popup-arrow-size, $popup-arrow-size, false);
+        @include make-arrow($popup-background, 'up', $popup-arrow-size, $popup-arrow-size);
     }
 }
 .popup--west {
     &:before {
         top: 50%;
         left: 100%;
-        margin-top: -#{$popup-arrow-size + 1px};
-        @include make-arrow($popup-border-color, 'right', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
+        margin-top: -$outer;
+        @include make-arrow($popup-border-color, 'right', $outer, $outer);
     }
     &:after {
         top: 50%;
         left: 100%;
         margin-top: -$popup-arrow-size;
-        @include make-arrow($popup-background, 'right', $popup-arrow-size, $popup-arrow-size, false);
+        @include make-arrow($popup-background, 'right', $popup-arrow-size, $popup-arrow-size);
     }
 }
 .popup--northwest {
     &:before {
         top: 100%;
         left: 0.875rem;
-        margin-left: -1px;
-        @include make-arrow($popup-border-color, 'down', #{$popup-arrow-size + 1px}, #{$popup-arrow-size + 1px}, false);
+        margin-left: -$popup-border-width;
+        @include make-arrow($popup-border-color, 'down', $outer, $outer);
     }
     &:after {
         top: 100%;
         left: 0.875rem;
-        @include make-arrow($popup-background, 'down', $popup-arrow-size, $popup-arrow-size, false);
+        @include make-arrow($popup-background, 'down', $popup-arrow-size, $popup-arrow-size);
     }
 }

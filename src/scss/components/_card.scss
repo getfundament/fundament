@@ -3,12 +3,12 @@
     position: relative;
     flex-direction: column;
     background-color: $card-background;
-    border: 1px solid $card-border-color;
+    border: $card-border-width solid $card-border-color;
     border-radius: $card-border-radius;
     box-shadow: $card-box-shadow;
 
     > div {
-        $card-border-radius-inner: calc(#{$card-border-radius} - 1px);
+        $card-border-radius-inner: calc(#{$card-border-radius} - #{$card-border-width});
 
         &:first-child {
             border-top-left-radius: $card-border-radius-inner;
@@ -25,7 +25,7 @@
     padding: $card-padding;
 
     + .card__block {
-        border-top: 1px solid $card-block-border-color;
+        border-top: $card-border-width solid $card-block-border-color;
     }
 }
 .card__img {
@@ -99,7 +99,7 @@
             }
             + .card {
                 border-left-width: 0;
-                border-top-width: 1px;
+                border-top-width: $card-border-width;
             }
         }
     }

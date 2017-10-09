@@ -21,7 +21,6 @@
         min-width: $dropdown-min-width;
         margin: $dropdown-margin;
         z-index: $z-dropdown;
-        outline: 0;
         line-height: 1;
         text-align: left;
         white-space: nowrap;
@@ -38,8 +37,9 @@
         &:last-child {
             border-bottom-width: 0;
         }
-        &:hover {
-            background-color: rgba(0,0,0,0.03);
+        &:hover,
+        &.is-active {
+            background-color: $dropdown-hover-item-background;
         }
     }
 
@@ -73,14 +73,11 @@
         max-height: 275px;
         margin: 0;
         overflow-y: auto;
-        border: 1px solid $input-border-focus;
+        border: 1px solid $input-focus-border-color;
         box-shadow: none;
     }
-    .menu__item {
-        &.is-active {
-            font-weight: bold;
-            background-color: rgba(0,0,0,0.01);
-        }
+    .menu__item.is-active {
+        font-weight: bold;
     }
 
     // Default (downward)
