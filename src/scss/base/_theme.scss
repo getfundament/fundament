@@ -177,12 +177,15 @@ $card-block-border-color: $color-gray-lighter   !default;
 $dropdown-min-width:     8rem                       !default;
 $dropdown-margin:        0.5rem -1px                !default;
 $dropdown-background:    #FFF                       !default;
+$dropdown-border-width:  1px                        !default;
 $dropdown-border-color:  $color-gray-light          !default;
 $dropdown-border-radius: $border-radius-base        !default;
 $dropdown-box-shadow:    0 2px 6px rgba(0,0,0,0.1)  !default;
+$dropdown-arrow-size:    0.25em                     !default;
 
 // Item
 $dropdown-item-padding:      0.625rem 0.8125rem     !default;
+$dropdown-item-border-width: 1px                    !default;
 $dropdown-item-border-color: rgba(0,0,0,0.04)       !default;
 
 $dropdown-hover-item-background: $color-gray-lightest  !default;

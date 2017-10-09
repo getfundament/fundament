@@ -8,10 +8,10 @@
     &:after {
         content: " ";
         display: inline-block;
-        margin-left: .25em;
-        margin-top: -0.125em;
+        margin-left: $dropdown-arrow-size;
+        margin-top: -($dropdown-arrow-size/2);
         vertical-align: middle;
-        @include make-arrow(null, down, 0.25em, 0.25em);
+        @include make-arrow(null, down, $dropdown-arrow-size);
     }
     .menu {
         display: none;
@@ -25,14 +25,13 @@
         text-align: left;
         white-space: nowrap;
         background-color: $dropdown-background;
-        border: 1px solid $dropdown-border-color;
+        border: $dropdown-border-width solid $dropdown-border-color;
         border-radius: $dropdown-border-radius;
         box-shadow: $dropdown-box-shadow;
     }
     .menu__item {
         padding: $dropdown-item-padding;
-        color: $input-color;
-        border-bottom: 1px solid $dropdown-item-border-color;
+        border-bottom: $dropdown-item-border-width solid $dropdown-item-border-color;
 
         &:last-child {
             border-bottom-width: 0;
@@ -50,7 +49,7 @@
             bottom: 100%;
         }
         .menu__item:last-child {
-            border-bottom-width: 1px;
+            border-bottom-width: $dropdown-item-border-width;
         }
     }
 }
@@ -62,18 +61,18 @@
     &:after { // dropdown arrow
         position: absolute;
         top: 50%;
-        right: 1rem;
+        right: spacing($input-padding, x) + 0.125rem;
     }
     > span { // input placeholder
         pointer-events: none;
     }
     .menu {
-        left: -1px;
-        right: -1px;
+        left: -$input-border-width;
+        right: -$input-border-width;
         max-height: 275px;
         margin: 0;
         overflow-y: auto;
-        border: 1px solid $input-focus-border-color;
+        border: $input-border-width solid $input-focus-border-color;
         box-shadow: none;
     }
     .menu__item.is-active {
@@ -87,7 +86,7 @@
             border-radius: 0 0 $input-border-radius $input-border-radius;
         }
         .menu__item:first-child {
-            border-top: 1px solid $dropdown-item-border-color;
+            border-top: $dropdown-item-border-width solid $dropdown-item-border-color;
         }
         &.is-open {
             border-radius: $input-border-radius $input-border-radius 0 0;
