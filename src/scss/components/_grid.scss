@@ -5,11 +5,7 @@
 
 // Rows
 .row {
-    display: flex;
-    flex-flow: row wrap;
-    margin-left: -($grid-gutter-width/2);
-    margin-right: -($grid-gutter-width/2);
-    justify-content: flex-start;
+    @include make-row();
 }
 .row--stacking {
     @include breakpoint-down(md) {
@@ -37,11 +33,7 @@
 
 // Columns
 .col {
-    position: relative;
-    width: 100%;
-    min-height: 1px;
-    padding-left: $grid-gutter-width/2;
-    padding-right: $grid-gutter-width/2;
+    @include make-column-base();
 }
 
 @each $size, $breakpoint in $grid-breakpoints {

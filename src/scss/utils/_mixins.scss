@@ -5,7 +5,7 @@
     }
 }
 @mixin breakpoint-down($size) {
-    @media (max-width: #{map-get($grid-breakpoints, $size) - 1px}) {
+    @media (max-width: map-get($grid-breakpoints, $size) - 1px) {
         @content;
     }
 }
@@ -14,6 +14,27 @@
         @include breakpoint-down($size) {
             @content;
         }
+    }
+}
+
+// Grid
+@mixin make-row() {
+    display: flex;
+    flex-flow: row wrap;
+    margin-left: -($grid-gutter-width/2);
+    margin-right: -($grid-gutter-width/2);
+    justify-content: flex-start;
+}
+@mixin make-column-base() {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-left: $grid-gutter-width/2;
+    padding-right: $grid-gutter-width/2;
+}
+@mixin make-column($breakpoint, $size, $columns: $grid-columns) {
+    @include breakpoint-up($breakpoint) {
+        width: percentage($size / $columns);
     }
 }
 
