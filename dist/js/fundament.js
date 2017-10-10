@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.3
+ * Fundament framework v0.3.4
  *
  * https://getfundament.com
  *
@@ -133,13 +133,32 @@ var Fm = (function(document) {
         $document = $(document),
         $body     = $(document.body);
 
+    var Defaults = {
+        openFrom   : null,
+        closable   : true,
+        autoFocus  : true,
+        transition : 'scale',
+        onOpen     : function() {},
+        onOpening  : function() {},
+        onClose    : function() {},
+        onClosing  : function() {}
+    };
+
+    var ClassNames = {
+        dimmer : 'page-dimmer',
+        wrap   : 'dialog-wrap',
+        block  : 'dialog__block',
+        close  : 'dialog__close',
+        active : 'is-active'
+    };
+
     // Constructor
     function Dialog(element, settings) {
         this.config  = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem    = element;
         this.$elem   = $(element);
-        this.$wrap   = $('<div/>', {class: this.config.classNames.wrap, role: 'document'});
-        this.$dimmer = $('<div/>', {class: this.config.classNames.dimmer});
+        this.$wrap   = $('<div/>', {class: ClassNames.wrap, role: 'document'});
+        this.$dimmer = $('<div/>', {class: ClassNames.dimmer});
         this.busy    = false;
         this.init();
     }
@@ -158,11 +177,11 @@ var Fm = (function(document) {
         setup: function() {
             var conf = this.config;
 
-            if ($('.' + this.config.classNames.dimmer).length === 0) {
+            if ($('.' + ClassNames.dimmer).length === 0) {
                 $body.append(this.$dimmer);
             }
 
-            this.$dimmer = $('.' + conf.classNames.dimmer);
+            this.$dimmer = $('.' + ClassNames.dimmer);
             this.$wrap = this.$elem
                 .wrap(this.$wrap) // wrap around dialog
                 .parent() // retrieve element
@@ -181,8 +200,8 @@ var Fm = (function(document) {
                 conf = self.config;
 
             self.$elem
-                .on('click', '.' + conf.classNames.close, self.close.bind(self))
-                .find('.' + conf.classNames.block)
+                .on('click', '.' + ClassNames.close, self.close.bind(self))
+                .find('.' + ClassNames.block)
                 .on(transitionEndEvent, function(e) {
                     e.stopPropagation(); // prevent event bubbling
                 });
@@ -223,7 +242,7 @@ var Fm = (function(document) {
             self.scrollBar(false);
             self.$dimmer.show();
             self.$wrap.show();
-            self.$dimmer.addClass('is-active');
+            self.$dimmer.addClass(ClassNames.active);
 
             self.transition('In', function() { // show
                 self.focus();
@@ -250,7 +269,7 @@ var Fm = (function(document) {
             self.transition('Out', function() { // hide
                 self.$wrap.hide();
                 self.$dimmer
-                    .removeClass('is-active')
+                    .removeClass(ClassNames.active)
                     .one(transitionEndEvent, function() {
                         self.scrollBar(true);
                         self.$dimmer.hide();
@@ -389,22 +408,8 @@ var Fm = (function(document) {
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        openFrom   : null,
-        closable   : true,
-        autoFocus  : true,
-        transition : 'scale',
-        classNames : {
-            dimmer : 'page-dimmer',
-            wrap   : 'dialog-wrap',
-            block  : 'dialog__block',
-            close  : 'dialog__close'
-        },
-        onOpen    : function() {},
-        onOpening : function() {},
-        onClose   : function() {},
-        onClosing : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
+
 })(jQuery, window, document);
 
 /**
@@ -418,13 +423,35 @@ var Fm = (function(document) {
     var plugin    = 'dropdown',
         methods   = ['toggle', 'open', 'close', 'setting'];
 
+    var Defaults = {
+        smart      : false,
+        searchable : false,
+        transition : 'display',
+        onOpen     : function() {},
+        onOpening  : function() {},
+        onClose    : function() {},
+        onClosing  : function() {},
+        onSelect   : function(item) {}
+    };
+
+    var ClassNames = {
+        dropdown : 'dropdown',
+        select   : 'dropdown--select',
+        reversed : 'dropdown--reversed',
+        menu     : 'menu',
+        item     : 'menu__item',
+        open     : 'is-open',
+        empty    : 'is-empty',
+        active   : 'is-active'
+    };
+
     // Constructor
     function Dropdown(element, settings) {
         this.config = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem   = element;
         this.$elem  = $(element);
-        this.$menu  = this.$elem.find('.' + this.config.classNames.menu);
-        this.$items = this.$elem.find('.' + this.config.classNames.item);
+        this.$menu  = this.$elem.find('.' + ClassNames.menu);
+        this.$items = this.$elem.find('.' + ClassNames.item);
         this.init();
     }
 
@@ -435,7 +462,7 @@ var Fm = (function(document) {
             this.bind();
 
             if (this.is('select') && this.is('empty')) {
-                this.$elem.addClass(this.config.classNames.empty);
+                this.$elem.addClass(ClassNames.empty);
             }
         },
 
@@ -448,7 +475,7 @@ var Fm = (function(document) {
             self.$elem
                 .on('mousedown', function(e) {
                     var $target = $(e.target);
-                    if ($target.hasClass(self.config.classNames.item)) {
+                    if ($target.hasClass(ClassNames.item)) {
                         self.select($target); // click on item
                     }
                     self.toggle();
@@ -485,10 +512,10 @@ var Fm = (function(document) {
 
             return {
                 open: function() {
-                    return self.$elem.hasClass(self.config.classNames.open);
+                    return self.$elem.hasClass(ClassNames.open);
                 },
                 select: function() {
-                    return self.$elem.hasClass(self.config.classNames.select);
+                    return self.$elem.hasClass(ClassNames.select);
                 },
                 empty: function() {
                     return self.$elem.find('input').val().length === 0
@@ -503,8 +530,7 @@ var Fm = (function(document) {
          */
         select: function(target) {
             var self = this,
-                classNames = self.config.classNames,
-                $active = self.$items.filter('.' + classNames.active),
+                $active = self.$items.filter('.' + ClassNames.active),
                 $target;
 
             // Retrieve target item
@@ -529,9 +555,9 @@ var Fm = (function(document) {
             // TODO: scroll to item (overflowing content)
 
             // Set classes
-            $active.removeClass(classNames.active);
-            $target.addClass(classNames.active);
-            self.$elem.removeClass(classNames.empty);
+            $active.removeClass(ClassNames.active);
+            $target.addClass(ClassNames.active);
+            self.$elem.removeClass(ClassNames.empty);
 
             if (self.is('select')) {
                 self.$elem // input value
@@ -564,7 +590,7 @@ var Fm = (function(document) {
             });
 
             if ($matches.length) {
-                var index = $matches.index($matches.filter('.' + this.config.classNames.active)),
+                var index = $matches.index($matches.filter('.' + ClassNames.active)),
                     $next = $($matches[index + 1]); // next match
 
                 $next && $next.length ?
@@ -601,7 +627,7 @@ var Fm = (function(document) {
                     bottomSpace = window.innerHeight - topSpace - self.$elem.outerHeight();
 
                 // Find the best direction for the menu to open
-                self.$elem.toggleClass(conf.classNames.reversed,
+                self.$elem.toggleClass(ClassNames.reversed,
                     bottomSpace < menuHeight && topSpace > menuHeight
                 );
             }
@@ -611,7 +637,7 @@ var Fm = (function(document) {
                 onEnd: conf.onOpen.bind(self.elem)
             });
 
-            self.$elem.addClass(conf.classNames.open);
+            self.$elem.addClass(ClassNames.open);
         },
 
         /**
@@ -632,7 +658,7 @@ var Fm = (function(document) {
                 onEnd: conf.onClose.bind(self.elem)
             });
 
-            self.$elem.removeClass(conf.classNames.open);
+            self.$elem.removeClass(ClassNames.open);
         },
 
         /**
@@ -656,18 +682,17 @@ var Fm = (function(document) {
             return element;
         }
 
-        var classNames = $.fn[plugin].defaults.classNames,
-            $select    = $(element),
-            $options   = $select.find('option'),
-            $selected  = $options.filter(':selected');
+        var $select   = $(element),
+            $options  = $select.find('option'),
+            $selected = $options.filter(':selected');
 
         // Create elements
         var $dropdown = $('<div/>', {
-                class: classNames.dropdown + ' ' + classNames.select,
+                class: ClassNames.dropdown + ' ' + ClassNames.select,
                 tabindex: 0
             }),
             $menu = $('<ul/>', {
-                'class': classNames.menu,
+                'class': ClassNames.menu,
                 'role': 'listbox',
                 'aria-hidden': true
             }),
@@ -682,7 +707,7 @@ var Fm = (function(document) {
         // Create menu
         $options.each(function() {
             var $option = $(this),
-                classes = classNames.item + ($option.is($selected) ? ' is-active' : '');
+                classes = ClassNames.item + ($option.is($selected) ? ' is-active' : '');
 
             if ($option.val() === '') {
                 return;
@@ -727,26 +752,7 @@ var Fm = (function(document) {
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        smart      : false,
-        searchable : false,
-        transition : 'display',
-        classNames : {
-            dropdown : 'dropdown',
-            select   : 'dropdown--select',
-            reversed : 'dropdown--reversed',
-            open     : 'is-open',
-            empty    : 'is-empty',
-            active   : 'is-active',
-            menu     : 'menu',
-            item     : 'menu__item'
-        },
-        onOpen    : function() {},
-        onOpening : function() {},
-        onClose   : function() {},
-        onClosing : function() {},
-        onSelect  : function(item) {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
 })(jQuery, window);
 
@@ -765,13 +771,28 @@ var Fm = (function(document) {
     var $window = $(window),
         $body   = $(document.body);
 
+    var Defaults = {
+        trigger    : 'hover',
+        transition : 'display',
+        direction  : 'southwest',
+        delay      : 100,
+        distance   : 10,
+        hoverable  : false,
+        onShow     : function() {},
+        onHide     : function() {}
+    };
+
+    var ClassNames = {
+        popup : 'popup'
+    };
+
     // Constructor
     function Popup(element, settings) {
         this.namespace = namespace + '.' + Fm.createID();
         this.config    = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
-        this.$popup    = this.$elem.next('.' + this.config.classNames.popup);
+        this.$popup    = this.$elem.next('.' + ClassNames.popup);
         this.calc      = null;
         this.timer     = null;
         this.active    = false;
@@ -802,7 +823,7 @@ var Fm = (function(document) {
          */
         create: function() {
             var $popup = $('<div/>', {
-                    class : this.config.classNames.popup,
+                    class : ClassNames.popup,
                     html  : $('<div/>').html( this.$elem.attr('title') ).text()
                 });
 
@@ -969,7 +990,7 @@ var Fm = (function(document) {
 
             self.$popup
                 .css(positioning)
-                .addClass(self.config.classNames.popup + '--' + direction);
+                .addClass(ClassNames.popup + '--' + direction);
         },
 
         /**
@@ -1059,19 +1080,7 @@ var Fm = (function(document) {
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        trigger    : 'hover',
-        transition : 'display',
-        direction  : 'southwest',
-        delay      : 100,
-        distance   : 10,
-        hoverable  : false,
-        classNames : {
-            popup  : 'popup'
-        },
-        onShow : function() {},
-        onHide : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
 })(jQuery, window, document);
 
@@ -1089,6 +1098,25 @@ var Fm = (function(document) {
 
     var $window = $(window),
         windowHeight = $window.height();
+
+    var Defaults = {
+        context      : null,
+        mask         : true,
+        observe      : false,
+        topOffset    : 0,
+        bottomOffset : 0,
+        scrollSpace  : 200,
+        onStick      : function() {},
+        onUnStick    : function() {},
+        onBound      : function() {},
+        onUnBound    : function() {}
+    };
+
+    var ClassNames = {
+        mask  : 'sticky-mask',
+        stick : 'stick',
+        bound : 'bound'
+    };
 
     // Constructor
     function Sticky(element, settings) {
@@ -1262,7 +1290,7 @@ var Fm = (function(document) {
                 stick: function() {
                     self.make('fixed');
                     self.mask('show');
-                    self.$elem.addClass(self.config.classNames.stick);
+                    self.$elem.addClass(ClassNames.stick);
                     self.config.onStick.call(self.elem);
                 },
 
@@ -1281,14 +1309,14 @@ var Fm = (function(document) {
                             top      : '',
                             bottom   : self.config.bottomOffset
                         })
-                        .addClass(self.config.classNames.bound);
+                        .addClass(ClassNames.bound);
                     self.isBound = true;
                     self.config.onBound.call(self.elem);
                 },
 
                 unBound: function() {
                     self.make('fixed');
-                    self.$elem.removeClass(self.config.classNames.bound);
+                    self.$elem.removeClass(ClassNames.bound);
                     self.isBound = false;
                     self.config.onUnBound.call(self.elem);
                 }
@@ -1303,7 +1331,7 @@ var Fm = (function(document) {
         mask: function(action) {
             var self = this,
                 calc = self.calc,
-                $mask = this.$elem.next('.' + this.config.classNames.mask);
+                $mask = this.$elem.next('.' + ClassNames.mask);
 
             if ( ! self.config.mask) {
                 return;
@@ -1318,7 +1346,7 @@ var Fm = (function(document) {
                         }).show();
                     } else {
                         $('<div/>', { // create new
-                            class : self.config.classNames.mask,
+                            class : ClassNames.mask,
                             css   : {
                                 width  : calc.elemSize.width,
                                 height : calc.elemSize.height
@@ -1349,8 +1377,8 @@ var Fm = (function(document) {
                     width     : ''
                 })
                 .removeClass(
-                    this.config.classNames.stick + ' ' +
-                    this.config.classNames.bound
+                    ClassNames.stick + ' ' +
+                    ClassNames.bound
                 );
         },
 
@@ -1418,23 +1446,7 @@ var Fm = (function(document) {
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        context      : null,
-        mask         : true,
-        observe      : false,
-        topOffset    : 0,
-        bottomOffset : 0,
-        scrollSpace  : 200,
-        classNames : {
-            stick  : 'stick',
-            bound  : 'bound',
-            mask   : 'sticky-mask'
-        },
-        onStick   : function() {},
-        onUnStick : function() {},
-        onBound   : function() {},
-        onUnBound : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
 })(jQuery, window, document);
 
@@ -1448,6 +1460,18 @@ var Fm = (function(document) {
 
     var plugin   = 'tab',
         methods  = [];
+
+    var Defaults = {
+        onOpen   : function() {},
+        onSelect : function() {},
+        onClose  : function() {}
+    };
+
+    var ClassNames = {
+        item : 'menu__item',
+        link : 'menu__link',
+        tabs : 'menu--tabs'
+    };
 
     // Constructor
     function Tab(element, settings) {
@@ -1473,8 +1497,7 @@ var Fm = (function(document) {
 
             if ( ! data) {
                 $.data(this, plugin, new Tab(this, settings));
-            }
-            else if (typeof settings === 'string') {
+            } else if (typeof settings === 'string') {
                 methods.indexOf(settings) > -1 ?
                     data[settings].apply(data, Array.isArray(args) ? args : [args]):
                     console.warn(plugin + ': Trying to call a inaccessible method');
@@ -1483,16 +1506,7 @@ var Fm = (function(document) {
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        classNames : {
-            tabs   : 'menu--tabs',
-            item   : 'menu__item',
-            link   : 'menu__link'
-        },
-        onOpen   : function() {},
-        onSelect : function() {},
-        onClose  : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
 })(jQuery, window);
 
@@ -1507,6 +1521,15 @@ var Fm = (function(document) {
     var plugin = 'transition';
 
     var transitionEndEvent = Fm.transitionEnd();
+
+    var Defaults = {
+        duration : 280,
+        delay    : 0,
+        curve    : 'ease',
+        queue    : true,
+        onStart  : function() {},
+        onEnd    : function() {}
+    };
 
     // Constructor
     function Transition(element, animation, settings, onEnd) {
@@ -1689,14 +1712,7 @@ var Fm = (function(document) {
     };
 
     // Default settings
-    $.fn[plugin].defaults = {
-        duration : 280,
-        delay    : 0,
-        curve    : 'ease',
-        queue    : true,
-        onStart  : function() {},
-        onEnd    : function() {}
-    };
+    $.fn[plugin].defaults = Defaults;
 
     $.fn[plugin].defaults.animations = {
         // fade

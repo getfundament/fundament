@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.3
+ * Fundament framework v0.3.4
  *
  * https://getfundament.com
  *
@@ -1064,9 +1064,6 @@ p {
 .btn {
   display: inline-block;
   padding: 0.5625rem 1.125rem;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-  outline: 0;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 16px;
   line-height: 1.25;
@@ -1079,6 +1076,9 @@ p {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  outline: 0;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
   transition: all 280ms ease;
   color: #222;
   background-color: #E8E8E8; }
@@ -1427,11 +1427,9 @@ p {
   .dropdown:after {
     content: " ";
     display: inline-block;
-    margin-left: .25em;
+    margin-left: 0.25em;
     margin-top: -0.125em;
     vertical-align: middle;
-    width: 0;
-    height: 0;
     border-left: 0.25em solid transparent;
     border-right: 0.25em solid transparent;
     border-top: 0.25em solid; }
@@ -1443,7 +1441,6 @@ p {
     min-width: 8rem;
     margin: 0.5rem -1px;
     z-index: 100;
-    outline: 0;
     line-height: 1;
     text-align: left;
     white-space: nowrap;
@@ -1453,12 +1450,11 @@ p {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); }
   .dropdown .menu__item {
     padding: 0.625rem 0.8125rem;
-    color: #222;
     border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
     .dropdown .menu__item:last-child {
       border-bottom-width: 0; }
-    .dropdown .menu__item:hover {
-      background-color: rgba(0, 0, 0, 0.03); }
+    .dropdown .menu__item:hover, .dropdown .menu__item.is-active {
+      background-color: #F9F9F9; }
   .dropdown.dropdown--reversed .menu {
     top: auto;
     bottom: 100%; }
@@ -1468,7 +1464,7 @@ p {
 .dropdown--select:after {
   position: absolute;
   top: 50%;
-  right: 1rem; }
+  right: 0.9375rem; }
 
 .dropdown--select > span {
   pointer-events: none; }
@@ -1483,8 +1479,7 @@ p {
   box-shadow: none; }
 
 .dropdown--select .menu__item.is-active {
-  font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.01); }
+  font-weight: bold; }
 
 .dropdown--select:not(.dropdown--reversed) .menu {
   border-top-width: 0;
@@ -1507,7 +1502,7 @@ p {
   border-radius: 0 0 0.25rem 0.25rem; }
 
 .dropdown--select.is-empty > span {
-  color: #999; }
+  color: #AAA; }
 
 label {
   display: inline-block;
@@ -1715,15 +1710,15 @@ label {
   display: block;
   width: 100%;
   margin: 0;
-  padding: 0.5625rem 0.8125rem;
-  border: 1px solid #DDD;
-  border-radius: 0.25rem;
   outline: 0;
-  background-color: #fff;
+  padding: 0.5625rem 0.8125rem;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 16px;
   line-height: 1.25;
   color: #222;
+  background-color: #fff;
+  border: 1px solid #DDD;
+  border-radius: 0.25rem;
   transition: all 280ms ease; }
   .input:hover, .dropdown--select:hover {
     color: #222;
@@ -1855,16 +1850,16 @@ textarea.input, textarea.dropdown--select {
   resize: vertical; }
 
 ::-webkit-input-placeholder {
-  color: #999; }
+  color: #AAA; }
 
 :-moz-placeholder {
-  color: #999; }
+  color: #AAA; }
 
 ::-moz-placeholder {
-  color: #999; }
+  color: #AAA; }
 
 :-ms-input-placeholder {
-  color: #999; }
+  color: #AAA; }
 
 .label {
   display: inline-block;
