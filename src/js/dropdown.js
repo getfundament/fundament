@@ -31,7 +31,6 @@
         active   : 'is-active'
     };
 
-    // Constructor
     function Dropdown(element, settings) {
         this.config = $.extend({}, $.fn[plugin].defaults, settings);
         this.elem   = element;
@@ -41,10 +40,10 @@
         this.init();
     }
 
-    // Instance
     $.extend(Dropdown.prototype, {
 
         init: function() {
+            this.setup();
             this.bind();
 
             if (this.is('select') && this.is('empty')) {
@@ -53,39 +52,21 @@
         },
 
         /**
+         * Perform needed DOM operations.
+         */
+        setup: function() {
+            this.$elem.attr('tabindex', 0);
+            this.$items.attr('tabindex', -1);
+        },
+
+        /**
          * Bind event handlers.
          */
         bind: function() {
-            var self = this;
-
-            self.$elem
-                .on('mousedown', function(e) {
-                    var $target = $(e.target);
-                    if ($target.hasClass(ClassNames.item)) {
-                        self.select($target); // click on item
-                    }
-                    self.toggle();
-                })
-                .on('focusout', self.close.bind(self))
-                .on('keydown', function(e) {
-                    switch (e.which) {
-                        case 32 : // space key
-                        case 13 : // enter key
-                            self.toggle();
-                            e.preventDefault(); // prevent scroll
-                            break;
-                        case 38 : // arrow up
-                            self.select('prev');
-                            e.preventDefault(); // prevent scroll
-                            break;
-                        case 40 : // arrow down
-                            self.select('next');
-                            e.preventDefault(); // prevent scroll
-                            break;
-                        default :
-                            self.selectByKey(e.which);
-                    }
-                });
+            this.$elem
+                .on('mousedown', this.onMouseDown.bind(this))
+                .on('keydown', this.onKeyDown.bind(this))
+                .on('blur', this.close.bind(this));
         },
 
         /**
@@ -107,6 +88,55 @@
                     return self.$elem.find('input').val().length === 0
                 }
             }[state].apply();
+        },
+
+        /**
+         * Handle the mousedown event.
+         *
+         * @param {Event} e
+         */
+        onMouseDown: function(e) {
+            if (e.target.nodeName === 'A') {
+                return window.location.href = e.target.getAttribute('href'); // click on link
+            }
+
+            var $target = $(e.target);
+            if ($target.hasClass(ClassNames.item)) {
+                this.select($target); // click on item
+            }
+
+            this.toggle();
+        },
+
+        /**
+         * Handle the keydown event.
+         *
+         * @param {Event} e
+         */
+        onKeyDown: function(e) {
+            switch (e.which) {
+                case 13 : // enter key
+                case 32 : // space key
+                    this.toggle();
+                    e.preventDefault(); // prevent scroll
+                    break;
+                case 27 : // escape key
+                    this.close();
+                    break;
+                case 38 : // arrow up
+                    this.select('prev');
+                    e.preventDefault(); // prevent scroll
+                    break;
+                case 40 : // arrow down
+                    if ( ! this.is('select')) {
+                        this.open();
+                    }
+                    this.select('next');
+                    e.preventDefault(); // prevent scroll
+                    break;
+                default :
+                    this.selectByKey(e.which);
+            }
         },
 
         /**
@@ -134,8 +164,9 @@
 
             if ( ! $target
                 || $target.length === 0
-                || $target.is($active)) {
-                return false;
+                || $target.is($active)
+            ) {
+                return;
             }
 
             // TODO: scroll to item (overflowing content)
@@ -187,6 +218,8 @@
 
         /**
          * Toggle the dropdown.
+         *
+         * @public
          */
         toggle: function() {
             this.is('open') ?
@@ -196,6 +229,8 @@
 
         /**
          * Open the dropdown.
+         *
+         * @public
          */
         open: function() {
             var self = this,
@@ -228,6 +263,8 @@
 
         /**
          * Close the dropdown.
+         *
+         * @public
          */
         close: function() {
             var self = this,
@@ -249,6 +286,8 @@
 
         /**
          * Override the instance's settings.
+         *
+         * @public
          *
          * @param {Object} settings
          */
