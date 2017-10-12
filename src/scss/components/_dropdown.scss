@@ -36,8 +36,11 @@
         &:last-child {
             border-bottom-width: 0;
         }
-        &:hover,
+        &:hover {
+            background-color: $dropdown-hover-item-background;
+        }
         &.is-active {
+            font-weight: bolder;
             background-color: $dropdown-hover-item-background;
         }
     }
@@ -74,9 +77,6 @@
         overflow-y: auto;
         border: $input-border-width solid $input-focus-border-color;
         box-shadow: none;
-    }
-    .menu__item.is-active {
-        font-weight: bold;
     }
 
     // Default (downward)

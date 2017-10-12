@@ -24,7 +24,7 @@ $color-gray-dark:     #888      !default;
 $color-gray:          #AAA      !default;
 $color-gray-light:    #DDD      !default;
 $color-gray-lighter:  #E8E8E8   !default;
-$color-gray-lightest: #F9F9F9   !default;
+$color-gray-lightest: #F8F8F8   !default;
 
 /*---------------------*
  * Typography
@@ -186,7 +186,7 @@ $dropdown-arrow-size:    0.25em                     !default;
 // Item
 $dropdown-item-padding:      0.625rem 0.8125rem     !default;
 $dropdown-item-border-width: 1px                    !default;
-$dropdown-item-border-color: rgba(0,0,0,0.04)       !default;
+$dropdown-item-border-color: $color-gray-lightest   !default;
 
 $dropdown-hover-item-background: $color-gray-lightest  !default;
 
