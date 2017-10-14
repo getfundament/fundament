@@ -6,11 +6,7 @@
 ;(function($, window, document) {
     'use strict';
 
-    var plugin    = 'sticky',
-        namespace = '.' + plugin;
-
-    var $window = $(window),
-        windowHeight = $window.height();
+    var Name = 'sticky';
 
     var Defaults = {
         context      : null,
@@ -31,10 +27,15 @@
         bound : 'bound'
     };
 
+    // Globals
+    var $window = $(window);
+
+    var windowHeight = $window.height();
+
     // Constructor
     function Sticky(element, settings) {
-        this.namespace = namespace + '.' + Fm.createID();
-        this.config    = $.extend({}, $.fn[plugin].defaults, settings);
+        this.namespace = '.' + Name + '.' + Fm.createID();
+        this.config    = $.extend({}, $.fn[Name].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
         this.$context  = this.$elem.closest(this.config.context);
@@ -53,7 +54,7 @@
 
         init: function() {
             if ( ! this.$context.length) {
-                return console.warn(plugin + ': Undefined context element');
+                return console.warn('Undefined context element');
             }
 
             this.bind();
@@ -85,7 +86,7 @@
             };
 
             if (calc.elemSize.height + self.config.scrollSpace >= calc.contextHeight) {
-                console.warn(plugin + ': Insufficient scrolling space available');
+                console.warn('Insufficient scrolling space available');
                 return this.destroy();
             }
 
@@ -338,18 +339,18 @@
             this.clear();
             this.mask('remove');
 
-            $.data(this.elem, plugin, null); // unset data
+            $.data(this.elem, Name, null); // unset data
         }
 
     });
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
-            var data = $.data(this, plugin);
+            var data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(this, plugin, new Sticky(this, settings));
+                $.data(this, Name, new Sticky(this, settings));
             } else if (typeof settings === 'string' && data[settings]) {
                 data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
@@ -357,6 +358,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);

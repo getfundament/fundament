@@ -6,7 +6,7 @@
 ;(function($, window) {
     'use strict';
 
-    var plugin    = 'dropdown';
+    var Name = 'dropdown';
 
     var Defaults = {
         smart      : false,
@@ -31,7 +31,7 @@
     };
 
     function Dropdown(element, settings) {
-        this.config = $.extend({}, $.fn[plugin].defaults, settings);
+        this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
         this.$elem  = $(element);
         this.$menu  = this.$elem.find('.' + ClassNames.menu);
@@ -360,13 +360,13 @@
     }
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var elem = transform(this),
-                data = $.data(this, plugin);
+                data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(elem, plugin, new Dropdown(elem, settings));
+                $.data(elem, Name, new Dropdown(elem, settings));
             } else if (typeof settings === 'string' && data[settings]) {
                 data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
@@ -374,6 +374,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window);

@@ -6,9 +6,7 @@
 ;(function($) {
     'use strict';
 
-    var plugin = 'transition';
-
-    var transitionEndEvent = Fm.transitionEnd();
+    var Name = 'transition';
 
     var Defaults = {
         duration : 280,
@@ -19,11 +17,14 @@
         onEnd    : function() {}
     };
 
+    // Globals
+    var transitionEndEvent = Fm.transitionEnd();
+
     // Constructor
     function Transition(element, animation, settings, onEnd) {
         var self = this;
 
-        self.config = $.extend({}, $.fn[plugin].defaults, settings);
+        self.config = $.extend({}, $.fn[Name].defaults, settings);
         self.elem   = element;
         self.$elem  = $(element);
 
@@ -193,16 +194,15 @@
     });
 
     // Plugin definition
-    $.fn[plugin] = function(animation, settings, onEnd) {
+    $.fn[Name] = function(animation, settings, onEnd) {
         return this.each(function() {
             new Transition(this, animation, settings, onEnd);
         });
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
-
-    $.fn[plugin].defaults.animations = {
+    $.fn[Name].defaults = Defaults;
+    $.fn[Name].defaults.animations = {
         // fade
         fade: {
             start : { 'opacity': 0 },

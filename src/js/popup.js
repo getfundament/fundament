@@ -6,11 +6,7 @@
 ;(function($, window, document) {
     'use strict';
 
-    var plugin    = 'popup',
-        namespace = '.' + plugin;
-
-    var $window = $(window),
-        $body   = $(document.body);
+    var Name = 'popup';
 
     var Defaults = {
         trigger    : 'hover',
@@ -27,10 +23,14 @@
         popup : 'popup'
     };
 
+    // Globals
+    var $window = $(window),
+        $body   = $(document.body);
+
     // Constructor
     function Popup(element, settings) {
-        this.namespace = namespace + '.' + Fm.createID();
-        this.config    = $.extend({}, $.fn[plugin].defaults, settings);
+        this.namespace = '.' + Name + '.' + Fm.createID();
+        this.config    = $.extend({}, $.fn[Name].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
         this.$popup    = this.$elem.next('.' + ClassNames.popup);
@@ -300,18 +300,18 @@
             this.unbind();
             this.$popup.remove();
 
-            $.data(this.elem, plugin, null);
+            $.data(this.elem, Name, null);
         }
 
     });
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
-            var data = $.data(this, plugin);
+            var data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(this, plugin, new Popup(this, settings));
+                $.data(this, Name, new Popup(this, settings));
             } else if (typeof settings === 'string' && data[settings]) {
                 data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
@@ -319,6 +319,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);

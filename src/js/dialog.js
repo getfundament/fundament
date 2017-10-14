@@ -6,13 +6,7 @@
 ;(function($, window, document) {
     'use strict';
 
-    var plugin  = 'dialog';
-
-    var transitionEndEvent = Fm.transitionEnd();
-
-    var $window   = $(window),
-        $document = $(document),
-        $body     = $(document.body);
+    var Name  = 'dialog';
 
     var Defaults = {
         openFrom   : null,
@@ -33,9 +27,16 @@
         active : 'is-active'
     };
 
+    // Globals
+    var $window   = $(window),
+        $document = $(document),
+        $body     = $(document.body);
+
+    var transitionEndEvent = Fm.transitionEnd();
+
     // Constructor
     function Dialog(element, settings) {
-        this.config  = $.extend({}, $.fn[plugin].defaults, settings);
+        this.config  = $.extend({}, $.fn[Name].defaults, settings);
         this.elem    = element;
         this.$elem   = $(element);
         this.$wrap   = $('<div/>', {class: ClassNames.wrap, role: 'document'});
@@ -274,12 +275,12 @@
     });
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
-            var data = $.data(this, plugin);
+            var data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(this, plugin, new Dialog(this, settings));
+                $.data(this, Name, new Dialog(this, settings));
             } else if (typeof settings === 'string' && data[settings]) {
                 data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
@@ -287,6 +288,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);

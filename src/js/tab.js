@@ -6,7 +6,7 @@
 ;(function($, window) {
     'use strict';
 
-    var plugin   = 'tab';
+    var Name = 'tab';
 
     var Defaults = {
         onOpen   : function() {},
@@ -22,7 +22,7 @@
 
     // Constructor
     function Tab(element, settings) {
-        this.config = $.extend({}, $.fn[plugin].defaults, settings);
+        this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
         this.$elem  = $(element);
         this.init();
@@ -38,12 +38,12 @@
     });
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
-            var data = $.data(this, plugin);
+            var data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(this, plugin, new Tab(this, settings));
+                $.data(this, Name, new Tab(this, settings));
             } else if (typeof settings === 'string' && data[settings]) {
                 data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
@@ -51,6 +51,6 @@
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window);
