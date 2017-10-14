@@ -36,6 +36,8 @@
         active : '.is-active'
     };
 
+    // Constructor
+
     function Dropdown(element, settings) {
         this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
@@ -44,6 +46,8 @@
         this.$items = this.$elem.find(Selectors.item);
         this.init();
     }
+
+    // Prototype
 
     $.extend(Dropdown.prototype, {
 
@@ -365,7 +369,9 @@
         return $dropdown[0];
     }
 
-    // Plugin definition
+    // Plugin
+
+    $.fn[Name].defaults = Defaults;
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var elem = transform(this),
@@ -378,8 +384,5 @@
             }
         });
     };
-
-    // Default settings
-    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window);

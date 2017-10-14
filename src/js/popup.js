@@ -28,10 +28,12 @@
     };
 
     // Globals
+
     var $window = $(window),
         $body   = $(document.body);
 
     // Constructor
+
     function Popup(element, settings) {
         this.namespace = '.' + Name + '.' + Fm.createID();
         this.config    = $.extend({}, $.fn[Name].defaults, settings);
@@ -44,7 +46,8 @@
         this.init();
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Popup.prototype, {
 
         init: function() {
@@ -309,7 +312,9 @@
 
     });
 
-    // Plugin definition
+    // Plugin
+
+    $.fn[Name].defaults = Defaults;
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -321,8 +326,5 @@
             }
         });
     };
-
-    // Default settings
-    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);

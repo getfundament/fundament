@@ -7,7 +7,6 @@
  * @author Jason Koolman and The Fundament Authors
  */
 
-// Normalization
 window.requestAnimationFrame = window.requestAnimationFrame
     || window.webkitRequestAnimationFrame
     || window.mozRequestAnimationFrame

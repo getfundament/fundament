@@ -18,9 +18,11 @@
     };
 
     // Globals
-    var transitionEndEvent = Fm.transitionEnd();
+
+    var transitionEnd = Fm.transitionEnd();
 
     // Constructor
+
     function Transition(element, animation, settings, onEnd) {
         var self = this;
 
@@ -41,7 +43,8 @@
             }): self.init(animation);
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Transition.prototype, {
 
         init: function(animation) {
@@ -56,10 +59,10 @@
                 return console.warn('Trying to call an undefined animation');
             }
 
-            if (transitionEndEvent) {
+            if (transitionEnd) {
                 self.$elem
-                    .off(transitionEndEvent) // prevent any interruptions
-                    .one(transitionEndEvent, function(e) {
+                    .off(transitionEnd) // prevent any interruptions
+                    .one(transitionEnd, function(e) {
                         e.stopPropagation(); // prevent event bubbling
                         self.end();
                     });
@@ -193,17 +196,16 @@
         }
     });
 
-    // Plugin definition
+    // Plugin
+
+    $.fn[Name].defaults = Defaults;
     $.fn[Name] = function(animation, settings, onEnd) {
         return this.each(function() {
             new Transition(this, animation, settings, onEnd);
         });
     };
 
-    // Default settings
-    $.fn[Name].defaults = Defaults;
     $.fn[Name].defaults.animations = {
-        // fade
         fade: {
             start : { 'opacity': 0 },
             end   : { 'opacity': 1 }
@@ -216,8 +218,6 @@
             start : { 'opacity': 0, 'transform': 'translateY(-10%)' },
             end   : { 'opacity': 1, 'transform': 'translateY(0)' }
         },
-
-        // scale
         scale: {
             start : { 'opacity': 0, 'transform': 'scale(0.6)' },
             end   : { 'opacity': 1, 'transform': 'scale(1.0)' }
@@ -230,8 +230,6 @@
             start : { 'opacity': 0, 'transform': 'scale(0.6)', 'transform-origin': 'top' },
             end   : { 'opacity': 1, 'transform': 'scale(1.0)', 'transform-origin': 'top' }
         },
-
-        // slide
         slideUp: {
             start : { 'opacity': 0.2, 'transform': 'scaleY(0.01)', 'transform-origin': 'bottom'},
             end   : { 'opacity': 1, 'transform': 'scaleY(1)', 'transform-origin': 'bottom'}
@@ -240,8 +238,6 @@
             start : { 'opacity': 0.2, 'transform': 'scaleY(0.01)', 'transform-origin': 'top'},
             end   : { 'opacity': 1, 'transform': 'scaleY(1)', 'transform-origin': 'top'}
         },
-
-        // flip
         flipX: {
             start : { 'opacity': 0, 'transform': 'perspective(2000px) rotateY(-90deg)' },
             end   : { 'opacity': 1, 'transform': 'perspective(2000px) rotateY(0deg)' }

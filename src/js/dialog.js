@@ -32,13 +32,15 @@
     };
 
     // Globals
+
     var $window   = $(window),
         $document = $(document),
         $body     = $(document.body);
 
-    var transitionEndEvent = Fm.transitionEnd();
+    var transitionEnd = Fm.transitionEnd();
 
     // Constructor
+
     function Dialog(element, settings) {
         this.config  = $.extend({}, $.fn[Name].defaults, settings);
         this.elem    = element;
@@ -49,7 +51,8 @@
         this.init();
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Dialog.prototype, {
 
         init: function () {
@@ -88,7 +91,7 @@
             self.$elem
                 .on('click', Selectors.close, self.close.bind(self))
                 .find(Selectors.block)
-                .on(transitionEndEvent, function(e) {
+                .on(transitionEnd, function(e) {
                     e.stopPropagation(); // prevent event bubbling
                 });
 
@@ -156,7 +159,7 @@
                 self.$wrap.hide();
                 self.$dimmer
                     .removeClass(ClassNames.active)
-                    .one(transitionEndEvent, function() {
+                    .one(transitionEnd, function() {
                         self.scrollBar(true);
                         self.$dimmer.hide();
                         self.config.onClose.call(self.elem);
@@ -278,7 +281,9 @@
 
     });
 
-    // Plugin definition
+    // Plugin
+
+    $.fn[Name].defaults = Defaults;
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -291,7 +296,5 @@
         });
     };
 
-    // Default settings
-    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);

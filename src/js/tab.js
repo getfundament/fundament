@@ -21,6 +21,7 @@
     };
 
     // Constructor
+
     function Tab(element, settings) {
         this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
@@ -28,7 +29,8 @@
         this.init();
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Tab.prototype, {
 
         init: function() {
@@ -37,7 +39,9 @@
 
     });
 
-    // Plugin definition
+    // Plugin
+
+    $.fn[Name].defaults = Defaults;
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -49,8 +53,5 @@
             }
         });
     };
-
-    // Default settings
-    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window);

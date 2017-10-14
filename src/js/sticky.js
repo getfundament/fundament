@@ -32,11 +32,13 @@
     };
 
     // Globals
+
     var $window = $(window);
 
     var windowHeight = $window.height();
 
     // Constructor
+
     function Sticky(element, settings) {
         this.namespace = '.' + Name + '.' + Fm.createID();
         this.config    = $.extend({}, $.fn[Name].defaults, settings);
@@ -53,7 +55,8 @@
         $window.on('load', this.init.bind(this));
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Sticky.prototype, {
 
         init: function() {
@@ -348,7 +351,9 @@
 
     });
 
-    // Plugin definition
+    // Plugin
+
+    $.fn[Name].defaults = Defaults;
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -361,7 +366,5 @@
         });
     };
 
-    // Default settings
-    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);
