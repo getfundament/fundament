@@ -22,9 +22,13 @@
     var ClassNames = {
         dimmer : 'page-dimmer',
         wrap   : 'dialog-wrap',
-        block  : 'dialog__block',
-        close  : 'dialog__close',
         active : 'is-active'
+    };
+
+    var Selectors = {
+        dimmer : '.page-dimmer',
+        block  : '.dialog__block',
+        close  : '.dialog__close'
     };
 
     // Globals
@@ -59,11 +63,11 @@
         setup: function() {
             var conf = this.config;
 
-            if ($('.' + ClassNames.dimmer).length === 0) {
+            if ($(Selectors.dimmer).length === 0) {
                 $body.append(this.$dimmer);
             }
 
-            this.$dimmer = $('.' + ClassNames.dimmer);
+            this.$dimmer = $(Selectors.dimmer);
             this.$wrap = this.$elem
                 .wrap(this.$wrap) // wrap around dialog
                 .parent() // retrieve element
@@ -82,8 +86,8 @@
                 conf = self.config;
 
             self.$elem
-                .on('click', '.' + ClassNames.close, self.close.bind(self))
-                .find('.' + ClassNames.block)
+                .on('click', Selectors.close, self.close.bind(self))
+                .find(Selectors.block)
                 .on(transitionEndEvent, function(e) {
                     e.stopPropagation(); // prevent event bubbling
                 });

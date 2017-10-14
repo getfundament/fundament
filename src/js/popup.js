@@ -23,6 +23,10 @@
         popup : 'popup'
     };
 
+    var Selectors = {
+        popup : '.popup'
+    };
+
     // Globals
     var $window = $(window),
         $body   = $(document.body);
@@ -33,7 +37,7 @@
         this.config    = $.extend({}, $.fn[Name].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
-        this.$popup    = this.$elem.next('.' + ClassNames.popup);
+        this.$popup    = this.$elem.next(Selectors.popup);
         this.calc      = null;
         this.timer     = null;
         this.active    = false;

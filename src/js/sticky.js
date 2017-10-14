@@ -27,6 +27,10 @@
         bound : 'bound'
     };
 
+    var Selectors = {
+        mask : '.sticky-mask'
+    };
+
     // Globals
     var $window = $(window);
 
@@ -245,7 +249,7 @@
         mask: function(action) {
             var self = this,
                 calc = self.calc,
-                $mask = this.$elem.next('.' + ClassNames.mask);
+                $mask = this.$elem.next(Selectors.mask);
 
             if ( ! self.config.mask) {
                 return;

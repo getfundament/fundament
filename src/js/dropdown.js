@@ -30,12 +30,18 @@
         active   : 'is-active'
     };
 
+    var Selectors = {
+        menu   : '.menu',
+        item   : '.menu__item',
+        active : '.is-active'
+    };
+
     function Dropdown(element, settings) {
         this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
         this.$elem  = $(element);
-        this.$menu  = this.$elem.find('.' + ClassNames.menu);
-        this.$items = this.$elem.find('.' + ClassNames.item);
+        this.$menu  = this.$elem.find(Selectors.menu);
+        this.$items = this.$elem.find(Selectors.item);
         this.init();
     }
 
@@ -145,7 +151,7 @@
          */
         select: function(target) {
             var self = this,
-                $active = self.$items.filter('.' + ClassNames.active),
+                $active = self.$items.filter(Selectors.active),
                 $target;
 
             // Retrieve target item
@@ -206,7 +212,7 @@
             });
 
             if ($matches.length) {
-                var index = $matches.index($matches.filter('.' + ClassNames.active)),
+                var index = $matches.index($matches.filter(Selectors.active)),
                     $next = $($matches[index + 1]); // next match
 
                 $next && $next.length ?
