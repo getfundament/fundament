@@ -6,8 +6,7 @@
 ;(function($, window) {
     'use strict';
 
-    var plugin    = 'dropdown',
-        methods   = ['toggle', 'open', 'close', 'setting'];
+    var plugin    = 'dropdown';
 
     var Defaults = {
         smart      : false,
@@ -368,10 +367,8 @@
 
             if ( ! data) {
                 $.data(elem, plugin, new Dropdown(elem, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };

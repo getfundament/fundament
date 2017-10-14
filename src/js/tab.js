@@ -6,8 +6,7 @@
 ;(function($, window) {
     'use strict';
 
-    var plugin   = 'tab',
-        methods  = [];
+    var plugin   = 'tab';
 
     var Defaults = {
         onOpen   : function() {},
@@ -45,10 +44,8 @@
 
             if ( ! data) {
                 $.data(this, plugin, new Tab(this, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };

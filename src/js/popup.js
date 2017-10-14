@@ -7,8 +7,7 @@
     'use strict';
 
     var plugin    = 'popup',
-        namespace = '.' + plugin,
-        methods   = ['toggle', 'show', 'hide', 'setting', 'destroy'];
+        namespace = '.' + plugin;
 
     var $window = $(window),
         $body   = $(document.body);
@@ -313,10 +312,8 @@
 
             if ( ! data) {
                 $.data(this, plugin, new Popup(this, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };

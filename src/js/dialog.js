@@ -6,8 +6,7 @@
 ;(function($, window, document) {
     'use strict';
 
-    var plugin  = 'dialog',
-        methods = ['toggle', 'open', 'close', 'setting'];
+    var plugin  = 'dialog';
 
     var transitionEndEvent = Fm.transitionEnd();
 
@@ -281,10 +280,8 @@
 
             if ( ! data) {
                 $.data(this, plugin, new Dialog(this, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };
