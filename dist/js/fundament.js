@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.4
+ * Fundament framework v0.3.5
  *
  * https://getfundament.com
  *
@@ -124,14 +124,7 @@ var Fm = (function(document) {
 ;(function($, window, document) {
     'use strict';
 
-    var plugin  = 'dialog',
-        methods = ['toggle', 'open', 'close', 'setting'];
-
-    var transitionEndEvent = Fm.transitionEnd();
-
-    var $window   = $(window),
-        $document = $(document),
-        $body     = $(document.body);
+    var Name  = 'dialog';
 
     var Defaults = {
         openFrom   : null,
@@ -147,14 +140,25 @@ var Fm = (function(document) {
     var ClassNames = {
         dimmer : 'page-dimmer',
         wrap   : 'dialog-wrap',
-        block  : 'dialog__block',
-        close  : 'dialog__close',
         active : 'is-active'
     };
 
+    var Selectors = {
+        dimmer : '.page-dimmer',
+        block  : '.dialog__block',
+        close  : '.dialog__close'
+    };
+
+    // Globals
+    var $window   = $(window),
+        $document = $(document),
+        $body     = $(document.body);
+
+    var transitionEndEvent = Fm.transitionEnd();
+
     // Constructor
     function Dialog(element, settings) {
-        this.config  = $.extend({}, $.fn[plugin].defaults, settings);
+        this.config  = $.extend({}, $.fn[Name].defaults, settings);
         this.elem    = element;
         this.$elem   = $(element);
         this.$wrap   = $('<div/>', {class: ClassNames.wrap, role: 'document'});
@@ -177,11 +181,11 @@ var Fm = (function(document) {
         setup: function() {
             var conf = this.config;
 
-            if ($('.' + ClassNames.dimmer).length === 0) {
+            if ($(Selectors.dimmer).length === 0) {
                 $body.append(this.$dimmer);
             }
 
-            this.$dimmer = $('.' + ClassNames.dimmer);
+            this.$dimmer = $(Selectors.dimmer);
             this.$wrap = this.$elem
                 .wrap(this.$wrap) // wrap around dialog
                 .parent() // retrieve element
@@ -200,8 +204,8 @@ var Fm = (function(document) {
                 conf = self.config;
 
             self.$elem
-                .on('click', '.' + ClassNames.close, self.close.bind(self))
-                .find('.' + ClassNames.block)
+                .on('click', Selectors.close, self.close.bind(self))
+                .find(Selectors.block)
                 .on(transitionEndEvent, function(e) {
                     e.stopPropagation(); // prevent event bubbling
                 });
@@ -393,22 +397,20 @@ var Fm = (function(document) {
     });
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
-            var data = $.data(this, plugin);
+            var data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(this, plugin, new Dialog(this, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+                $.data(this, Name, new Dialog(this, settings));
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);
 
@@ -420,8 +422,7 @@ var Fm = (function(document) {
 ;(function($, window) {
     'use strict';
 
-    var plugin    = 'dropdown',
-        methods   = ['toggle', 'open', 'close', 'setting'];
+    var Name = 'dropdown';
 
     var Defaults = {
         smart      : false,
@@ -445,20 +446,25 @@ var Fm = (function(document) {
         active   : 'is-active'
     };
 
-    // Constructor
+    var Selectors = {
+        menu   : '.menu',
+        item   : '.menu__item',
+        active : '.is-active'
+    };
+
     function Dropdown(element, settings) {
-        this.config = $.extend({}, $.fn[plugin].defaults, settings);
+        this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
         this.$elem  = $(element);
-        this.$menu  = this.$elem.find('.' + ClassNames.menu);
-        this.$items = this.$elem.find('.' + ClassNames.item);
+        this.$menu  = this.$elem.find(Selectors.menu);
+        this.$items = this.$elem.find(Selectors.item);
         this.init();
     }
 
-    // Instance
     $.extend(Dropdown.prototype, {
 
         init: function() {
+            this.setup();
             this.bind();
 
             if (this.is('select') && this.is('empty')) {
@@ -467,39 +473,21 @@ var Fm = (function(document) {
         },
 
         /**
+         * Perform needed DOM operations.
+         */
+        setup: function() {
+            this.$elem.attr('tabindex', 0);
+            this.$items.attr('tabindex', -1);
+        },
+
+        /**
          * Bind event handlers.
          */
         bind: function() {
-            var self = this;
-
-            self.$elem
-                .on('mousedown', function(e) {
-                    var $target = $(e.target);
-                    if ($target.hasClass(ClassNames.item)) {
-                        self.select($target); // click on item
-                    }
-                    self.toggle();
-                })
-                .on('focusout', self.close.bind(self))
-                .on('keydown', function(e) {
-                    switch (e.which) {
-                        case 32 : // space key
-                        case 13 : // enter key
-                            self.toggle();
-                            e.preventDefault(); // prevent scroll
-                            break;
-                        case 38 : // arrow up
-                            self.select('prev');
-                            e.preventDefault(); // prevent scroll
-                            break;
-                        case 40 : // arrow down
-                            self.select('next');
-                            e.preventDefault(); // prevent scroll
-                            break;
-                        default :
-                            self.selectByKey(e.which);
-                    }
-                });
+            this.$elem
+                .on('mousedown', this.onMouseDown.bind(this))
+                .on('keydown', this.onKeyDown.bind(this))
+                .on('blur', this.close.bind(this));
         },
 
         /**
@@ -524,13 +512,62 @@ var Fm = (function(document) {
         },
 
         /**
+         * Handle the mousedown event.
+         *
+         * @param {Event} e
+         */
+        onMouseDown: function(e) {
+            if (e.target.nodeName === 'A') {
+                return window.location.href = e.target.getAttribute('href'); // click on link
+            }
+
+            var $target = $(e.target);
+            if ($target.hasClass(ClassNames.item)) {
+                this.select($target); // click on item
+            }
+
+            this.toggle();
+        },
+
+        /**
+         * Handle the keydown event.
+         *
+         * @param {Event} e
+         */
+        onKeyDown: function(e) {
+            switch (e.which) {
+                case 13 : // enter key
+                case 32 : // space key
+                    this.toggle();
+                    e.preventDefault(); // prevent scroll
+                    break;
+                case 27 : // escape key
+                    this.close();
+                    break;
+                case 38 : // arrow up
+                    this.select('prev');
+                    e.preventDefault(); // prevent scroll
+                    break;
+                case 40 : // arrow down
+                    if ( ! this.is('select')) {
+                        this.open();
+                    }
+                    this.select('next');
+                    e.preventDefault(); // prevent scroll
+                    break;
+                default :
+                    this.selectByKey(e.which);
+            }
+        },
+
+        /**
          * Select a dropdown item.
          *
          * @param {jQuery|string} target
          */
         select: function(target) {
             var self = this,
-                $active = self.$items.filter('.' + ClassNames.active),
+                $active = self.$items.filter(Selectors.active),
                 $target;
 
             // Retrieve target item
@@ -548,8 +585,9 @@ var Fm = (function(document) {
 
             if ( ! $target
                 || $target.length === 0
-                || $target.is($active)) {
-                return false;
+                || $target.is($active)
+            ) {
+                return;
             }
 
             // TODO: scroll to item (overflowing content)
@@ -590,7 +628,7 @@ var Fm = (function(document) {
             });
 
             if ($matches.length) {
-                var index = $matches.index($matches.filter('.' + ClassNames.active)),
+                var index = $matches.index($matches.filter(Selectors.active)),
                     $next = $($matches[index + 1]); // next match
 
                 $next && $next.length ?
@@ -601,6 +639,8 @@ var Fm = (function(document) {
 
         /**
          * Toggle the dropdown.
+         *
+         * @public
          */
         toggle: function() {
             this.is('open') ?
@@ -610,6 +650,8 @@ var Fm = (function(document) {
 
         /**
          * Open the dropdown.
+         *
+         * @public
          */
         open: function() {
             var self = this,
@@ -642,6 +684,8 @@ var Fm = (function(document) {
 
         /**
          * Close the dropdown.
+         *
+         * @public
          */
         close: function() {
             var self = this,
@@ -663,6 +707,8 @@ var Fm = (function(document) {
 
         /**
          * Override the instance's settings.
+         *
+         * @public
          *
          * @param {Object} settings
          */
@@ -736,23 +782,21 @@ var Fm = (function(document) {
     }
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var elem = transform(this),
-                data = $.data(this, plugin);
+                data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(elem, plugin, new Dropdown(elem, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+                $.data(elem, Name, new Dropdown(elem, settings));
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window);
 
@@ -764,12 +808,7 @@ var Fm = (function(document) {
 ;(function($, window, document) {
     'use strict';
 
-    var plugin    = 'popup',
-        namespace = '.' + plugin,
-        methods   = ['toggle', 'show', 'hide', 'setting', 'destroy'];
-
-    var $window = $(window),
-        $body   = $(document.body);
+    var Name = 'popup';
 
     var Defaults = {
         trigger    : 'hover',
@@ -786,13 +825,21 @@ var Fm = (function(document) {
         popup : 'popup'
     };
 
+    var Selectors = {
+        popup : '.popup'
+    };
+
+    // Globals
+    var $window = $(window),
+        $body   = $(document.body);
+
     // Constructor
     function Popup(element, settings) {
-        this.namespace = namespace + '.' + Fm.createID();
-        this.config    = $.extend({}, $.fn[plugin].defaults, settings);
+        this.namespace = '.' + Name + '.' + Fm.createID();
+        this.config    = $.extend({}, $.fn[Name].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
-        this.$popup    = this.$elem.next('.' + ClassNames.popup);
+        this.$popup    = this.$elem.next(Selectors.popup);
         this.calc      = null;
         this.timer     = null;
         this.active    = false;
@@ -1059,28 +1106,26 @@ var Fm = (function(document) {
             this.unbind();
             this.$popup.remove();
 
-            $.data(this.elem, plugin, null);
+            $.data(this.elem, Name, null);
         }
 
     });
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
-            var data = $.data(this, plugin);
+            var data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(this, plugin, new Popup(this, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+                $.data(this, Name, new Popup(this, settings));
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);
 
@@ -1092,12 +1137,7 @@ var Fm = (function(document) {
 ;(function($, window, document) {
     'use strict';
 
-    var plugin    = 'sticky',
-        methods   = ['calculate', 'setting', 'destroy'],
-        namespace = '.' + plugin;
-
-    var $window = $(window),
-        windowHeight = $window.height();
+    var Name = 'sticky';
 
     var Defaults = {
         context      : null,
@@ -1118,10 +1158,19 @@ var Fm = (function(document) {
         bound : 'bound'
     };
 
+    var Selectors = {
+        mask : '.sticky-mask'
+    };
+
+    // Globals
+    var $window = $(window);
+
+    var windowHeight = $window.height();
+
     // Constructor
     function Sticky(element, settings) {
-        this.namespace = namespace + '.' + Fm.createID();
-        this.config    = $.extend({}, $.fn[plugin].defaults, settings);
+        this.namespace = '.' + Name + '.' + Fm.createID();
+        this.config    = $.extend({}, $.fn[Name].defaults, settings);
         this.elem      = element;
         this.$elem     = $(element);
         this.$context  = this.$elem.closest(this.config.context);
@@ -1140,7 +1189,7 @@ var Fm = (function(document) {
 
         init: function() {
             if ( ! this.$context.length) {
-                return console.warn(plugin + ': Undefined context element');
+                return console.warn('Undefined context element');
             }
 
             this.bind();
@@ -1172,7 +1221,7 @@ var Fm = (function(document) {
             };
 
             if (calc.elemSize.height + self.config.scrollSpace >= calc.contextHeight) {
-                console.warn(plugin + ': Insufficient scrolling space available');
+                console.warn('Insufficient scrolling space available');
                 return this.destroy();
             }
 
@@ -1331,7 +1380,7 @@ var Fm = (function(document) {
         mask: function(action) {
             var self = this,
                 calc = self.calc,
-                $mask = this.$elem.next('.' + ClassNames.mask);
+                $mask = this.$elem.next(Selectors.mask);
 
             if ( ! self.config.mask) {
                 return;
@@ -1425,28 +1474,26 @@ var Fm = (function(document) {
             this.clear();
             this.mask('remove');
 
-            $.data(this.elem, plugin, null); // unset data
+            $.data(this.elem, Name, null); // unset data
         }
 
     });
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
-            var data = $.data(this, plugin);
+            var data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(this, plugin, new Sticky(this, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+                $.data(this, Name, new Sticky(this, settings));
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);
 
@@ -1458,8 +1505,7 @@ var Fm = (function(document) {
 ;(function($, window) {
     'use strict';
 
-    var plugin   = 'tab',
-        methods  = [];
+    var Name = 'tab';
 
     var Defaults = {
         onOpen   : function() {},
@@ -1475,7 +1521,7 @@ var Fm = (function(document) {
 
     // Constructor
     function Tab(element, settings) {
-        this.config = $.extend({}, $.fn[plugin].defaults, settings);
+        this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
         this.$elem  = $(element);
         this.init();
@@ -1491,22 +1537,20 @@ var Fm = (function(document) {
     });
 
     // Plugin definition
-    $.fn[plugin] = function(settings, args) {
+    $.fn[Name] = function(settings, args) {
         return this.each(function() {
-            var data = $.data(this, plugin);
+            var data = $.data(this, Name);
 
             if ( ! data) {
-                $.data(this, plugin, new Tab(this, settings));
-            } else if (typeof settings === 'string') {
-                methods.indexOf(settings) > -1 ?
-                    data[settings].apply(data, Array.isArray(args) ? args : [args]):
-                    console.warn(plugin + ': Trying to call a inaccessible method');
+                $.data(this, Name, new Tab(this, settings));
+            } else if (typeof settings === 'string' && data[settings]) {
+                data[settings].apply(data, Array.isArray(args) ? args : [args]);
             }
         });
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window);
 
@@ -1518,9 +1562,7 @@ var Fm = (function(document) {
 ;(function($) {
     'use strict';
 
-    var plugin = 'transition';
-
-    var transitionEndEvent = Fm.transitionEnd();
+    var Name = 'transition';
 
     var Defaults = {
         duration : 280,
@@ -1531,11 +1573,14 @@ var Fm = (function(document) {
         onEnd    : function() {}
     };
 
+    // Globals
+    var transitionEndEvent = Fm.transitionEnd();
+
     // Constructor
     function Transition(element, animation, settings, onEnd) {
         var self = this;
 
-        self.config = $.extend({}, $.fn[plugin].defaults, settings);
+        self.config = $.extend({}, $.fn[Name].defaults, settings);
         self.elem   = element;
         self.$elem  = $(element);
 
@@ -1705,16 +1750,15 @@ var Fm = (function(document) {
     });
 
     // Plugin definition
-    $.fn[plugin] = function(animation, settings, onEnd) {
+    $.fn[Name] = function(animation, settings, onEnd) {
         return this.each(function() {
             new Transition(this, animation, settings, onEnd);
         });
     };
 
     // Default settings
-    $.fn[plugin].defaults = Defaults;
-
-    $.fn[plugin].defaults.animations = {
+    $.fn[Name].defaults = Defaults;
+    $.fn[Name].defaults.animations = {
         // fade
         fade: {
             start : { 'opacity': 0 },

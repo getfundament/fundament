@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.4
+ * Fundament framework v0.3.5
  *
  * https://getfundament.com
  *
@@ -1450,11 +1450,14 @@ p {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); }
   .dropdown .menu__item {
     padding: 0.625rem 0.8125rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+    border-bottom: 1px solid #F8F8F8; }
     .dropdown .menu__item:last-child {
       border-bottom-width: 0; }
-    .dropdown .menu__item:hover, .dropdown .menu__item.is-active {
-      background-color: #F9F9F9; }
+    .dropdown .menu__item:hover {
+      background-color: #F8F8F8; }
+    .dropdown .menu__item.is-active {
+      font-weight: bolder;
+      background-color: #F8F8F8; }
   .dropdown.dropdown--reversed .menu {
     top: auto;
     bottom: 100%; }
@@ -1478,15 +1481,12 @@ p {
   border: 1px solid #0288D1;
   box-shadow: none; }
 
-.dropdown--select .menu__item.is-active {
-  font-weight: bold; }
-
 .dropdown--select:not(.dropdown--reversed) .menu {
   border-top-width: 0;
   border-radius: 0 0 0.25rem 0.25rem; }
 
 .dropdown--select:not(.dropdown--reversed) .menu__item:first-child {
-  border-top: 1px solid rgba(0, 0, 0, 0.04); }
+  border-top: 1px solid #F8F8F8; }
 
 .dropdown--select:not(.dropdown--reversed).is-open {
   border-radius: 0.25rem 0.25rem 0 0; }
