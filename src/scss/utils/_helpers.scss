@@ -47,15 +47,14 @@
     @include breakpoint-up($size) {
 
         @each $dir, $abbr in (top: t, right: r, bottom: b, left: l) {
-            @for $i from 0 through 4 {
+            @each $i, $spacing in $spacings-base {
                 $name: if($size == xs, #{$abbr}-#{$i}, #{$abbr}-#{$size}-#{$i}); // xs shorthand
-                $value: if($i == 4, ($i*1.5) * 0.5rem, $i * 0.5rem); // double the space on 4
 
                 .m#{$name} { // margin
-                    margin-#{$dir}: $value!important;
+                    margin-#{$dir}: $spacing!important;
                 }
                 .p#{$name} { // padding
-                    padding-#{$dir}: $value!important;
+                    padding-#{$dir}: $spacing!important;
                 }
             }
         }
