@@ -314,7 +314,6 @@
 
     // Plugin
 
-    $.fn[Name].defaults = Defaults;
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -326,5 +325,7 @@
             }
         });
     };
+
+    $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);

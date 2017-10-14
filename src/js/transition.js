@@ -198,13 +198,13 @@
 
     // Plugin
 
-    $.fn[Name].defaults = Defaults;
     $.fn[Name] = function(animation, settings, onEnd) {
         return this.each(function() {
             new Transition(this, animation, settings, onEnd);
         });
     };
 
+    $.fn[Name].defaults = Defaults;
     $.fn[Name].defaults.animations = {
         fade: {
             start : { 'opacity': 0 },
