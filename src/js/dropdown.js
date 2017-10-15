@@ -38,6 +38,14 @@
         label  : '> span'
     };
 
+    var Keys = {
+        enter  : 13,
+        escape : 27,
+        space  : 32,
+        up     : 38,
+        down   : 40
+    };
+
     // Constructor
 
     function Dropdown(element, settings) {
@@ -126,19 +134,19 @@
          */
         onKeyDown: function(e) {
             switch (e.which) {
-                case 13 : // enter key
-                case 32 : // space key
+                case Keys.enter:
+                case Keys.space:
                     this.toggle();
                     e.preventDefault(); // prevent scroll
                     break;
-                case 27 : // escape key
+                case Keys.escape:
                     this.close();
                     break;
-                case 38 : // arrow up
+                case Keys.up:
                     this.select('prev');
                     e.preventDefault(); // prevent scroll
                     break;
-                case 40 : // arrow down
+                case Keys.down:
                     if ( ! this.is('select')) {
                         this.open();
                     }
