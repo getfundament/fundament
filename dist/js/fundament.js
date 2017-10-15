@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.5
+ * Fundament framework v0.3.6
  *
  * https://getfundament.com
  *
@@ -7,7 +7,6 @@
  * @author Jason Koolman and The Fundament Authors
  */
 
-// Normalization
 window.requestAnimationFrame = window.requestAnimationFrame
     || window.webkitRequestAnimationFrame
     || window.mozRequestAnimationFrame
@@ -150,13 +149,15 @@ var Fm = (function(document) {
     };
 
     // Globals
+
     var $window   = $(window),
         $document = $(document),
         $body     = $(document.body);
 
-    var transitionEndEvent = Fm.transitionEnd();
+    var transitionEnd = Fm.transitionEnd();
 
     // Constructor
+
     function Dialog(element, settings) {
         this.config  = $.extend({}, $.fn[Name].defaults, settings);
         this.elem    = element;
@@ -167,7 +168,8 @@ var Fm = (function(document) {
         this.init();
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Dialog.prototype, {
 
         init: function () {
@@ -206,7 +208,7 @@ var Fm = (function(document) {
             self.$elem
                 .on('click', Selectors.close, self.close.bind(self))
                 .find(Selectors.block)
-                .on(transitionEndEvent, function(e) {
+                .on(transitionEnd, function(e) {
                     e.stopPropagation(); // prevent event bubbling
                 });
 
@@ -274,7 +276,7 @@ var Fm = (function(document) {
                 self.$wrap.hide();
                 self.$dimmer
                     .removeClass(ClassNames.active)
-                    .one(transitionEndEvent, function() {
+                    .one(transitionEnd, function() {
                         self.scrollBar(true);
                         self.$dimmer.hide();
                         self.config.onClose.call(self.elem);
@@ -396,7 +398,8 @@ var Fm = (function(document) {
 
     });
 
-    // Plugin definition
+    // Plugin
+
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -409,8 +412,8 @@ var Fm = (function(document) {
         });
     };
 
-    // Default settings
     $.fn[Name].defaults = Defaults;
+
 
 })(jQuery, window, document);
 
@@ -452,6 +455,8 @@ var Fm = (function(document) {
         active : '.is-active'
     };
 
+    // Constructor
+
     function Dropdown(element, settings) {
         this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
@@ -460,6 +465,8 @@ var Fm = (function(document) {
         this.$items = this.$elem.find(Selectors.item);
         this.init();
     }
+
+    // Prototype
 
     $.extend(Dropdown.prototype, {
 
@@ -781,7 +788,8 @@ var Fm = (function(document) {
         return $dropdown[0];
     }
 
-    // Plugin definition
+    // Plugin
+
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var elem = transform(this),
@@ -795,7 +803,6 @@ var Fm = (function(document) {
         });
     };
 
-    // Default settings
     $.fn[Name].defaults = Defaults;
 
 })(jQuery, window);
@@ -830,10 +837,12 @@ var Fm = (function(document) {
     };
 
     // Globals
+
     var $window = $(window),
         $body   = $(document.body);
 
     // Constructor
+
     function Popup(element, settings) {
         this.namespace = '.' + Name + '.' + Fm.createID();
         this.config    = $.extend({}, $.fn[Name].defaults, settings);
@@ -846,7 +855,8 @@ var Fm = (function(document) {
         this.init();
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Popup.prototype, {
 
         init: function() {
@@ -1111,7 +1121,8 @@ var Fm = (function(document) {
 
     });
 
-    // Plugin definition
+    // Plugin
+
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -1124,7 +1135,6 @@ var Fm = (function(document) {
         });
     };
 
-    // Default settings
     $.fn[Name].defaults = Defaults;
 
 })(jQuery, window, document);
@@ -1163,11 +1173,13 @@ var Fm = (function(document) {
     };
 
     // Globals
+
     var $window = $(window);
 
     var windowHeight = $window.height();
 
     // Constructor
+
     function Sticky(element, settings) {
         this.namespace = '.' + Name + '.' + Fm.createID();
         this.config    = $.extend({}, $.fn[Name].defaults, settings);
@@ -1184,7 +1196,8 @@ var Fm = (function(document) {
         $window.on('load', this.init.bind(this));
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Sticky.prototype, {
 
         init: function() {
@@ -1479,7 +1492,8 @@ var Fm = (function(document) {
 
     });
 
-    // Plugin definition
+    // Plugin
+
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -1492,8 +1506,8 @@ var Fm = (function(document) {
         });
     };
 
-    // Default settings
     $.fn[Name].defaults = Defaults;
+
 
 })(jQuery, window, document);
 
@@ -1520,6 +1534,7 @@ var Fm = (function(document) {
     };
 
     // Constructor
+
     function Tab(element, settings) {
         this.config = $.extend({}, $.fn[Name].defaults, settings);
         this.elem   = element;
@@ -1527,7 +1542,8 @@ var Fm = (function(document) {
         this.init();
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Tab.prototype, {
 
         init: function() {
@@ -1536,7 +1552,8 @@ var Fm = (function(document) {
 
     });
 
-    // Plugin definition
+    // Plugin
+
     $.fn[Name] = function(settings, args) {
         return this.each(function() {
             var data = $.data(this, Name);
@@ -1549,7 +1566,6 @@ var Fm = (function(document) {
         });
     };
 
-    // Default settings
     $.fn[Name].defaults = Defaults;
 
 })(jQuery, window);
@@ -1574,9 +1590,11 @@ var Fm = (function(document) {
     };
 
     // Globals
-    var transitionEndEvent = Fm.transitionEnd();
+
+    var transitionEnd = Fm.transitionEnd();
 
     // Constructor
+
     function Transition(element, animation, settings, onEnd) {
         var self = this;
 
@@ -1597,7 +1615,8 @@ var Fm = (function(document) {
             }): self.init(animation);
     }
 
-    // Instance
+    // Prototype
+
     $.extend(Transition.prototype, {
 
         init: function(animation) {
@@ -1612,10 +1631,10 @@ var Fm = (function(document) {
                 return console.warn('Trying to call an undefined animation');
             }
 
-            if (transitionEndEvent) {
+            if (transitionEnd) {
                 self.$elem
-                    .off(transitionEndEvent) // prevent any interruptions
-                    .one(transitionEndEvent, function(e) {
+                    .off(transitionEnd) // prevent any interruptions
+                    .one(transitionEnd, function(e) {
                         e.stopPropagation(); // prevent event bubbling
                         self.end();
                     });
@@ -1749,17 +1768,16 @@ var Fm = (function(document) {
         }
     });
 
-    // Plugin definition
+    // Plugin
+
     $.fn[Name] = function(animation, settings, onEnd) {
         return this.each(function() {
             new Transition(this, animation, settings, onEnd);
         });
     };
 
-    // Default settings
     $.fn[Name].defaults = Defaults;
     $.fn[Name].defaults.animations = {
-        // fade
         fade: {
             start : { 'opacity': 0 },
             end   : { 'opacity': 1 }
@@ -1772,8 +1790,6 @@ var Fm = (function(document) {
             start : { 'opacity': 0, 'transform': 'translateY(-10%)' },
             end   : { 'opacity': 1, 'transform': 'translateY(0)' }
         },
-
-        // scale
         scale: {
             start : { 'opacity': 0, 'transform': 'scale(0.6)' },
             end   : { 'opacity': 1, 'transform': 'scale(1.0)' }
@@ -1786,8 +1802,6 @@ var Fm = (function(document) {
             start : { 'opacity': 0, 'transform': 'scale(0.6)', 'transform-origin': 'top' },
             end   : { 'opacity': 1, 'transform': 'scale(1.0)', 'transform-origin': 'top' }
         },
-
-        // slide
         slideUp: {
             start : { 'opacity': 0.2, 'transform': 'scaleY(0.01)', 'transform-origin': 'bottom'},
             end   : { 'opacity': 1, 'transform': 'scaleY(1)', 'transform-origin': 'bottom'}
@@ -1796,8 +1810,6 @@ var Fm = (function(document) {
             start : { 'opacity': 0.2, 'transform': 'scaleY(0.01)', 'transform-origin': 'top'},
             end   : { 'opacity': 1, 'transform': 'scaleY(1)', 'transform-origin': 'top'}
         },
-
-        // flip
         flipX: {
             start : { 'opacity': 0, 'transform': 'perspective(2000px) rotateY(-90deg)' },
             end   : { 'opacity': 1, 'transform': 'perspective(2000px) rotateY(0deg)' }
