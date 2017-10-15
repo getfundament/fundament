@@ -1,6 +1,6 @@
 {
   "name": "fundament",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "The modern and lightweight front-end framework built on the shoulders of giants.",
   "moduleType": [
     "globals"
