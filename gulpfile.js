@@ -1,14 +1,15 @@
-const gulp       = require('gulp'),
-      plumber    = require('gulp-plumber'),
-      watch      = require('gulp-watch'),
-      concat     = require('gulp-concat'),
-      rename     = require('gulp-rename'),
-      uglify     = require('gulp-uglify'),
-      prefixer   = require('gulp-autoprefixer'),
-      sourcemaps = require('gulp-sourcemaps'),
-      sass       = require('gulp-sass'),
-      cssnano    = require('gulp-cssnano'),
-      filter     = require('gulp-filter');
+const gulp        = require('gulp'),
+      plumber     = require('gulp-plumber'),
+      watch       = require('gulp-watch'),
+      concat      = require('gulp-concat'),
+      rename      = require('gulp-rename'),
+      uglify      = require('gulp-uglify'),
+      prefixer    = require('gulp-autoprefixer'),
+      sourcemaps  = require('gulp-sourcemaps'),
+      sass        = require('gulp-sass'),
+      cssnano     = require('gulp-cssnano'),
+      filter      = require('gulp-filter'),
+      globToVinyl = require('glob-to-vinyl');
 
 /**
  * Fundament source and dist paths.
@@ -42,6 +43,17 @@ const tasks = {
             .pipe(uglify({preserveComments: 'license'}))
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest(Fundament.js.dist)); // minified
+
+        globToVinyl(Fundament.js.src, function(err, files) {
+            files.forEach(function(file) {
+                gulp.src(file.path)
+                    .pipe(plumber())
+                    .pipe(sourcemaps.init())
+                    .pipe(uglify({preserveComments: 'license'}))
+                    .pipe(sourcemaps.write('.'))
+                    .pipe(gulp.dest(Fundament.js.dist + '/components'));
+            });
+        });
     },
 
     sass: function() {
