@@ -33,7 +33,9 @@
     var Selectors = {
         menu   : '.menu',
         item   : '.menu__item',
-        active : '.is-active'
+        active : '.is-active',
+        input  : '> input',
+        label  : '> span'
     };
 
     // Constructor
@@ -94,7 +96,7 @@
                     return self.$elem.hasClass(ClassNames.select);
                 },
                 empty: function() {
-                    return self.$elem.find('input').val().length === 0
+                    return self.$elem.find(Selectors.input).val().length === 0
                 }
             }[state].apply();
         },
@@ -187,12 +189,12 @@
 
             if (self.is('select')) {
                 self.$elem // input value
-                    .find('> input')
-                    .val( $target.data('value') );
+                    .find(Selectors.input)
+                    .val($target.data('value'));
 
                 self.$elem // label value
-                    .find('> span')
-                    .text( $target.text() );
+                    .find(Selectors.label)
+                    .text($target.text());
             }
 
             self.config.onSelect.call(self.elem, $target[0]);
