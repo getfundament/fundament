@@ -30,6 +30,7 @@
         box-shadow: $dropdown-box-shadow;
     }
     .menu__item {
+        display: block;
         padding: $dropdown-item-padding;
         border-bottom: $dropdown-item-border-width solid $dropdown-item-border-color;
 

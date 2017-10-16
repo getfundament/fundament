@@ -229,7 +229,21 @@ $form-info-font-size:      0.9375rem    !default;
 /*---------------------*
  * Menu
  *---------------------*/
-$menu-tabs: '' !default;
+$menu-link-padding: 0.5rem 1.125rem !default;
+
+// Pills
+$menu-pills-border-radius: $border-radius-base  !default;
+
+$menu-pills-active-color:      #FFF             !default;
+$menu-pills-active-background: $color-primary   !default;
+
+// Tabs
+$menu-tabs-border-width:  1px                   !default;
+$menu-tabs-border-color:  $color-gray-light     !default;
+$menu-tabs-border-radius: $border-radius-base   !default;
+
+$menu-tabs-active-color:      $color-base       !default;
+$menu-tabs-active-background: #FFF              !default;
 
 /*---------------------*
  * Message

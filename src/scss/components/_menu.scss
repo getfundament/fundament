@@ -1,6 +1,8 @@
 .menu {
-    margin: 0;
-    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
     list-style: none;
 }
 .menu__link {
@@ -8,48 +10,41 @@
     padding: $menu-link-padding;
 }
 
-// Inline
-.menu--inline .menu__item {
-    display: inline-block;
+// Fluid
+.menu--fluid {
+    .menu__item {
+        flex: 1 1 auto;
+        text-align: center;
+    }
 }
 
 // Pills
-.menu--pills .menu__link {
-    border-radius: $border-radius-base;
+.menu--pills {
+    .menu__link {
+        border-radius: $menu-pills-border-radius;
 
-    &.is-active {
-        color: #FFF;
-        background-color: $color-primary;
+        &.is-active {
+            color: $menu-pills-active-color;
+            background-color: $menu-pills-active-background;
+        }
     }
 }
 
 // Tabs
 .menu--tabs {
-    border-bottom: 1px solid $input-border-color;
-    @extend .clear;
+    border-bottom: $menu-tabs-border-width solid $menu-tabs-border-color;
 
     .menu__item {
-        display: block;
-        float: left;
-        margin-bottom: -1px;
+        margin-bottom: -$menu-tabs-border-width;
     }
     .menu__link {
-        cursor: pointer;
-        border: 1px solid transparent;
-        border-radius: $border-radius-base $border-radius-base 0 0;
+        border: $menu-tabs-border-width solid transparent;
+        border-radius: $menu-tabs-border-radius $menu-tabs-border-radius 0 0;
 
         &.is-active {
-            color: $color-base;
-            background-color: #fff;
-            border-color: $input-border-color $input-border-color transparent;
+            color: $menu-tabs-active-color;
+            background-color: $menu-tabs-active-background;
+            border-color: $menu-tabs-border-color $menu-tabs-border-color transparent;
         }
-    }
-}
-.menu--fluid {
-    display: flex;
-
-    .menu__item {
-        flex: 1;
-        text-align: center;
     }
 }
