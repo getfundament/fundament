@@ -1,5 +1,5 @@
 /*!
- * Fundament framework v0.3.6
+ * Fundament framework v0.4.0
  *
  * https://getfundament.com
  *
@@ -452,7 +452,17 @@ var Fm = (function(document) {
     var Selectors = {
         menu   : '.menu',
         item   : '.menu__item',
-        active : '.is-active'
+        active : '.is-active',
+        input  : '> input',
+        label  : '> span'
+    };
+
+    var Keys = {
+        enter  : 13,
+        escape : 27,
+        space  : 32,
+        up     : 38,
+        down   : 40
     };
 
     // Constructor
@@ -513,7 +523,7 @@ var Fm = (function(document) {
                     return self.$elem.hasClass(ClassNames.select);
                 },
                 empty: function() {
-                    return self.$elem.find('input').val().length === 0
+                    return self.$elem.find(Selectors.input).val().length === 0
                 }
             }[state].apply();
         },
@@ -543,19 +553,19 @@ var Fm = (function(document) {
          */
         onKeyDown: function(e) {
             switch (e.which) {
-                case 13 : // enter key
-                case 32 : // space key
+                case Keys.enter:
+                case Keys.space:
                     this.toggle();
                     e.preventDefault(); // prevent scroll
                     break;
-                case 27 : // escape key
+                case Keys.escape:
                     this.close();
                     break;
-                case 38 : // arrow up
+                case Keys.up:
                     this.select('prev');
                     e.preventDefault(); // prevent scroll
                     break;
-                case 40 : // arrow down
+                case Keys.down:
                     if ( ! this.is('select')) {
                         this.open();
                     }
@@ -606,12 +616,12 @@ var Fm = (function(document) {
 
             if (self.is('select')) {
                 self.$elem // input value
-                    .find('> input')
-                    .val( $target.data('value') );
+                    .find(Selectors.input)
+                    .val($target.data('value'));
 
                 self.$elem // label value
-                    .find('> span')
-                    .text( $target.text() );
+                    .find(Selectors.label)
+                    .text($target.text());
             }
 
             self.config.onSelect.call(self.elem, $target[0]);
