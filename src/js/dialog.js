@@ -31,6 +31,11 @@
         close  : '.dialog__close'
     };
 
+    var Elements = {
+        dimmer : $('<div/>', {class: ClassNames.dimmer}),
+        wrap   : $('<div/>', {class: ClassNames.wrap, role: 'document'})
+    };
+
     // Globals
 
     var $window   = $(window),
@@ -45,8 +50,7 @@
         this.config  = $.extend({}, $.fn[Name].defaults, settings);
         this.elem    = element;
         this.$elem   = $(element);
-        this.$wrap   = $('<div/>', {class: ClassNames.wrap, role: 'document'});
-        this.$dimmer = $('<div/>', {class: ClassNames.dimmer});
+        this.$dimmer = $(Selectors.dimmer);
         this.busy    = false;
         this.init();
     }
@@ -66,14 +70,15 @@
         setup: function() {
             var conf = this.config;
 
-            if ($(Selectors.dimmer).length === 0) {
-                $body.append(this.$dimmer);
+            if (this.$dimmer.length === 0) {
+                this.$dimmer = $body
+                    .append(Elements.dimmer) // append to body
+                    .find(Selectors.dimmer); // retrieve
             }
 
-            this.$dimmer = $(Selectors.dimmer);
             this.$wrap = this.$elem
-                .wrap(this.$wrap) // wrap around dialog
-                .parent() // retrieve element
+                .wrap(Elements.wrap) // wrap around dialog
+                .parent() // retrieve
                 .hide();
 
             if (conf.openFrom) {
