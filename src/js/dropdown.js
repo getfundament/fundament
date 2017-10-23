@@ -83,54 +83,45 @@
          */
         bind: function() {
             this.$elem
-                .on('mousedown', this.onMouseDown.bind(this))
-                .on('keydown', this.onKeyDown.bind(this))
-                .on('blur', this.close.bind(this));
+                .on('click', this.onClick.bind(this))
+                .on('focusout', this.onFocusOut.bind(this))
+                .on('keydown', this.onKeyDown.bind(this));
         },
 
         /**
-         * Check the state of the dropdown.
-         *
-         * @param {string} state
-         */
-        is: function(state) {
-            var self = this;
-
-            return {
-                open: function() {
-                    return self.$elem.hasClass(ClassNames.open);
-                },
-                select: function() {
-                    return self.$elem.hasClass(ClassNames.select);
-                },
-                empty: function() {
-                    return self.$elem.find(Selectors.input).val().length === 0
-                }
-            }[state].apply();
-        },
-
-        /**
-         * Handle the mousedown event.
+         * Handle the click event.
          *
          * @param {Event} e
          */
-        onMouseDown: function(e) {
-            if (e.target.nodeName === 'A') {
-                return window.location.href = e.target.getAttribute('href'); // click on link
-            }
-
+        onClick: function(e) {
             var $target = $(e.target);
+
             if ($target.hasClass(ClassNames.item)) {
-                this.select($target); // click on item
+                this.select($target);
             }
 
             this.toggle();
         },
 
         /**
+         * Handle the focusout event.
+         *
+         * @param {FocusEvent} e
+         */
+        onFocusOut: function(e) {
+            var $target = $(e.relatedTarget);
+
+            if ($target.closest(this.$menu).length === 0) {
+                // At this point, the newly-focused element
+                // is not a child of the dropdown menu.
+                this.close();
+            }
+        },
+
+        /**
          * Handle the keydown event.
          *
-         * @param {Event} e
+         * @param {KeyboardEvent} e
          */
         onKeyDown: function(e) {
             switch (e.which) {
@@ -153,9 +144,30 @@
                     this.select('next');
                     e.preventDefault(); // prevent scroll
                     break;
-                default :
+                default:
                     this.selectByKey(e.which);
             }
+        },
+
+        /**
+         * Check the state of the dropdown.
+         *
+         * @param {string} state
+         */
+        is: function(state) {
+            var self = this;
+
+            return {
+                open: function() {
+                    return self.$elem.hasClass(ClassNames.open);
+                },
+                select: function() {
+                    return self.$elem.hasClass(ClassNames.select);
+                },
+                empty: function() {
+                    return self.$elem.find(Selectors.input).val().length === 0
+                }
+            }[state].apply();
         },
 
         /**
