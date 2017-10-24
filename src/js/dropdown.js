@@ -344,41 +344,35 @@
 
         // Create elements
         var $dropdown = $('<div/>', {
-                class: ClassNames.dropdown + ' ' + ClassNames.select,
-                tabindex: 0
-            }),
-            $menu = $('<ul/>', {
-                'class': ClassNames.menu,
-                'role': 'listbox',
-                'aria-hidden': true
-            }),
-            $input = $('<input/>', {
-                type: 'hidden',
-                name: $select.attr('name')
-            }),
-            $label = $('<span/>', {
-                text: $selected.text()
-            });
-
-        // Create menu
-        $options.each(function() {
-            var $option = $(this),
-                classes = ClassNames.item + ($option.is($selected) ? ' is-active' : '');
-
-            if ($option.val() === '') {
-                return;
-            }
-
-            $('<li/>', {
-                'text': $option.text(),
-                'class': classes,
-                'role': 'option',
-                'data-value': $option.val()
-            }).appendTo($menu);
+            class: ClassNames.dropdown + ' ' + ClassNames.select,
+            tabindex: 0
+        });
+        var $menu = $('<ul/>', {
+            class: ClassNames.menu,
+            role: 'listbox',
+            'aria-hidden': true
+        });
+        var $input = $('<input/>', {
+            type: 'hidden',
+            name: $select.attr('name'),
+            value: $selected.val()
+        });
+        var $label = $('<span/>', {
+            text: $selected.text()
         });
 
-        // Inherit selection
-        $input.val($selected.val());
+        // Append menu items
+        $options.each(function() {
+            var $option = $(this);
+            if ($option.val()) {
+                $('<li/>', {
+                    'text': $option.text(),
+                    'class': ClassNames.item + ($option.is($selected) ? ' is-active' : ''),
+                    'role': 'option',
+                    'data-value': $option.val()
+                }).appendTo($menu);
+            }
+        });
 
         // Generate HTML
         $dropdown = $select
