@@ -70,6 +70,78 @@
         },
 
         /**
+         * Override the instance's settings.
+         *
+         * @public
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            $.extend(this.config, settings);
+        },
+
+        /**
+         * Destroy the instance.
+         *
+         * @public
+         */
+        destroy: function() {
+            if (this.hasOwnProperty('observer')) {
+                this.observer.disconnect();
+                this.contextObserver.disconnect();
+            }
+
+            this.unbind();
+            this.clear();
+            this.mask('remove');
+
+            $.data(this.elem, Name, null); // unset data
+        },
+
+        /**
+         * Bind event handlers.
+         */
+        bind: function() {
+            var self = this;
+
+            $window
+                .on('resize' + self.namespace, self.recalc)
+                .on('scroll' + self.namespace, function() {
+                    requestAnimationFrame(self.update.bind(self));
+                });
+        },
+
+        /**
+         * Unbind event handlers.
+         */
+        unbind: function() {
+            $window
+                .off('resize' + this.namespace)
+                .off('scroll' + this.namespace);
+        },
+
+        /**
+         * Observe DOM changes.
+         */
+        observe: function() {
+            if ( ! this.config.observe || ! 'MutationObserver' in window) {
+                return;
+            }
+
+            this.observer = new MutationObserver(this.recalc);
+            this.observer.observe(this.elem, {
+                childList : true,
+                subtree   : true
+            });
+
+            this.contextObserver = new MutationObserver(this.recalc);
+            this.contextObserver.observe(this.$context[0], {
+                childList : true,
+                subtree   : true
+            });
+        },
+
+        /**
          * Pre-calculate sizes and positions.
          *
          * Executed during initialization, while resizing and after mutation (optional).
@@ -122,28 +194,6 @@
             } else {
                 calc.overSized = 0;
             }
-        },
-
-        /**
-         * Bind event handlers.
-         */
-        bind: function() {
-            var self = this;
-
-            $window
-                .on('resize' + self.namespace, self.recalc)
-                .on('scroll' + self.namespace, function() {
-                    requestAnimationFrame(self.update.bind(self));
-                });
-        },
-
-        /**
-         * Unbind event handlers.
-         */
-        unbind: function() {
-            $window
-                .off('resize' + this.namespace)
-                .off('scroll' + this.namespace);
         },
 
         /**
@@ -301,52 +351,6 @@
                     ClassNames.stick + ' ' +
                     ClassNames.bound
                 );
-        },
-
-        /**
-         * Observe DOM changes.
-         */
-        observe: function() {
-            if ( ! this.config.observe || ! 'MutationObserver' in window) {
-                return;
-            }
-
-            this.observer = new MutationObserver(this.recalc);
-            this.observer.observe(this.elem, {
-                childList : true,
-                subtree   : true
-            });
-
-            this.contextObserver = new MutationObserver(this.recalc);
-            this.contextObserver.observe(this.$context[0], {
-                childList : true,
-                subtree   : true
-            });
-        },
-
-        /**
-         * Override the instance's settings.
-         *
-         * @param {Object} settings
-         */
-        setting: function(settings) {
-            $.extend(this.config, settings);
-        },
-
-        /**
-         * Destroy the instance.
-         */
-        destroy: function() {
-            if (this.hasOwnProperty('observer')) {
-                this.observer.disconnect();
-                this.contextObserver.disconnect();
-            }
-
-            this.unbind();
-            this.clear();
-            this.mask('remove');
-
-            $.data(this.elem, Name, null); // unset data
         }
 
     });

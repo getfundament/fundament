@@ -71,6 +71,85 @@
         },
 
         /**
+         * Toggle the dropdown.
+         *
+         * @public
+         */
+        toggle: function() {
+            this.is('open') ?
+                this.close():
+                this.open();
+        },
+
+        /**
+         * Open the dropdown.
+         *
+         * @public
+         */
+        open: function() {
+            var self = this,
+                conf = self.config;
+
+            if (self.is('open')) {
+                return;
+            }
+
+            conf.onOpening.call(self.elem);
+
+            if (conf.smart) {
+                var menuHeight  = self.$menu.outerHeight(),
+                    topSpace    = self.$elem.offset().top - window.pageYOffset,
+                    bottomSpace = window.innerHeight - topSpace - self.$elem.outerHeight();
+
+                // Find the best direction for the menu to open
+                self.$elem.toggleClass(ClassNames.reversed,
+                    bottomSpace < menuHeight && topSpace > menuHeight
+                );
+            }
+
+            self.$menu.transition(conf.transition + 'In', {
+                queue: false,
+                onEnd: conf.onOpen.bind(self.elem)
+            });
+
+            self.$elem.addClass(ClassNames.open);
+        },
+
+        /**
+         * Close the dropdown.
+         *
+         * @public
+         */
+        close: function() {
+            var self = this,
+                conf = self.config;
+
+            if ( ! self.is('open')) {
+                return;
+            }
+
+            conf.onClosing.call(self.elem);
+
+            self.$menu.transition(conf.transition + 'Out', {
+                queue: false,
+                onEnd: conf.onClose.bind(self.elem)
+            });
+
+            self.$elem.removeClass(ClassNames.open);
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @public
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            $.extend(this.config, settings);
+        },
+
+        /**
          * Perform needed DOM operations.
          */
         setup: function() {
@@ -245,85 +324,6 @@
                     self.select($next):
                     self.select($matches.first());
             }
-        },
-
-        /**
-         * Toggle the dropdown.
-         *
-         * @public
-         */
-        toggle: function() {
-            this.is('open') ?
-                this.close():
-                this.open();
-        },
-
-        /**
-         * Open the dropdown.
-         *
-         * @public
-         */
-        open: function() {
-            var self = this,
-                conf = self.config;
-
-            if (self.is('open')) {
-                return;
-            }
-
-            conf.onOpening.call(self.elem);
-
-            if (conf.smart) {
-                var menuHeight  = self.$menu.outerHeight(),
-                    topSpace    = self.$elem.offset().top - window.pageYOffset,
-                    bottomSpace = window.innerHeight - topSpace - self.$elem.outerHeight();
-
-                // Find the best direction for the menu to open
-                self.$elem.toggleClass(ClassNames.reversed,
-                    bottomSpace < menuHeight && topSpace > menuHeight
-                );
-            }
-
-            self.$menu.transition(conf.transition + 'In', {
-                queue: false,
-                onEnd: conf.onOpen.bind(self.elem)
-            });
-
-            self.$elem.addClass(ClassNames.open);
-        },
-
-        /**
-         * Close the dropdown.
-         *
-         * @public
-         */
-        close: function() {
-            var self = this,
-                conf = self.config;
-
-            if ( ! self.is('open')) {
-                return;
-            }
-
-            conf.onClosing.call(self.elem);
-
-            self.$menu.transition(conf.transition + 'Out', {
-                queue: false,
-                onEnd: conf.onClose.bind(self.elem)
-            });
-
-            self.$elem.removeClass(ClassNames.open);
-        },
-
-        /**
-         * Override the instance's settings.
-         *
-         * @public
-         *
-         * @param {Object} settings
-         */
-        setting: function(settings) {
-            $.extend(this.config, settings);
         }
 
     });

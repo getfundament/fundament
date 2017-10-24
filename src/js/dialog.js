@@ -65,49 +65,6 @@
         },
 
         /**
-         * Create and retrieve DOM elements.
-         */
-        setup: function() {
-            var conf = this.config;
-
-            if (this.$dimmer.length === 0) {
-                this.$dimmer = $body
-                    .append(Elements.dimmer) // append to body
-                    .find(Selectors.dimmer); // retrieve
-            }
-
-            this.$wrap = this.$elem
-                .wrap(Elements.wrap) // wrap around dialog
-                .parent() // retrieve
-                .hide();
-
-            if (conf.openFrom) {
-                conf.openFrom = $(conf.openFrom);
-            }
-        },
-
-        /**
-         * Bind event handlers.
-         */
-        bind: function() {
-            var self = this,
-                conf = self.config;
-
-            self.$elem
-                .on('click', Selectors.close, self.close.bind(self))
-                .find(Selectors.block)
-                .on(transitionEnd, function(e) {
-                    e.stopPropagation(); // prevent event bubbling
-                });
-
-            if (conf.closable) {
-                self.$wrap.on('click', function(e) {
-                    if (e.target === this) self.close();
-                });
-            }
-        },
-
-        /**
          * Toggle the dialog.
          *
          * @public
@@ -171,6 +128,60 @@
                         self.busy = false;
                     });
             });
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @public
+
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            $.extend(this.config, settings);
+        },
+
+        /**
+         * Create and retrieve DOM elements.
+         */
+        setup: function() {
+            var conf = this.config;
+
+            if (this.$dimmer.length === 0) {
+                this.$dimmer = $body
+                    .append(Elements.dimmer) // append to body
+                    .find(Selectors.dimmer); // retrieve
+            }
+
+            this.$wrap = this.$elem
+                .wrap(Elements.wrap) // wrap around dialog
+                .parent() // retrieve
+                .hide();
+
+            if (conf.openFrom) {
+                conf.openFrom = $(conf.openFrom);
+            }
+        },
+
+        /**
+         * Bind event handlers.
+         */
+        bind: function() {
+            var self = this,
+                conf = self.config;
+
+            self.$elem
+                .on('click', Selectors.close, self.close.bind(self))
+                .find(Selectors.block)
+                .on(transitionEnd, function(e) {
+                    e.stopPropagation(); // prevent event bubbling
+                });
+
+            if (conf.closable) {
+                self.$wrap.on('click', function(e) {
+                    if (e.target === this) self.close();
+                });
+            }
         },
 
         /**
@@ -239,17 +250,6 @@
                     .first()
                     .focus();
             }
-        },
-
-        /**
-         * Override the instance's settings.
-         *
-         * @public
-         *
-         * @param {Object} settings
-         */
-        setting: function(settings) {
-            $.extend(this.config, settings);
         },
 
         /**

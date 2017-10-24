@@ -51,19 +51,96 @@
     $.extend(Popup.prototype, {
 
         init: function() {
-            var self = this;
-
-            if ( ! self.$popup.length) {
-                self.create();
+            if ( ! this.$popup.length) {
+                this.create();
             } else {
                 // make sure the popup is a direct child
                 // of the body for absolute positioning
-                self.$popup
+                this.$popup
                     .detach()
                     .appendTo($body);
             }
 
-            self.bind();
+            this.bind();
+        },
+
+        /**
+         * Toggle the popup.
+         *
+         * @public
+         */
+        toggle: function() {
+            this.active ?
+                this.hide():
+                this.show();
+        },
+
+        /**
+         * Show the popup.
+         *
+         * @public
+         */
+        show: function() {
+            var self = this,
+                conf = self.config;
+
+            clearTimeout(self.timer);
+
+            if ( ! self.active) {
+                self.position();
+                self.timer = setTimeout(function() {
+                    self.active = true;
+                    self.$popup.transition(conf.transition + 'In', {
+                        queue: false,
+                        onEnd: conf.onShow.bind(self.elem)
+                    });
+                }, conf.delay.show || conf.delay);
+            }
+        },
+
+        /**
+         * Hide the popup.
+         *
+         * @public
+         */
+        hide: function() {
+            var self = this,
+                conf = self.config;
+
+            clearTimeout(self.timer);
+
+            if (self.active) {
+                self.timer = setTimeout(function() {
+                    self.active = false;
+                    self.$popup.transition(conf.transition + 'Out', {
+                        queue: false,
+                        onEnd: conf.onHide.bind(self.elem)
+                    });
+                }, conf.delay.hide || conf.delay);
+            }
+        },
+
+        /**
+         * Override the instance's settings.
+         *
+         * @public
+         *
+         * @param {Object} settings
+         */
+        setting: function(settings) {
+            $.extend(this.config, settings);
+        },
+
+        /**
+         * Destroy the instance.
+         *
+         * @public
+         */
+        destroy: function() {
+            this.unbind();
+            this.$popup.remove();
+
+            $.data(this.elem, Name, null);
         },
 
         /**
@@ -239,75 +316,6 @@
             self.$popup
                 .css(positioning)
                 .addClass(ClassNames.popup + '--' + direction);
-        },
-
-        /**
-         * Toggle the popup.
-         */
-        toggle: function() {
-            this.active ?
-                this.hide():
-                this.show();
-        },
-
-        /**
-         * Show the popup.
-         */
-        show: function() {
-            var self = this,
-                conf = self.config;
-
-            clearTimeout(self.timer);
-
-            if ( ! self.active) {
-                self.position();
-                self.timer = setTimeout(function() {
-                    self.active = true;
-                    self.$popup.transition(conf.transition + 'In', {
-                        queue: false,
-                        onEnd: conf.onShow.bind(self.elem)
-                    });
-                }, conf.delay.show || conf.delay);
-            }
-        },
-
-        /**
-         * Hide the popup.
-         */
-        hide: function() {
-            var self = this,
-                conf = self.config;
-
-            clearTimeout(self.timer);
-
-            if (self.active) {
-                self.timer = setTimeout(function() {
-                    self.active = false;
-                    self.$popup.transition(conf.transition + 'Out', {
-                        queue: false,
-                        onEnd: conf.onHide.bind(self.elem)
-                    });
-                }, conf.delay.hide || conf.delay);
-            }
-        },
-
-        /**
-         * Override the instance's settings.
-         *
-         * @param {Object} settings
-         */
-        setting: function(settings) {
-            $.extend(this.config, settings);
-        },
-
-        /**
-         * Destroy the instance.
-         */
-        destroy: function() {
-            this.unbind();
-            this.$popup.remove();
-
-            $.data(this.elem, Name, null);
         }
 
     });
