@@ -34,7 +34,7 @@ $font-size-sm:   0.875rem   !default;
 $font-size-lg:   1.25rem    !default;
 
 $font-family-base:    'Source Sans Pro', sans-serif !default;
-$font-family-heading: $font-family-base             !default;
+$font-family-heading: inherit                       !default;
 $font-sizes-heading:  (
     h1: 2.625rem, // 42px
     h2: 2.25rem,  // 36px
